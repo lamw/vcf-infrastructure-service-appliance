@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Logs · VIS{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <h1>Logs</h1>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Service Logs</h2>
+      <p class="subtle">
+        {{ selected.name }} ·
+        {{ selected.units|join(", ") if selected.units else "No journal units" }}
+        {% if selected.files %} · {{ selected.files|join(", ") }}{% endif %}
+      </p>
+    </div>
+    <form class="inline-form" method="get" action="{{ url_for('logs') }}">
+      <select class="text-input log-select" name="service">
+        {% for target in log_targets.values() %}
+          <option value="{{ target.id }}" {% if target.id == selected_id %}selected{% endif %}>{{ target.name }}</option>
+        {% endfor %}
+      </select>
+      <select class="text-input log-lines" name="lines">
+        {% for option in [100, 200, 500, 1000] %}
+          <option value="{{ option }}" {% if option == lines %}selected{% endif %}>{{ option }} lines</option>
+        {% endfor %}
+      </select>
+      <select class="text-input log-lines" name="level">
+        {% for option, label in [("all", "All levels"), ("error", "Errors"), ("warning", "Warnings"), ("info", "Info")] %}
+          <option value="{{ option }}" {% if option == level %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+      <input class="text-input log-search" name="q" type="search" value="{{ query }}" placeholder="Search logs" />
+      <button class="btn primary" type="submit">View</button>
+      <a class="btn" href="{{ url_for('logs', service=selected_id, lines=lines, level=level, q=query) }}">Refresh</a>
+      <a class="btn" href="{{ url_for('logs_download', service=selected_id, lines=lines, level=level, q=query) }}">Download</a>
+    </form>
+  </div>
+
+  <div class="log-target-grid">
+    {% for target in log_targets.values() %}
+      <a class="log-target {% if target.id == selected_id %}active{% endif %}" href="{{ url_for('logs', service=target.id, lines=lines) }}">
+        <strong>{{ target.name }}</strong>
+        <span>
+          {{ target.units|join(", ") if target.units else "No unit assigned" }}
+          {% if target.files %} · {{ target.files|length }} file log{{ "" if target.files|length == 1 else "s" }}{% endif %}
+        </span>
+      </a>
+    {% endfor %}
+  </div>
+
+  <pre class="log-viewer">{{ log_text }}</pre>
+</section>
+{% endblock %}

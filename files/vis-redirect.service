@@ -1,0 +1,17 @@
+[Unit]
+Description=VIS default landing page redirect
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/vis/app
+Environment=PYTHONPATH=/opt/vis/app
+Environment=VIS_REDIRECT_PORT=80
+Environment=VIS_TARGET_PORT=8080
+ExecStart=/opt/vis/app/venv/bin/python -m vis.redirect
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

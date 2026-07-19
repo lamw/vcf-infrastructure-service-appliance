@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" cds-theme="dark" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign In · VIS</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" sizes="any" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vis.css') }}?v=20260530-ui" />
+</head>
+<body class="login-body">
+  <canvas id="loginParticles" class="login-particles" aria-hidden="true"></canvas>
+  <div class="login-stack">
+    <main class="login-panel">
+      <div class="brand login-brand">
+        <div class="brand-mark" role="button" tabindex="0" aria-label="Toggle VIS display mode" title="Toggle VIS display mode">VIS</div>
+        <div class="brand-title">
+          <strong>VCF Infrastructure Services Appliance</strong>
+          <span>Management Console</span>
+        </div>
+      </div>
+      {% if error %}
+        <p class="notice bad">{{ error }}</p>
+      {% endif %}
+      <form class="credential-form login-form" method="post" action="{{ url_for('login') }}">
+        <input type="hidden" name="next" value="{{ next_url }}" />
+        <label class="field-label" for="username">Username</label>
+        <input class="text-input" id="username" name="username" type="text" autocomplete="username" autofocus required />
+        <label class="field-label" for="password">Password</label>
+        <input class="text-input" id="password" name="password" type="password" autocomplete="current-password" required />
+        <div></div>
+        <button class="btn primary" type="submit">Sign In</button>
+      </form>
+    </main>
+    <p class="login-credit">Created by <a href="https://williamlam.com" target="_blank" rel="noopener">William Lam</a></p>
+  </div>
+  <script src="{{ url_for('static', filename='vis-login-particles.js') }}?v=20260528"></script>
+  <script src="{{ url_for('static', filename='vis-ui-effects.js') }}?v=20260530"></script>
+</body>
+</html>

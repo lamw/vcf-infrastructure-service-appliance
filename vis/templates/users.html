@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Users · VIS{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <h1>Users</h1>
+    <p class="subtle">Manage VIS application accounts. These are separate from appliance OS users.</p>
+  </div>
+</section>
+
+{% if request.args.get("user_status") %}
+  <p class="notice good">{{ request.args.get("user_status") }}</p>
+{% endif %}
+{% if request.args.get("user_error") %}
+  <p class="notice bad">{{ request.args.get("user_error") }}</p>
+{% endif %}
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>VIS Users</h2>
+      <p class="subtle">Create accounts and reset passwords for access to the VIS management UI.</p>
+    </div>
+  </div>
+  <table class="record-table">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>Last Login</th>
+        <th>Reset Password</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ "Active" if user.active else "Disabled" }}</td>
+          <td>{{ user.created_at }}</td>
+          <td>{{ user.last_login_at or "Never" }}</td>
+          <td>
+            <form class="inline-reset-form" method="post" action="{{ url_for('users_password', user_id=user.id) }}">
+              <input class="text-input" name="password" type="password" autocomplete="new-password" placeholder="New password" required />
+              <input class="text-input" name="confirm_password" type="password" autocomplete="new-password" placeholder="Confirm" required />
+              <button class="btn" type="submit">Reset</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Create User</h2>
+      <p class="subtle">Add a new VIS application administrator.</p>
+    </div>
+  </div>
+  <form class="credential-form compact user-create-form" method="post" action="{{ url_for('users_create') }}">
+    <label class="field-label" for="newUsername">Username</label>
+    <input class="text-input" id="newUsername" name="username" type="text" autocomplete="username" required />
+    <label class="field-label" for="newPassword">Password</label>
+    <input class="text-input" id="newPassword" name="password" type="password" autocomplete="new-password" required />
+    <label class="field-label" for="confirmPassword">Confirm Password</label>
+    <input class="text-input" id="confirmPassword" name="confirm_password" type="password" autocomplete="new-password" required />
+    <div></div>
+    <button class="btn primary" type="submit">Create User</button>
+  </form>
+</section>
+{% endblock %}

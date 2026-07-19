@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Certificate Authority · VIS{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <h1>Certificate Authority</h1>
+  </div>
+</section>
+
+{% if request.args.get("cert_error") %}
+  <p class="notice bad">{{ request.args.get("cert_error") }}</p>
+{% endif %}
+{% if request.args.get("cert_status") %}
+  <p class="notice good">{{ request.args.get("cert_status") }}</p>
+{% endif %}
+
+<section class="summary-grid service-metrics certificate-metrics" aria-label="Certificate status metrics">
+  <article class="metric">
+    <div class="metric-label">VIS CA</div>
+    <div class="metric-value {% if certificate.ca_configured %}good{% else %}warn{% endif %}">{{ "Ready" if certificate.ca_configured else "Missing" }}</div>
+    <div class="metric-note endpoint">{{ certificate.ca_path }}</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Shared Service Certificate</div>
+    <div class="metric-value {% if certificate.configured %}good{% else %}warn{% endif %}">{{ "Ready" if certificate.configured else "Missing" }}</div>
+    <div class="metric-note">{{ certificate.mode }}</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Issued Certificates</div>
+    <div class="metric-value">{{ certificate.issued_count }}</div>
+    <div class="metric-note">CA-issued certificates managed by VIS</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">TLS Services</div>
+    <div class="metric-value">{{ tls_services|selectattr("enabled")|list|length }}</div>
+    <div class="metric-note">TLS-capable services enabled for HTTPS</div>
+  </article>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Shared VIS Certificate</h2>
+      <p class="subtle">Initialize the VIS CA and generate one shared service certificate used by Software Depot, Container Registry, and Identity Provider TLS endpoints.</p>
+    </div>
+  </div>
+
+  <div class="detail-grid certificate-grid">
+    <div class="detail-box">
+      <strong>Authority Actions</strong>
+      <p class="subtle">The generated certificate uses the appliance FQDN and appliance IP as SAN entries.</p>
+      <div class="repo-actions">
+        <form class="inline-form" method="post" action="{{ url_for('certificates_generate') }}">
+          <button class="btn primary" type="submit">Initialize / Rotate VIS CA</button>
+        </form>
+        {% if certificate.ca_configured %}
+          <a class="btn" href="{{ url_for('certificates_download_root_ca') }}">Download Root CA</a>
+        {% endif %}
+        {% if certificate.full_pem_available %}
+          <a class="btn" href="{{ url_for('certificates_download_full_pem') }}">Download Full PEM</a>
+        {% endif %}
+      </div>
+
+      <form class="credential-form compact tls-upload-form" method="post" action="{{ url_for('certificates_upload') }}" enctype="multipart/form-data">
+        <label class="field-label" for="sharedCert">Certificate</label>
+        <input id="sharedCert" name="cert" type="file" />
+
+        <label class="field-label" for="sharedKey">Private Key</label>
+        <input id="sharedKey" name="key" type="file" />
+
+        <label class="field-label" for="sharedCA">Root CA</label>
+        <input id="sharedCA" name="ca" type="file" />
+
+        <div></div>
+        <button class="btn" type="submit">Upload Existing CA Certificate</button>
+      </form>
+    </div>
+
+    <div class="detail-box">
+      <strong>Certificate Details</strong>
+      <table class="record-table">
+        <tbody>
+          <tr><th>Subject</th><td>{{ certificate.subject }}</td></tr>
+          <tr><th>Issuer</th><td>{{ certificate.issuer }}</td></tr>
+          <tr><th>SANs</th><td class="endpoint">{{ certificate.sans }}</td></tr>
+          <tr><th>Expires</th><td>{{ certificate.expires }}</td></tr>
+          <tr><th>SHA256 Fingerprint</th><td class="endpoint">{{ certificate.fingerprint }}</td></tr>
+          <tr><th>Certificate</th><td class="endpoint">{{ certificate.cert_path }}</td></tr>
+          <tr><th>Private Key</th><td class="endpoint">{{ certificate.key_path }}</td></tr>
+          <tr><th>Full PEM</th><td class="endpoint">{{ certificate.full_pem_path }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="issued-certificates">
+  <div class="panel-header">
+    <div>
+      <h2>Issued Certificates</h2>
+      <p class="subtle">Create or update certificates signed by the VIS CA for lab services, appliances, or integrations.</p>
+    </div>
+  </div>
+
+  <div class="detail-grid certificate-grid">
+    <div class="detail-box">
+      <strong>Create / Update Certificate</strong>
+      <form class="credential-form compact tls-upload-form" method="post" action="{{ url_for('certificates_issued_create') }}">
+        <label class="field-label" for="issuedName">Name</label>
+        <input class="text-input" id="issuedName" name="name" type="text" placeholder="vcf-sso" required />
+
+        <label class="field-label" for="issuedCommonName">Common Name</label>
+        <input class="text-input" id="issuedCommonName" name="common_name" type="text" placeholder="vcf-sso.vcf.lab" required />
+
+        <label class="field-label" for="issuedDnsSans">DNS SANs</label>
+        <textarea class="text-input" id="issuedDnsSans" name="san_dns" rows="3" placeholder="vcf-sso.vcf.lab&#10;vcf-sso"></textarea>
+
+        <label class="field-label" for="issuedIpSans">IP SANs</label>
+        <textarea class="text-input" id="issuedIpSans" name="san_ips" rows="3" placeholder="172.30.0.60"></textarea>
+
+        <label class="field-label" for="issuedDays">Validity Days</label>
+        <input class="text-input" id="issuedDays" name="days" type="number" min="1" max="3650" value="825" required />
+
+        <div></div>
+        <button class="btn primary" type="submit" {% if not certificate.ca_configured %}disabled{% endif %}>Create / Update Certificate</button>
+      </form>
+    </div>
+
+    <div class="detail-box">
+      <strong>Managed Certificates</strong>
+      {% if issued_certificates %}
+        <table class="record-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Common Name</th>
+              <th>SANs</th>
+              <th>Expires</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cert in issued_certificates %}
+              <tr>
+                <td>{{ cert.name }}</td>
+                <td>{{ cert.common_name }}</td>
+                <td class="endpoint">{{ (cert.san_dns + cert.san_ips)|join(', ') }}</td>
+                <td>{{ cert.expires }}</td>
+                <td>
+                  <div class="repo-actions">
+                    <a class="btn" href="{{ url_for('certificates_issued_download', name=cert.name, artifact='certificate') }}">Certificate</a>
+                    <a class="btn" href="{{ url_for('certificates_issued_download', name=cert.name, artifact='private-key') }}">Key</a>
+                    <a class="btn" href="{{ url_for('certificates_issued_download', name=cert.name, artifact='full-chain') }}">Full Chain</a>
+                    <form class="inline-form" method="post" action="{{ url_for('certificates_issued_delete', name=cert.name) }}">
+                      <button class="btn danger" type="submit" data-confirm="Delete certificate {{ cert.name }}?">Delete</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="subtle">No CA-issued certificates have been created yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>TLS Service Usage</h2>
+      <p class="subtle">SFTP Backup is intentionally excluded because it uses SSH host keys rather than HTTPS certificates.</p>
+    </div>
+  </div>
+  <table class="record-table">
+    <thead>
+      <tr>
+        <th>Service</th>
+        <th>TLS</th>
+        <th>Mode</th>
+        <th>Port</th>
+        <th>Endpoint</th>
+        <th>Certificate</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for service in tls_services %}
+        <tr>
+          <td>{{ service.name }}</td>
+          <td><span class="pill {% if service.enabled %}good{% else %}warn{% endif %}">{{ "Enabled" if service.enabled else "Disabled" }}</span></td>
+          <td>{{ service.mode|title }}</td>
+          <td>{{ service.port }}</td>
+          <td class="endpoint">{{ service.endpoint }}</td>
+          <td class="endpoint">{{ service.cert_path if service.enabled else "Not in use" }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

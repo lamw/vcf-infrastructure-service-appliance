@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% import "icons.html" as icons %}
+{% block title %}VIS Service Summary{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <h1>Service Summary</h1>
+  </div>
+</section>
+
+<section class="summary-grid" aria-label="VIS status metrics">
+  <article class="metric">
+    <div class="metric-label">Enabled Services</div>
+    <div class="metric-value">{{ summary.enabled }} / {{ summary.total }}</div>
+    <div class="metric-note">{{ summary.configured }} configured</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Health</div>
+    <div class="metric-value {% if summary.health == 'Healthy' %}good{% elif summary.enabled == 0 %}warn{% else %}warn{% endif %}">{{ summary.health }}</div>
+    <div class="metric-note">{{ summary.health_note }}</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">State Store</div>
+    <div class="metric-value">SQLite</div>
+    <div class="metric-note">Persistent service inventory</div>
+  </article>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Services</h2>
+      <p class="subtle">Service endpoints, status, and common actions.</p>
+    </div>
+  </div>
+
+  <div class="service-list">
+    {% for service in services %}
+      <article class="service-card" data-service-id="{{ service.id }}">
+        <div class="service-main">
+          <div class="service-title">
+            <span class="service-icon">{{ icons.service_icon(service.id) }}</span>
+            <span class="pill {% if service.enabled %}good{% else %}warn{% endif %}"><span class="dot"></span>{{ "Enabled" if service.enabled else "Disabled" }}</span>
+            <h3>{{ service.name }}</h3>
+          </div>
+          <div class="service-meta">
+            <span class="pill {% if service.health_status == 'healthy' %}good{% elif service.health_status == 'needs_configuration' %}warn{% else %}bad{% endif %}">{{ service.health_status|replace("_", " ")|title }}</span>
+            {% if service.configured %}
+              <span class="pill">Configured</span>
+            {% elif service.health_status != "needs_configuration" %}
+              <span class="pill">Not configured</span>
+            {% endif %}
+            <span class="pill">{{ service.settings.protocol|upper if service.settings.protocol else "Service" }}{% if service.settings.port %} :{{ service.settings.port }}{% endif %}</span>
+            <span class="pill">{{ service.filesystem_root }}</span>
+          </div>
+          <p class="subtle">{{ service.description }}</p>
+          <div class="endpoint">{{ service.endpoint }}</div>
+        </div>
+        <div class="service-actions">
+          <a class="btn primary" href="{{ url_for('service_detail', service_id=service.id) }}">Details</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VCF Infrastructure Services Appliance</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07141d;
+      --panel: #13212c;
+      --panel-2: #182936;
+      --border: #2c4657;
+      --text: #f3f7fa;
+      --muted: #aebcc7;
+      --accent: #49b7e5;
+      --accent-2: #8ecf64;
+      --warn: #f4bf45;
+      --danger: #ff856e;
+      font-family: Inter, Avenir, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(73, 183, 229, .18), transparent 32rem),
+        linear-gradient(180deg, #07141d 0%, #0c1720 100%);
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem clamp(1rem, 4vw, 3.5rem);
+      background: rgba(8, 29, 42, .92);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      min-width: 0;
+      color: var(--text);
+    }
+
+    .brand:hover {
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border: 2px solid rgba(255, 255, 255, .78);
+      border-radius: 5px;
+      font-weight: 800;
+      letter-spacing: .03em;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      line-height: 1.15;
+    }
+
+    .brand span {
+      display: block;
+      color: var(--accent);
+      font-size: .9rem;
+    }
+
+    nav {
+      display: flex;
+      gap: .8rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      font-size: .92rem;
+    }
+
+    .hero,
+    main,
+    footer {
+      width: min(1260px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: clamp(2.5rem, 7vw, 5.25rem) 0 2rem;
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(360px, 1.08fr);
+      gap: clamp(1.5rem, 4vw, 2.6rem);
+      align-items: center;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      font-size: .82rem;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      font-size: clamp(2.35rem, 7vw, 4.6rem);
+      margin: .5rem 0 1rem;
+    }
+
+    h2 {
+      font-size: clamp(1.65rem, 4vw, 2.5rem);
+      margin: 0 0 .75rem;
+    }
+
+    h3 {
+      margin: 0 0 .55rem;
+      font-size: 1.1rem;
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 62ch;
+      font-size: 1.1rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin-top: 1.5rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: .7rem 1rem;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-size: .82rem;
+    }
+
+    .button.primary {
+      border-color: transparent;
+      background: var(--accent);
+      color: #06202e;
+    }
+
+    .screen {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--panel);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .3);
+    }
+
+    .screen img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    section {
+      padding: 2.2rem 0 3rem;
+    }
+
+    .section-intro {
+      color: var(--muted);
+      margin-top: 0;
+      max-width: 76ch;
+    }
+
+    .service-explorer {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, .72fr);
+      gap: 1rem;
+      align-items: start;
+      margin-top: 1.25rem;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .service-tile {
+      min-height: 160px;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(19, 33, 44, .9);
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+
+    .service-tile:hover,
+    .service-tile:focus-visible,
+    .service-tile.is-active {
+      transform: scale(1.045);
+      border-color: rgba(73, 183, 229, .92);
+      background: rgba(73, 183, 229, .13);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, .25), inset 0 0 0 1px rgba(73, 183, 229, .3);
+      outline: none;
+      z-index: 2;
+    }
+
+    .service-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      margin-bottom: .8rem;
+      border-radius: 7px;
+      background: rgba(73, 183, 229, .12);
+      color: var(--accent);
+      font-weight: 900;
+    }
+
+    .service-tile h3 {
+      font-size: 1.02rem;
+    }
+
+    .service-tile p {
+      color: var(--muted);
+      margin: 0;
+      font-size: .95rem;
+    }
+
+    .service-detail {
+      position: sticky;
+      top: 88px;
+      min-height: 520px;
+      padding: 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(19, 33, 44, .94);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .28);
+    }
+
+    .detail-kicker {
+      color: var(--accent);
+      font-size: .78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .service-detail h3 {
+      margin-top: .35rem;
+      font-size: 1.55rem;
+    }
+
+    .service-detail p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .detail-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin: 1rem 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: .35rem .65rem;
+      border-radius: 999px;
+      background: var(--panel-2);
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 800;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: .65rem;
+      padding: 0;
+      margin: 1.1rem 0 0;
+      list-style: none;
+    }
+
+    .detail-list li {
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr);
+      gap: .6rem;
+      color: var(--muted);
+    }
+
+    .detail-list li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      margin-top: .52rem;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(73, 183, 229, .7);
+    }
+
+    .detail-link {
+      display: inline-flex;
+      margin-top: 1.25rem;
+      font-weight: 800;
+    }
+
+    footer {
+      padding: 2rem 0 3rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .service-explorer {
+        grid-template-columns: 1fr;
+      }
+
+      .service-detail {
+        position: static;
+        min-height: 0;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .service-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .site-header {
+        position: static;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      nav {
+        justify-content: flex-start;
+      }
+
+      .service-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .service-tile:hover,
+      .service-tile:focus-visible,
+      .service-tile.is-active {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">VIS</div>
+      <div>
+        <strong>VCF Infrastructure Services Appliance</strong>
+        <span>WilliamLam.com</span>
+      </div>
+    </a>
+    <nav aria-label="Primary">
+      <a href="services.html">Services</a>
+      <a href="https://github.com/lamw/vcf-infrastructure-service-appliance/releases">Download</a>
+      <a href="usage.html">Usage</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="deploy.html">Deploy</a>
+      <a href="develop.html">Develop</a>
+      <a href="build.html">Build</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Infrastructure services for VCF Lab &amp; POC</div>
+      <h1>Simplify your VCF 9 Lab Experience</h1>
+      <p class="lead">The <strong>VCF Infrastructure Services (VIS) Appliance</strong> is an Ubuntu-based virtual appliance that provides key infrastructure services for accelerating VMware Cloud Foundation (VCF) 9.1 lab and proof-of-concept deployments. VIS includes a user-friendly web management interface that allows users to quickly get started without requiring in-depth knowledge of the underlying services.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="services.html">Explore VIS Services</a>
+        <!-- TODO before GitHub publishing: verify this releases URL points at the final public repository. -->
+        <a class="button" href="https://github.com/lamw/vcf-infrastructure-service-appliance/releases">Download VIS Appliance</a>
+      </div>
+    </div>
+    <div class="screen">
+      <img src="images/vis-service-summary.png" alt="VIS service summary dashboard" />
+    </div>
+  </section>
+
+  <main>
+    <section id="services">
+      <h2>Services</h2>
+      <p class="section-intro">Hover over a service to see how VIS configures it and why it matters in a VCF lab. Every service starts disabled, so administrators only enable the capabilities needed for the environment.</p>
+
+      <div class="service-explorer" data-service-explorer>
+        <div class="service-grid" aria-label="VIS service list">
+          <button class="service-tile is-active" type="button" data-service="depot">
+            <span class="service-icon">📦</span>
+            <h3>Software Depot</h3>
+            <p>HTTP(S) server hosting VCF binaries (install, upgrade, patches) and manifests</p>
+          </button>
+          <button class="service-tile" type="button" data-service="sftp">
+            <span class="service-icon">💾</span>
+            <h3>SFTP Backup</h3>
+            <p>Local SFTP target for VCF backup configuration.</p>
+          </button>
+          <button class="service-tile" type="button" data-service="registry">
+            <span class="service-icon">🐳</span>
+            <h3>Container Registry</h3>
+            <p>Harbor registry for disconnected image workflows.</p>
+          </button>
+          <button class="service-tile" type="button" data-service="ldap">
+            <span class="service-icon">📇</span>
+            <h3>LDAP Provider</h3>
+            <p>OpenLDAP directory service for VCF SSO integration.</p>
+          </button>
+          <button class="service-tile" type="button" data-service="oidc">
+            <span class="service-icon">🔐</span>
+            <h3>OIDC Provider</h3>
+            <p>Keycloak-backed OIDC federation for VCF SSO.</p>
+          </button>
+          <button class="service-tile" type="button" data-service="dns">
+            <span class="service-icon">🌐</span>
+            <h3>DNS Server</h3>
+            <p>Unbound-backed forward and reverse DNS records for lab hostnames.</p>
+          </button>
+          <button class="service-tile" type="button" data-service="ntp">
+            <span class="service-icon">⏱</span>
+            <h3>NTP Server</h3>
+            <p>Chrony-backed time source for VCF infrastructure.</p>
+          </button>
+          <button class="service-tile" type="button" data-service="dhcp">
+            <span class="service-icon">🧭</span>
+            <h3>DHCP Server</h3>
+            <p>Appliance-managed lab address assignment.</p>
+          </button>
+          <button class="service-tile" type="button" data-service="kms">
+            <span class="service-icon">🔑</span>
+            <h3>Key Management Service</h3>
+            <p>KMIP endpoint for encryption workflow validation.</p>
+          </button>
+        </div>
+
+        <aside class="service-detail" aria-live="polite">
+          <h3 data-detail-title>Software Depot</h3>
+          <p data-detail-summary>Stages VCF/VVF binaries, async patches, and ESX patches through manual upload or VCF Download Tool activation-code workflows.</p>
+          <div class="detail-pills" data-detail-pills>
+            <span class="pill">HTTP/HTTPS</span>
+            <span class="pill">VCFDT</span>
+            <span class="pill">Shared TLS</span>
+          </div>
+          <ul class="detail-list" data-detail-list>
+            <li>Supports HTTP or HTTPS with optional basic authentication.</li>
+            <li>Provides repository browsing, folder management, delete confirmation, and drag-and-drop uploads.</li>
+            <li>Installs VCF Download Tool from a user-provided tarball and validates activation-code workflows.</li>
+            <li>Runs long VCF/VVF and ESX patch downloads asynchronously with status, cancellation, and logs.</li>
+          </ul>
+          <a class="detail-link" href="services.html">Open full service reference</a>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>VCF Infrastructure Services Appliance is intended for lab and proof-of-concept environments.</p>
+  </footer>
+
+  <script>
+    const serviceDetails = {
+      depot: {
+        title: "Software Depot",
+        summary: "Stages VCF/VVF binaries, async patches, and ESX patches through manual upload or VCF Download Tool activation-code workflows.",
+        pills: ["HTTP/HTTPS", "VCFDT", "Shared TLS"],
+        items: [
+          "Supports HTTP or HTTPS with optional basic authentication.",
+          "Provides repository browsing, folder management, delete confirmation, and drag-and-drop uploads.",
+          "Installs VCF Download Tool from a user-provided tarball and validates activation-code workflows.",
+          "Runs long VCF/VVF and ESX patch downloads asynchronously with status, cancellation, and logs."
+        ]
+      },
+      sftp: {
+        title: "SFTP Backup",
+        summary: "Creates a local SFTP target with copy-ready connection values for VCF backup configuration.",
+        pills: ["SFTP", "Backups", "Chroot"],
+        items: [
+          "Creates an SFTP-only local account with configurable username and password.",
+          "Shows copy-ready host, port, user, password, and backup path values.",
+          "Uses a chrooted repository under /opt/vis/data/sftp.",
+          "Health checks validate SSH/SFTP state and repository readiness."
+        ]
+      },
+      registry: {
+        title: "Container Registry",
+        summary: "Runs Harbor for disconnected image workflows used by VCF and Kubernetes-adjacent environments.",
+        pills: ["Harbor", "Registry", "Shared TLS"],
+        items: [
+          "Supports configurable administrator credentials and shared VIS TLS.",
+          "Provides endpoint details for browser and CLI access.",
+          "Includes enable, disable, restart, and health check actions.",
+          "Pulls Harbor artifacts during the Packer build according to the configured BOM/version."
+        ]
+      },
+      ldap: {
+        title: "LDAP Provider",
+        summary: "Runs OpenLDAP as a simple directory service for traditional VCF SSO integrations.",
+        pills: ["OpenLDAP", "LDAP/LDAPS", "VCF SSO"],
+        items: [
+          "Supports LDAP and LDAPS using the shared VIS certificate.",
+          "Pre-creates vcf-admins and vcf-users groups.",
+          "Manages users, groups, membership, disabled state, and passwords.",
+          "Provides copy-ready VCF SSO values, LDAP filters, attribute mappings, Base DNs, bind DN, and bind password."
+        ]
+      },
+      oidc: {
+        title: "OIDC Provider",
+        summary: "Runs Keycloak for modern VCF SSO federation and hides most of the Keycloak setup complexity.",
+        pills: ["Keycloak", "OIDC", "VCF Realm"],
+        items: [
+          "Deploys Keycloak with a default VCF realm and shared VIS TLS.",
+          "Pre-creates vcf-admins and vcf-users groups.",
+          "Manages OIDC users, groups, membership, disabled state, and passwords.",
+          "Creates VCF SSO OIDC clients, enables client authentication/direct access grants, and displays the generated client secret."
+        ]
+      },
+      dns: {
+        title: "DNS Server",
+        summary: "Uses Unbound to provide local DNS records for appliance lab zones.",
+        pills: ["Unbound", "Forward Records", "Reverse Records"],
+        items: [
+          "Configures the DNS domain before records are created.",
+          "Adds each DNS entry as paired forward and reverse records.",
+          "Lists, edits, and deletes records as one logical host/IP row.",
+          "Validates duplicate names, duplicate IP addresses, and domain requirements."
+        ]
+      },
+      ntp: {
+        title: "NTP Server",
+        summary: "Provides a local NTP endpoint for VCF appliances, ESX hosts, and supporting lab systems.",
+        pills: ["Chrony", "NTP:123", "Time Sync"],
+        items: [
+          "Uses Chrony as the backend service.",
+          "Shows copy-ready NTP FQDN, IP, and port values for VCF configuration.",
+          "Supports an optional local clock fallback for isolated lab environments.",
+          "Includes service enable, disable, restart, and health check actions."
+        ]
+      },
+      dhcp: {
+        title: "DHCP Server",
+        summary: "Provides appliance-managed DHCP addressing for lab networks that need quick bring-up.",
+        pills: ["DHCP:67", "Reservations", "Lab Networks"],
+        items: [
+          "Uses the appliance interface automatically to keep configuration minimal.",
+          "Configures subnet, range, gateway, DNS servers, domain, and lease timing.",
+          "Supports static reservations for predictable appliance addressing.",
+          "Renders DHCP backend configuration and validates ranges before saving."
+        ]
+      },
+      kms: {
+        title: "Key Management Service",
+        summary: "Provides a KMIP-compatible endpoint for VCF encryption workflow validation.",
+        pills: ["PyKMIP", "KMIP:5696", "Shared TLS"],
+        items: [
+          "Uses PyKMIP with the shared VIS certificate.",
+          "Shows copy-ready KMIP FQDN, IP, port, and trusted root CA values.",
+          "Keeps configuration intentionally small so labs can quickly test key-provider workflows.",
+          "Validates VCF key-provider workflows without requiring an external KMS for lab use."
+        ]
+      }
+    };
+
+    const explorer = document.querySelector("[data-service-explorer]");
+    const tiles = Array.from(explorer.querySelectorAll("[data-service]"));
+    const title = explorer.querySelector("[data-detail-title]");
+    const summary = explorer.querySelector("[data-detail-summary]");
+    const pills = explorer.querySelector("[data-detail-pills]");
+    const list = explorer.querySelector("[data-detail-list]");
+
+    function activateService(serviceId) {
+      const detail = serviceDetails[serviceId];
+      if (!detail) {
+        return;
+      }
+
+      tiles.forEach((tile) => {
+        tile.classList.toggle("is-active", tile.dataset.service === serviceId);
+      });
+      title.textContent = detail.title;
+      summary.textContent = detail.summary;
+      pills.replaceChildren(...detail.pills.map((pill) => {
+        const element = document.createElement("span");
+        element.className = "pill";
+        element.textContent = pill;
+        return element;
+      }));
+      list.replaceChildren(...detail.items.map((item) => {
+        const element = document.createElement("li");
+        element.textContent = item;
+        return element;
+      }));
+    }
+
+    tiles.forEach((tile) => {
+      tile.addEventListener("mouseenter", () => activateService(tile.dataset.service));
+      tile.addEventListener("focus", () => activateService(tile.dataset.service));
+      tile.addEventListener("click", () => activateService(tile.dataset.service));
+    });
+  </script>
+</body>
+</html>

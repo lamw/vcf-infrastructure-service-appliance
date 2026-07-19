@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+{% block title %}System Health · VIS{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <h1>System Health</h1>
+  </div>
+  <div class="service-actions">
+    <a class="btn" href="{{ url_for('system_health') }}">Refresh</a>
+  </div>
+</section>
+
+{% if expand_message %}
+  <div class="inline-{{ 'success' if expand_status == 'ok' else 'error' }}-notice dismissible-notice" role="{{ 'status' if expand_status == 'ok' else 'alert' }}" data-clear-query-params="expand_status,expand_message">
+    <div>
+      <strong>{{ 'Filesystem Expansion Complete' if expand_status == 'ok' else 'Filesystem Expansion Failed' }}</strong>
+      <span>{{ expand_message }}</span>
+    </div>
+    <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+  </div>
+{% endif %}
+
+<section class="panel health-panel">
+  <div class="panel-header">
+    <div>
+      <h2>Appliance Health</h2>
+      <p class="subtle">Current readings from the VIS appliance operating system.</p>
+    </div>
+    <span class="pill good"><span class="dot"></span>Live</span>
+  </div>
+
+  <div class="health-card-grid">
+    <article class="health-card">
+      <h3>CPU</h3>
+      <div class="health-ring" style="--value: {{ health.cpu.percent }}; --ring-color: #49afd9">
+        <strong>{{ health.cpu.percent }}%</strong>
+      </div>
+      <div class="health-facts compact-facts">
+        <div><span>Current</span><strong>{{ health.cpu.percent }}%</strong></div>
+        <div><span>Load Avg</span><strong>{{ health.cpu.load_1 }} / {{ health.cpu.load_5 }} / {{ health.cpu.load_15 }}</strong></div>
+        <div><span>Cores</span><strong>{{ health.cpu.cores }} online</strong></div>
+      </div>
+    </article>
+
+    <article class="health-card">
+      <h3>Memory</h3>
+      <div class="health-ring memory-ring" style="--value: {{ health.memory.percent }}; --ring-color: #a98df2">
+        <strong>{{ health.memory.percent }}%</strong>
+      </div>
+      <div class="health-facts compact-facts">
+        <div><span>Used</span><strong>{{ health.memory.used }}</strong></div>
+        <div><span>Cache</span><strong>{{ health.memory.cache }}</strong></div>
+        <div><span>Available</span><strong>{{ health.memory.available }}</strong></div>
+        <div><span>Total</span><strong>{{ health.memory.total }}</strong></div>
+      </div>
+    </article>
+
+    <article class="health-card storage-health-card">
+      <h3>Storage</h3>
+      {% set storage_total_bytes = health.storage|sum(attribute="total_bytes") %}
+      {% set storage_free_bytes = health.storage|sum(attribute="free_bytes") %}
+      {% set storage_used_bytes = health.storage|sum(attribute="used_bytes") %}
+      {% set storage_used_percent = ((storage_used_bytes / storage_total_bytes) * 100)|round|int if storage_total_bytes else 0 %}
+      <div
+        class="storage-summary-layout"
+        data-storage-summary
+        data-partitions='{{ health.storage|tojson }}'
+        data-aggregate-percent="{{ storage_used_percent }}"
+        data-aggregate-used="{{ storage_used_bytes|filesizeformat(binary=True) }} of {{ storage_total_bytes|filesizeformat(binary=True) }}"
+        data-aggregate-free="{{ storage_free_bytes|filesizeformat(binary=True) }}"
+      >
+        <div class="storage-donut-wrap">
+          <svg class="storage-donut" viewBox="0 0 160 160" role="img" aria-label="Storage by partition"></svg>
+          <div class="storage-donut-label">
+            <div>
+              <strong data-storage-percent>{{ storage_used_percent }}%</strong>
+              <span>Used</span>
+            </div>
+          </div>
+        </div>
+        <div class="storage-summary-facts">
+          <div class="storage-selected-service is-aggregate" data-storage-selected-service>
+            <span class="storage-selected-swatch" data-storage-swatch></span>
+            <span data-storage-name>All Partitions</span>
+          </div>
+          <div class="storage-usage-meter" aria-label="Selected partition usage">
+            <span data-storage-meter style="width: {{ storage_used_percent }}%"></span>
+          </div>
+          <div class="health-facts compact-facts">
+            <div><span>Actual Usage</span><strong data-storage-used>{{ storage_used_bytes|filesizeformat(binary=True) }} of {{ storage_total_bytes|filesizeformat(binary=True) }}</strong></div>
+            <div><span>Available</span><strong data-storage-free>{{ storage_free_bytes|filesizeformat(binary=True) }}</strong></div>
+            <div><span>Total Capacity</span><strong>{{ storage_total_bytes|filesizeformat(binary=True) }}</strong></div>
+            <div><span>Aggregate Free</span><strong>{{ storage_free_bytes|filesizeformat(binary=True) }}</strong></div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="panel health-panel">
+  <div class="panel-header">
+    <div>
+      <h2>Storage Partition</h2>
+      <p class="subtle">Filesystem capacity for each VIS service partition.</p>
+    </div>
+  </div>
+
+  <div class="partition-list">
+    {% for partition in health.storage %}
+      <article class="partition-row" style="--partition-color: {{ partition.color }}">
+        <div class="partition-name">
+          <span class="partition-swatch"></span>
+          <div>
+            <strong>{{ partition.disk_label }} · {{ partition.name }}</strong>
+            <span>{{ partition.mount }}</span>
+          </div>
+        </div>
+        <div class="partition-meter" aria-label="{{ partition.name }} storage usage">
+          <span class="partition-used" style="width: {{ partition.percent }}%"></span>
+          <span class="partition-free" style="width: {{ partition.free_percent }}%"></span>
+        </div>
+        <div class="partition-capacity">
+          <strong>{{ partition.used }} / {{ partition.total }}</strong>
+          <span>{{ partition.free }} available</span>
+        </div>
+        <div class="partition-capacity">
+          <strong>{{ partition.vmdk_capacity }}</strong>
+          <span>{{ partition.total }} filesystem usable</span>
+        </div>
+        <div class="partition-actions">
+          <span class="pill {{ partition.status_class }}">{{ partition.status }}</span>
+          <form class="inline-form" method="post" action="{{ url_for('storage_expand', service_id=partition.id) }}">
+            <button class="btn" type="submit">Expand Filesystem</button>
+          </form>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+<script>
+  document.querySelectorAll("[data-dismiss-notice]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const notice = button.closest(".dismissible-notice");
+      if (!notice) {
+        return;
+      }
+      const params = (notice.dataset.clearQueryParams || "").split(",").map((item) => item.trim()).filter(Boolean);
+      if (params.length) {
+        const url = new URL(window.location.href);
+        params.forEach((param) => url.searchParams.delete(param));
+        window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+      }
+      notice.hidden = true;
+    });
+  });
+
+  (() => {
+    const summary = document.querySelector("[data-storage-summary]");
+    if (!summary) {
+      return;
+    }
+
+    const partitions = JSON.parse(summary.dataset.partitions || "[]").filter((partition) => partition.total_bytes > 0);
+    const svg = summary.querySelector(".storage-donut");
+    const totalCapacity = partitions.reduce((sum, partition) => sum + partition.total_bytes, 0);
+    let selected = null;
+
+    function describeArc(cx, cy, radius, startAngle, endAngle) {
+      const start = polarToCartesian(cx, cy, radius, endAngle);
+      const end = polarToCartesian(cx, cy, radius, startAngle);
+      const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+      return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`;
+    }
+
+    function polarToCartesian(cx, cy, radius, angle) {
+      const radians = (angle - 90) * Math.PI / 180;
+      return {
+        x: cx + radius * Math.cos(radians),
+        y: cy + radius * Math.sin(radians),
+      };
+    }
+
+    function setStorageDetail(partition, persist = false) {
+      if (!partition) {
+        return;
+      }
+      if (persist) {
+        selected = partition;
+      }
+
+      summary.querySelector("[data-storage-selected-service]").classList.remove("is-aggregate");
+      summary.querySelector("[data-storage-swatch]").style.background = partition.color;
+      summary.querySelector("[data-storage-name]").textContent = partition.name;
+      summary.querySelector("[data-storage-percent]").textContent = `${partition.percent}%`;
+      summary.querySelector("[data-storage-meter]").style.width = `${partition.percent}%`;
+      summary.querySelector("[data-storage-meter]").style.background = partition.color;
+      summary.querySelector("[data-storage-used]").textContent = `${partition.used} of ${partition.total}`;
+      summary.querySelector("[data-storage-free]").textContent = partition.free;
+
+      summary.querySelectorAll(".storage-segment").forEach((segment) => {
+        segment.classList.toggle("is-active", segment.dataset.partition === partition.id);
+      });
+    }
+
+    function setStorageAggregate() {
+      summary.querySelector("[data-storage-selected-service]").classList.add("is-aggregate");
+      summary.querySelector("[data-storage-name]").textContent = "All Partitions";
+      summary.querySelector("[data-storage-percent]").textContent = `${summary.dataset.aggregatePercent}%`;
+      summary.querySelector("[data-storage-meter]").style.width = `${summary.dataset.aggregatePercent}%`;
+      summary.querySelector("[data-storage-meter]").style.background = "var(--vis-accent)";
+      summary.querySelector("[data-storage-used]").textContent = summary.dataset.aggregateUsed;
+      summary.querySelector("[data-storage-free]").textContent = summary.dataset.aggregateFree;
+      summary.querySelectorAll(".storage-segment").forEach((segment) => {
+        segment.classList.remove("is-active");
+      });
+    }
+
+    function renderStorageDonut() {
+      if (!svg || !totalCapacity) {
+        return;
+      }
+
+      const namespace = "http://www.w3.org/2000/svg";
+      let angle = 0;
+
+      partitions.forEach((partition) => {
+        const degrees = (partition.total_bytes / totalCapacity) * 360;
+        const path = document.createElementNS(namespace, "path");
+        path.setAttribute("d", describeArc(80, 80, 58, angle, angle + degrees));
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", partition.color);
+        path.setAttribute("stroke-width", "14");
+        path.setAttribute("stroke-linecap", "butt");
+        path.setAttribute("class", "storage-segment");
+        path.setAttribute("tabindex", "0");
+        path.setAttribute("role", "button");
+        path.setAttribute("aria-label", `${partition.name}: ${partition.used} used of ${partition.total}`);
+        path.dataset.partition = partition.id;
+        path.addEventListener("mouseenter", () => setStorageDetail(partition));
+        path.addEventListener("focus", () => setStorageDetail(partition));
+        path.addEventListener("mouseleave", () => selected ? setStorageDetail(selected) : setStorageAggregate());
+        path.addEventListener("blur", () => selected ? setStorageDetail(selected) : setStorageAggregate());
+        path.addEventListener("click", () => setStorageDetail(partition, true));
+        path.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setStorageDetail(partition, true);
+          }
+        });
+        svg.appendChild(path);
+        angle += degrees;
+      });
+
+      const center = document.createElementNS(namespace, "circle");
+      center.setAttribute("cx", "80");
+      center.setAttribute("cy", "80");
+      center.setAttribute("r", "39");
+      center.setAttribute("class", "storage-donut-center");
+      svg.appendChild(center);
+      setStorageAggregate();
+    }
+
+    renderStorageDonut();
+  })();
+</script>
+{% endblock %}

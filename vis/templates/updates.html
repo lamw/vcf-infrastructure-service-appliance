@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Updates - VIS{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+  <div>
+    <h1>Updates</h1>
+  </div>
+</section>
+
+{% if request.args.get("update_error") %}
+  <div class="notice prominent bad">
+    <strong>Update Error</strong>
+    <span>{{ request.args.get("update_error") }}</span>
+    <a class="notice-dismiss" href="{{ url_for('updates') }}" aria-label="Dismiss message">&times;</a>
+  </div>
+{% endif %}
+{% if request.args.get("update_warning") %}
+  <div class="notice prominent warn">
+    <strong>Update Running</strong>
+    <span>{{ request.args.get("update_warning") }}</span>
+    <a class="notice-dismiss" href="{{ url_for('updates') }}" aria-label="Dismiss message">&times;</a>
+  </div>
+{% endif %}
+{% if request.args.get("update_status_message") %}
+  <div class="notice prominent good">
+    <strong>Update Started</strong>
+    <span>{{ request.args.get("update_status_message") }}</span>
+    <a class="notice-dismiss" href="{{ url_for('updates') }}" aria-label="Dismiss message">&times;</a>
+  </div>
+{% endif %}
+
+<section class="summary-grid service-metrics" aria-label="Update status metrics">
+  <article class="metric">
+    <div class="metric-label">State</div>
+    <div class="metric-value {% if update_status.state == 'complete' %}good{% elif update_status.state == 'failed' %}bad{% elif update_status.state == 'running' %}warn{% endif %}">{{ update_status.state | replace("_", " ") | title }}</div>
+    <div class="metric-note">{{ update_status.message }}</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Repository</div>
+    <div class="metric-value compact-value">{{ update_status.branch or default_branch }}</div>
+    <div class="metric-note">{{ update_status.repo_url or default_repo_url }}</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Last Applied</div>
+    <div class="metric-value">{{ update_status.commit or "Not recorded" }}</div>
+    <div class="metric-note">{{ update_status.updated_at or "No update history" }}</div>
+  </article>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Appliance Update</h2>
+      <p class="subtle">Pull the latest VIS source from GitHub and apply web app, script, service unit, and Python dependency changes.</p>
+    </div>
+  </div>
+
+  <div class="detail-box">
+    <form class="service-config-form" method="post" action="{{ url_for('updates_run') }}">
+      <label class="field-label" for="repoUrl">Repository URL</label>
+      <input id="repoUrl" class="text-input" type="text" name="repo_url" value="{{ update_status.repo_url or default_repo_url }}" placeholder="https://github.com/lamw/vcf-infrastructure-service-appliance.git" />
+
+      <label class="field-label" for="branch">Branch</label>
+      <input id="branch" class="text-input" type="text" name="branch" value="{{ update_status.branch or default_branch }}" placeholder="main" />
+
+      <span></span>
+      <p class="notice warn">Updates can restart the VIS web service. Export a configuration profile before applying changes to production-like lab appliances.</p>
+
+      <span></span>
+      <button class="btn primary" type="submit" {% if update_status.state == "running" %}disabled{% endif %}>Run Update</button>
+    </form>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Update Log</h2>
+      <p class="subtle">Recent output from <code>/opt/vis/state/vis-update.log</code>.</p>
+    </div>
+  </div>
+  <pre class="config-preview">{{ update_log or "No update log has been recorded." }}</pre>
+</section>
+{% endblock %}

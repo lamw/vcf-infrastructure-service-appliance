@@ -1,0 +1,23 @@
+{% macro service_icon(service_id) -%}
+  {% if service_id == "web-depot" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M4 9h16"/><path d="M8 13h8"/><path d="M8 16h5"/></svg>
+  {% elif service_id == "sftp-backup" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 12h8"/><path d="M12 9v6"/></svg>
+  {% elif service_id == "harbor-registry" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v10l8 4 8-4V7z"/><path d="M12 12 4 7"/><path d="M12 12v9"/><path d="m12 12 8-5"/></svg>
+  {% elif service_id == "ldap-provider" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M8 9h8"/><path d="M8 13h8"/><path d="M8 17h5"/><circle cx="18" cy="17" r="2"/></svg>
+  {% elif service_id == "oidc-provider" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 2.8 8 7 10 4.2-2 7-5.5 7-10V6z"/><circle cx="12" cy="10" r="2.5"/><path d="M8.5 16c.8-1.7 2-2.5 3.5-2.5s2.7.8 3.5 2.5"/></svg>
+  {% elif service_id == "unbound-dns" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.2 2.5 3.3 5.5 3.3 9S14.2 18.5 12 21"/><path d="M12 3c-2.2 2.5-3.3 5.5-3.3 9s1.1 6.5 3.3 9"/></svg>
+  {% elif service_id == "time-server" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="M5 4 3 6"/><path d="m19 4 2 2"/></svg>
+  {% elif service_id == "dhcp-server" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="M8 10h3"/><path d="M8 14h8"/><path d="M16 6v12"/><path d="M18 10h2"/><path d="M18 14h2"/></svg>
+  {% elif service_id == "kms-service" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="3"/><path d="M11 15h9"/><path d="M16 15v-3"/><path d="M19 15v-2"/><path d="M7 8a5 5 0 0 1 10 0v3"/><path d="M5 11h14v8H5z"/></svg>
+  {% else %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5z"/><path d="M9 9h6v6H9z"/></svg>
+  {% endif %}
+{%- endmacro %}

@@ -1,0 +1,102 @@
+<!doctype html>
+{% import "icons.html" as icons %}
+<html lang="en" cds-theme="dark" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}VIS Appliance{% endblock %}</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" sizes="any" />
+  <link rel="stylesheet" href="https://unpkg.com/@clr/ui/clr-ui.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vis.css') }}?v=20260619-ui" />
+</head>
+<body>
+  <div class="vis-shell">
+    <header class="vis-header">
+      <div class="brand">
+        <div class="brand-mark" role="button" tabindex="0" aria-label="Toggle VIS display mode" title="Toggle VIS display mode">VIS</div>
+        <div class="brand-title">
+          <strong>VCF Infrastructure Services Appliance</strong>
+          <a href="https://williamlam.com" target="_blank" rel="noopener">WilliamLam.com</a>
+        </div>
+      </div>
+      <div class="header-actions">
+        {% if session.username %}
+          <span class="subtle" style="color: rgba(255,255,255,.78)">
+            {{ session.username }}@{{ config.VIS_APPLIANCE_FQDN }}{% if config.VIS_APPLIANCE_IP %} · {{ config.VIS_APPLIANCE_IP }}{% endif %}
+          </span>
+        {% else %}
+          <span class="subtle" style="color: rgba(255,255,255,.78)">
+            {{ config.VIS_APPLIANCE_FQDN }}{% if config.VIS_APPLIANCE_IP %} · {{ config.VIS_APPLIANCE_IP }}{% endif %}
+          </span>
+        {% endif %}
+        {% if session.username %}
+          <form class="inline-form" method="post" action="{{ url_for('logout') }}">
+            <button class="btn" type="submit">Sign Out</button>
+          </form>
+        {% endif %}
+        <button class="theme-toggle icon-only" id="themeToggle" type="button" aria-label="Switch to light theme" title="Switch theme">
+          <svg class="theme-icon theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 14.5A8.5 8.5 0 0 1 9.5 3 7 7 0 1 0 21 14.5Z"/></svg>
+          <svg class="theme-icon theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <aside class="vis-sidebar">
+      <div class="nav-section">
+        <p class="nav-title">Appliance</p>
+        <a class="nav-item {% if request.path == '/' %}active{% endif %}" href="/"><span class="nav-icon">⌂</span>Summary</a>
+        <a class="nav-item {% if request.path == '/system-health' %}active{% endif %}" href="{{ url_for('system_health') }}"><span class="nav-icon">◉</span>System Health</a>
+        <a class="nav-item {% if request.path == '/certificates' %}active{% endif %}" href="{{ url_for('certificates') }}"><span class="nav-icon">▣</span>Certificate Authority</a>
+        <a class="nav-item {% if request.path.startswith('/config') %}active{% endif %}" href="{{ url_for('config_profiles') }}"><span class="nav-icon">⇅</span>Config Export/Import</a>
+        <a class="nav-item {% if request.path.startswith('/updates') %}active{% endif %}" href="{{ url_for('updates') }}"><span class="nav-icon">↻</span>Updates</a>
+        <a class="nav-item {% if request.path == '/logs' %}active{% endif %}" href="{{ url_for('logs') }}"><span class="nav-icon">≡</span>Logs</a>
+      </div>
+      <div class="nav-section">
+        <p class="nav-title">Services</p>
+        {% for nav_service in config.service_manager.list_services() %}
+          <a class="nav-item {% if request.path == '/services/' + nav_service.id %}active{% endif %}" href="{{ url_for('service_detail', service_id=nav_service.id) }}">
+            <span class="nav-icon">{{ icons.service_icon(nav_service.id) }}</span>{{ nav_service.name }}
+          </a>
+        {% endfor %}
+      </div>
+      <div class="nav-section">
+        <p class="nav-title">Resources</p>
+        <a class="nav-item" href="https://vmware.github.io/vcf-upgrade-planner/" target="_blank" rel="noopener"><span class="nav-icon">⌘</span>VCF Upgrade Planning Tool</a>
+        <a class="nav-item" href="https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-9-0-and-later/9-1.html" target="_blank" rel="noopener"><span class="nav-icon">▤</span>VCF Docs</a>
+        <a class="nav-item" href="https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-9-0-and-later/9-1/design.html" target="_blank" rel="noopener"><span class="nav-icon">◇</span>VCF Designs</a>
+        <a class="nav-item" href="https://developer.broadcom.com/xapis?tab=App%2520Modernization" target="_blank" rel="noopener"><span class="nav-icon">{}</span>VCF API Reference</a>
+      </div>
+      <div class="nav-section">
+        <p class="nav-title">Administration</p>
+        <a class="nav-item {% if request.path == '/users' %}active{% endif %}" href="{{ url_for('users') }}"><span class="nav-icon">●</span>Users</a>
+      </div>
+    </aside>
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='vis-ui-effects.js') }}?v=20260619"></script>
+  <script>
+    const root = document.documentElement;
+    const button = document.getElementById("themeToggle");
+    const themeStorageKey = "vis-theme";
+
+    function setTheme(theme) {
+      root.dataset.theme = theme;
+      root.setAttribute("cds-theme", theme);
+      button.classList.toggle("is-light", theme === "light");
+      button.setAttribute("aria-label", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
+    }
+
+    button.addEventListener("click", () => {
+      const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
+      setTheme(nextTheme);
+      window.localStorage.setItem(themeStorageKey, nextTheme);
+    });
+
+    setTheme(window.localStorage.getItem(themeStorageKey) || "dark");
+  </script>
+</body>
+</html>

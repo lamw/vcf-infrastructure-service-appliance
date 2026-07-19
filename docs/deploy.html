@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Deploy · VIS</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">VIS</div>
+      <div>
+        <strong>VCF Infrastructure Services Appliance</strong>
+        <span>WilliamLam.com</span>
+      </div>
+    </a>
+    <nav aria-label="Documentation navigation">
+      
+<a href="services.html">Services</a>
+<a href="https://github.com/lamw/vcf-infrastructure-service-appliance/releases">Download</a>
+<a href="usage.html">Usage</a>
+<a href="architecture.html">Architecture</a>
+<a href="deploy.html">Deploy</a>
+<a href="develop.html">Develop</a>
+<a href="build.html">Build</a>
+
+    </nav>
+  </header>
+  <main>
+    <h1 id="deploy">Deploy</h1>
+<p>Deploy the VIS OVA to either a vCenter Server or a standalone ESX host. OVF properties are used to set up the initial appliance, including basic networking information, OS credentials, VIS application credentials, an optional SSH public key, and the Docker pod CIDR.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#resource-requirements">Resource Requirements</a></li>
+<li><a href="#download-split-ova-from-github">Download Split OVA from GitHub</a></li>
+<li><a href="#vcenter-server-deployment">vCenter Server Deployment</a></li>
+<li><a href="#standalone-esx-deployment-with-ovf-tool">Standalone ESX Deployment with OVF Tool</a></li>
+</ul>
+<h2 id="resource-requirements">Resource Requirements</h2>
+<p>VIS requires the following minimum virtual hardware:</p>
+<table>
+<thead><tr><th>Resource</th><th>Minimum</th></tr></thead>
+<tbody>
+<tr><td>CPU</td><td>2 vCPU</td></tr>
+<tr><td>Memory</td><td>4 GB</td></tr>
+<tr><td>Storage</td><td>30 GB minimum</td></tr>
+</tbody></table>
+<p>Storage consumption will increase based on which services are enabled and how they are used. Software Depot, Container Registry, and backup repository usage can grow significantly as VCF bundles, container images, and backup artifacts are added.</p>
+<h2 id="download-split-ova-from-github">Download Split OVA from GitHub</h2>
+<p>GitHub release assets have a file size limit, so VIS release OVAs may be published as split parts. Download every part and the checksum manifest before reconstructing the OVA.</p>
+<p>Example release assets:</p>
+<pre><code>vcf-infrastructure-services-appliance-1.0.0.ova.part-aa
+vcf-infrastructure-services-appliance-1.0.0.ova.part-ab
+vcf-infrastructure-services-appliance-1.0.0.ova.part-ac
+vcf-infrastructure-services-appliance-1.0.0.ova.sha256
+vcf-infrastructure-services-appliance-1.0.0.ova.parts.sha256</code></pre>
+<p>Verify the downloaded parts first:</p>
+<pre><code>shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.0.ova.parts.sha256</code></pre>
+<p>Reconstruct the OVA:</p>
+<pre><code>cat vcf-infrastructure-services-appliance-1.0.0.ova.part-* &gt; vcf-infrastructure-services-appliance-1.0.0.ova</code></pre>
+<p>Verify the reconstructed OVA before importing it:</p>
+<pre><code>shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.0.ova.sha256</code></pre>
+<p>The final checksum must pass before deploying the OVA. If it fails, delete the reconstructed OVA, re-download the failed part listed by <code>shasum</code>, and repeat the verification.</p>
+<p>Release maintainers can create the split files and checksums with:</p>
+<pre><code>cd output-vmware-iso
+shasum -a 256 vcf-infrastructure-services-appliance-1.0.0.ova &gt; vcf-infrastructure-services-appliance-1.0.0.ova.sha256
+split -b 1900m vcf-infrastructure-services-appliance-1.0.0.ova vcf-infrastructure-services-appliance-1.0.0.ova.part-
+shasum -a 256 vcf-infrastructure-services-appliance-1.0.0.ova.part-* &gt; vcf-infrastructure-services-appliance-1.0.0.ova.parts.sha256</code></pre>
+<h2 id="vcenter-server-deployment">vCenter Server Deployment</h2>
+<p><img src="images/vis-vcenter-deployment-1.png" alt="" /></p>
+<p><img src="images/vis-vcenter-deployment-2.png" alt="" /></p>
+<p><img src="images/vis-vcenter-deployment-3.png" alt="" /></p>
+<p><img src="images/vis-vcenter-deployment-4.png" alt="" /></p>
+<h2 id="standalone-esx-deployment-with-ovf-tool">Standalone ESX Deployment with OVF Tool</h2>
+<p>For environments without vCenter Server, use the sample OVF Tool script:</p>
+<p>Step 1 - Make a local copy of the deployment script</p>
+<pre><code>cp scripts/deploy_vis_esx.sh scripts/deploy_vis_esx.local.sh</code></pre>
+<p>Step 2 - Edit the variables based on your environment</p>
+<pre><code>OVFTOOL=&quot;/Applications/VMware OVF Tool/ovftool&quot;
+VIS_OVA=&quot;./output-vmware-iso/vcf-infrastructure-services-appliance-1.0.0.ova&quot;
+
+# ESX deployment target
+ESX_HOST=&quot;172.30.0.10&quot;
+ESX_USERNAME=&quot;root&quot;
+ESX_PASSWORD=&quot;VMware1!&quot;
+VM_NETWORK=&quot;VM Network&quot;
+VM_DATASTORE=&quot;local-vmfs-datastore-1&quot;
+VM_NAME=&quot;vis&quot;
+
+# VIS appliance networking
+VIS_FQDN=&quot;vis.vcf.lab&quot;
+VIS_IP=&quot;172.30.0.9&quot;
+VIS_NETMASK=&quot;24 (255.255.255.0)&quot;
+VIS_GATEWAY=&quot;172.30.0.1&quot;
+VIS_DNS_SERVER=&quot;192.168.30.29&quot;
+VIS_DNS_DOMAIN=&quot;vcf.lab&quot;
+VIS_NTP_SERVER=&quot;pool.ntp.org&quot;
+
+# Appliance OS credentials
+VIS_ROOT_PASSWORD=&quot;VMware1!&quot;
+
+# Optional root SSH public key. Leave empty to skip.
+VIS_SSH_PUBLIC_KEY_FILE=&quot;&quot;
+
+# VIS web application administrator credentials.
+# This is separate from the appliance OS/root credential.
+VIS_ADMIN_USERNAME=&quot;admin&quot;
+VIS_ADMIN_PASSWORD=&quot;VMware1!&quot;
+
+# Advanced: Docker container address pool used by VIS services such as Harbor.
+# Change this if 10.10.0.0/16 overlaps with your lab network.
+VIS_POD_CIDR_NETWORK=&quot;10.10.0.0/16&quot;
+
+# Enable verbose first-boot logging. Debug logs may include credentials.
+VIS_DEBUG=&quot;false&quot;</code></pre>
+<p>Step 3 - Run the script</p>
+<pre><code>./scripts/deploy_vis_esx.local.sh</code></pre>
+<p>The script deploys directly to a standalone ESX host and passes the required <code>guestinfo.*</code> OVF properties that VIS consumes during first boot customization.</p>
+<p>All VIS services are disabled by default. Users will need to configure and enable only the services they require. Please see the <a href="usage.html">Usage</a> page for some examples.</p>
+  </main>
+  <footer class="doc-footer">VCF Infrastructure Services Appliance documentation.</footer>
+  <script>
+    (() => {
+      const main = document.querySelector("main");
+      if (!main) {
+        return;
+      }
+
+      const children = Array.from(main.children);
+      const fixedHeader = [];
+      const documentElements = [];
+      let headerDone = false;
+
+      children.forEach((element) => {
+        const isDocumentNav = element.tagName === "P" && element.querySelector('a[href="index.html"]');
+        if (!headerDone && (element.tagName === "H1" || isDocumentNav)) {
+          fixedHeader.push(element);
+        } else {
+          headerDone = true;
+          documentElements.push(element);
+        }
+      });
+
+      const filtered = [];
+      let skipNextTocList = false;
+      documentElements.forEach((element) => {
+        if (element.matches("h2#table-of-contents")) {
+          skipNextTocList = true;
+          return;
+        }
+        if (skipNextTocList && (element.tagName === "UL" || element.tagName === "OL")) {
+          skipNextTocList = false;
+          return;
+        }
+        skipNextTocList = false;
+        filtered.push(element);
+      });
+
+      const firstHeadingIndex = filtered.findIndex((element) => element.tagName === "H2");
+      const introElements = firstHeadingIndex > 0 ? filtered.slice(0, firstHeadingIndex) : [];
+      const sectionElements = firstHeadingIndex >= 0 ? filtered.slice(firstHeadingIndex) : filtered;
+      const headings = sectionElements.filter((element) => element.tagName === "H2");
+      if (!headings.length) {
+        return;
+      }
+
+      main.replaceChildren(...fixedHeader, ...introElements);
+
+      const shell = document.createElement("div");
+      shell.className = "doc-shell";
+      const nav = document.createElement("aside");
+      nav.className = "doc-section-nav";
+      nav.setAttribute("aria-label", "Page sections");
+      const content = document.createElement("div");
+      content.className = "doc-section-content";
+      shell.append(nav, content);
+      main.append(shell);
+
+      const panes = [];
+      let activePane = null;
+      let activeEntry = null;
+
+      function createPane(id, title) {
+        const navGroup = document.createElement("div");
+        navGroup.className = "doc-section-nav-group";
+        const pane = document.createElement("section");
+        pane.className = "doc-section-pane";
+        pane.dataset.sectionId = id;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "doc-section-button";
+        button.textContent = title;
+        button.dataset.sectionTarget = id;
+        button.addEventListener("click", () => activate(id, true));
+        const subnav = document.createElement("div");
+        subnav.className = "doc-subsection-nav";
+        navGroup.append(button, subnav);
+        nav.append(navGroup);
+        content.append(pane);
+        panes.push({ id, pane, button, subnav, subsectionButtons: [] });
+        return pane;
+      }
+
+      function clearSubsectionState() {
+        panes.forEach((entry) => {
+          entry.subsectionButtons.forEach((button) => button.classList.remove("is-active"));
+        });
+      }
+
+      function activate(id, updateHash) {
+        const target = panes.find((entry) => entry.id === id) || panes[0];
+        panes.forEach((entry) => {
+          const active = entry === target;
+          entry.pane.classList.toggle("is-active", active);
+          entry.button.classList.toggle("is-active", active);
+          entry.button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        clearSubsectionState();
+        if (updateHash && target) {
+          history.replaceState(null, "", "#" + target.id);
+        }
+      }
+
+      function addSubsection(entry, heading) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "doc-subsection-button";
+        button.textContent = heading.textContent.trim();
+        button.dataset.sectionTarget = heading.id;
+        button.addEventListener("click", () => {
+          activate(entry.id, false);
+          clearSubsectionState();
+          button.classList.add("is-active");
+          history.replaceState(null, "", "#" + heading.id);
+          requestAnimationFrame(() => heading.scrollIntoView({ block: "start" }));
+        });
+        entry.subnav.append(button);
+        entry.subsectionButtons.push(button);
+      }
+
+      sectionElements.forEach((element) => {
+        if (element.tagName === "H2") {
+          activePane = createPane(element.id, element.textContent.trim());
+          activeEntry = panes[panes.length - 1];
+          activePane.append(element);
+          return;
+        }
+        if (element.tagName === "H3" && activeEntry) {
+          addSubsection(activeEntry, element);
+        }
+        if (activePane) {
+          activePane.append(element);
+        }
+      });
+
+      const requested = decodeURIComponent(location.hash.replace(/^#/, ""));
+      const requestedParent = panes.find((entry) => entry.id === requested);
+      const requestedChild = panes
+        .flatMap((entry) => entry.subsectionButtons.map((button) => ({ entry, button })))
+        .find((item) => item.button.dataset.sectionTarget === requested);
+      if (requestedChild) {
+        activate(requestedChild.entry.id, false);
+        requestedChild.button.classList.add("is-active");
+        const target = document.getElementById(requested);
+        if (target) {
+          requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+        }
+      } else {
+        activate((requestedParent && requestedParent.id) || panes[0].id, false);
+      }
+    })();
+  </script>
+  
+</body>
+</html>

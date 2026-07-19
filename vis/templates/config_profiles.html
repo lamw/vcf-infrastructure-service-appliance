@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Config Export/Import - VIS{% endblock %}
+
+{% block content %}
+<div class="config-profile-page">
+<section class="page-heading">
+  <div>
+    <h1>Config Export/Import</h1>
+  </div>
+</section>
+
+{% if request.args.get("config_error") %}
+  <div class="notice prominent bad">
+    <strong>Import Error</strong>
+    <span>{{ request.args.get("config_error") }}</span>
+    <a class="notice-dismiss" href="{{ url_for('config_profiles') }}" aria-label="Dismiss message">&times;</a>
+  </div>
+{% endif %}
+{% if request.args.get("config_status") %}
+  <div class="notice prominent good">
+    <strong>Configuration Imported</strong>
+    <span>{{ request.args.get("config_status") }}</span>
+    <a class="notice-dismiss" href="{{ url_for('config_profiles') }}" aria-label="Dismiss message">&times;</a>
+  </div>
+{% endif %}
+
+<section class="panel config-profile-grid">
+  <div class="detail-box">
+    <h2>Export Configuration</h2>
+    <p class="subtle">Download a complete VIS service profile for backup, review, or reuse on another appliance.</p>
+    <p class="notice warn">The exported JSON includes service credentials, tokens, and activation codes. Store it securely.</p>
+    <div class="config-profile-actions">
+      <a class="btn primary" href="{{ url_for('config_export') }}">Download JSON Profile</a>
+    </div>
+  </div>
+
+  <div class="detail-box">
+    <h2>Import Configuration</h2>
+    <p class="subtle">Upload a VIS JSON profile or paste edited JSON below. Imported services should be validated before use.</p>
+    <form class="credential-form compact config-import-form" method="post" action="{{ url_for('config_import') }}" enctype="multipart/form-data">
+      <label class="field-label" for="profileFile">Profile File</label>
+      <input id="profileFile" class="text-input" type="file" name="profile_file" accept="application/json,.json" />
+
+      <label class="field-label" for="profileJson">Profile JSON</label>
+      <textarea id="profileJson" class="text-input config-profile-textarea" name="profile_json" placeholder='Paste VIS config JSON here, for example { "schema": "vis.config.profile/v1", "services": [...] }'></textarea>
+
+      <span></span>
+      <label class="toggle-line">
+        <input type="checkbox" name="apply_backends" />
+        <span>Apply enabled service backends after import</span>
+      </label>
+
+      <span></span>
+      <button class="btn primary" type="submit">Import JSON Profile</button>
+    </form>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>Profile Format</h2>
+  <p class="subtle">Profiles use a simple schema with appliance metadata and one entry per VIS service.</p>
+  <pre class="config-preview">{
+  "schema": "vis.config.profile/v1",
+  "appliance": {
+    "fqdn": "vis.example.local",
+    "ip": "192.168.30.99"
+  },
+  "services": [
+    {
+      "id": "web-depot",
+      "enabled": true,
+      "configured": true,
+      "filesystem_root": "/opt/vis/data/depot",
+      "settings": {
+        "protocol": "https"
+      }
+    }
+  ]
+  }</pre>
+</section>
+</div>
+{% endblock %}

@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Build · VIS</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">VIS</div>
+      <div>
+        <strong>VCF Infrastructure Services Appliance</strong>
+        <span>WilliamLam.com</span>
+      </div>
+    </a>
+    <nav aria-label="Documentation navigation">
+      
+<a href="services.html">Services</a>
+<a href="https://github.com/lamw/vcf-infrastructure-service-appliance/releases">Download</a>
+<a href="usage.html">Usage</a>
+<a href="architecture.html">Architecture</a>
+<a href="deploy.html">Deploy</a>
+<a href="develop.html">Develop</a>
+<a href="build.html">Build</a>
+
+    </nav>
+  </header>
+  <main>
+    <h1 id="build">Build</h1>
+<p>VIS currently uses Packer&#x27;s <code>vmware-iso</code> workflow against a standalone ESX host. The build exports an OVA into <code>output-vmware-iso/</code>.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#repository-layout">Repository Layout</a></li>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#build-artifacts">Build Artifacts</a></li>
+<li><a href="#configure-builder-settings">Configure Builder Settings</a></li>
+</ul>
+<h2 id="repository-layout">Repository Layout</h2>
+<table>
+<thead><tr><th>Path</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>vis/</code></td><td>Flask web application and VIS service control plane</td></tr>
+<tr><td><code>vis.json</code></td><td>Packer <code>vmware-iso</code> template</td></tr>
+<tr><td><code>vis-builder.json</code></td><td>Local ESX builder settings</td></tr>
+<tr><td><code>vis-version.json</code></td><td>Appliance version, ISO path, disk sizes, and guest defaults</td></tr>
+<tr><td><code>artifacts/</code></td><td>User-supplied build artifacts such as the Ubuntu ISO and optional VCFDT archive</td></tr>
+<tr><td><code>files/</code></td><td>Appliance first-boot/setup payloads copied into the VM</td></tr>
+<tr><td><code>scripts/</code></td><td>Packer provisioning scripts</td></tr>
+<tr><td><code>http/</code></td><td>Ubuntu autoinstall NoCloud seed data</td></tr>
+<tr><td><code>tests/</code></td><td>Unit tests for the VIS control plane</td></tr>
+<tr><td><code>prototype/</code></td><td>Static HTML prototypes used during UI design</td></tr>
+</tbody></table>
+<h2 id="requirements">Requirements</h2>
+<h3 id="build-workstation">Build Workstation</h3>
+<ul>
+<li>Packer with the VMware builder plugin.</li>
+<li><code>ovftool</code>.</li>
+<li>Network access to the ESX build host.</li>
+<li>SSH access to the ESX build host.</li>
+<li>Enough local disk space for the Ubuntu ISO, Packer cache, and exported OVA.</li>
+</ul>
+<p>HashiCorp documents that the VMware builder communicates with ESX over SSH and, for vSphere Hypervisor/ESX usage, may require <code>GuestIPHack</code> and firewall allowances for the remote build workflow. See the official <a href="https://developer.hashicorp.com/packer/integrations/hashicorp/vmware/latest/components/builder/vmx">Packer VMware builder documentation</a>.</p>
+<h3 id="standalone-esx-build-host">Standalone ESX Build Host</h3>
+<p>On the standalone ESX host:</p>
+<ol>
+<li>Enable SSH.</li>
+<li>Ensure the build workstation can reach the ESX management IP.</li>
+<li>Ensure the target datastore has enough free space.</li>
+<li>Ensure the target port group has network access for the temporary build VM.</li>
+<li>Enable the Packer ESX guest IP helper:</li>
+</ol>
+<pre><code>esxcli system settings advanced set -o /Net/GuestIPHack -i 1</code></pre>
+<h2 id="build-artifacts">Build Artifacts</h2>
+<p>Place user-supplied build artifacts in <code>artifacts/</code>.</p>
+<p>Required:</p>
+<pre><code>artifacts/ubuntu-26.04-live-server-amd64.iso</code></pre>
+<p>Optional:</p>
+<pre><code>artifacts/vcf-download-tool-*.tar.gz</code></pre>
+<p>VCFDT is an optional manual Broadcom download. The default public-style build does <strong>not</strong> bake VCFDT into the appliance. After deployment, install it from the Software Depot page by dragging <code>vcf-download-tool-*.tar.gz</code> into the VCF Download Tool panel.</p>
+<p>For private lab builds, you can still preinstall VCFDT by placing <code>artifacts/vcf-download-tool-*.tar.gz</code> in <code>artifacts/</code> and setting:</p>
+<pre><code>&quot;install_vcf_download_tool&quot;: &quot;true&quot;</code></pre>
+<p>When enabled, Packer installs VCFDT under <code>/usr/local/lib/vcf-download-tool</code> and links <code>vcf-download-tool</code> into <code>/usr/local/bin</code>.</p>
+<p><code>files/</code> is reserved for appliance setup payloads. Do not place large user downloads there.</p>
+<h2 id="configure-builder-settings">Configure Builder Settings</h2>
+<p>Edit <code>vis-builder.json</code> for your ESX build host:</p>
+<pre><code>{
+  &quot;builder_host&quot;: &quot;192.168.30.62&quot;,
+  &quot;builder_host_username&quot;: &quot;root&quot;,
+  &quot;builder_host_password&quot;: &quot;VMware1!&quot;,
+  &quot;builder_host_datastore&quot;: &quot;datastore1&quot;,
+  &quot;builder_host_portgroup&quot;: &quot;VM Network&quot;
+}</code></pre>
+<p>Edit <code>vis-version.json</code> if you need to adjust appliance versioning, ISO checksum, disk sizes, CPU, memory, guest defaults, or the Docker pod CIDR.</p>
+<p>Validate the template:</p>
+<pre><code>packer validate -var-file=vis-builder.json -var-file=vis-version.json vis.json</code></pre>
+<p>Build the appliance:</p>
+<pre><code>./build.sh</code></pre>
+<p>The OVA is packaged with uncompressed stream-optimized VMDKs for broad vSphere UI import compatibility; release files can be split afterward for GitHub distribution.</p>
+  </main>
+  <footer class="doc-footer">VCF Infrastructure Services Appliance documentation.</footer>
+  <script>
+    (() => {
+      const main = document.querySelector("main");
+      if (!main) {
+        return;
+      }
+
+      const children = Array.from(main.children);
+      const fixedHeader = [];
+      const documentElements = [];
+      let headerDone = false;
+
+      children.forEach((element) => {
+        const isDocumentNav = element.tagName === "P" && element.querySelector('a[href="index.html"]');
+        if (!headerDone && (element.tagName === "H1" || isDocumentNav)) {
+          fixedHeader.push(element);
+        } else {
+          headerDone = true;
+          documentElements.push(element);
+        }
+      });
+
+      const filtered = [];
+      let skipNextTocList = false;
+      documentElements.forEach((element) => {
+        if (element.matches("h2#table-of-contents")) {
+          skipNextTocList = true;
+          return;
+        }
+        if (skipNextTocList && (element.tagName === "UL" || element.tagName === "OL")) {
+          skipNextTocList = false;
+          return;
+        }
+        skipNextTocList = false;
+        filtered.push(element);
+      });
+
+      const firstHeadingIndex = filtered.findIndex((element) => element.tagName === "H2");
+      const introElements = firstHeadingIndex > 0 ? filtered.slice(0, firstHeadingIndex) : [];
+      const sectionElements = firstHeadingIndex >= 0 ? filtered.slice(firstHeadingIndex) : filtered;
+      const headings = sectionElements.filter((element) => element.tagName === "H2");
+      if (!headings.length) {
+        return;
+      }
+
+      main.replaceChildren(...fixedHeader, ...introElements);
+
+      const shell = document.createElement("div");
+      shell.className = "doc-shell";
+      const nav = document.createElement("aside");
+      nav.className = "doc-section-nav";
+      nav.setAttribute("aria-label", "Page sections");
+      const content = document.createElement("div");
+      content.className = "doc-section-content";
+      shell.append(nav, content);
+      main.append(shell);
+
+      const panes = [];
+      let activePane = null;
+      let activeEntry = null;
+
+      function createPane(id, title) {
+        const navGroup = document.createElement("div");
+        navGroup.className = "doc-section-nav-group";
+        const pane = document.createElement("section");
+        pane.className = "doc-section-pane";
+        pane.dataset.sectionId = id;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "doc-section-button";
+        button.textContent = title;
+        button.dataset.sectionTarget = id;
+        button.addEventListener("click", () => activate(id, true));
+        const subnav = document.createElement("div");
+        subnav.className = "doc-subsection-nav";
+        navGroup.append(button, subnav);
+        nav.append(navGroup);
+        content.append(pane);
+        panes.push({ id, pane, button, subnav, subsectionButtons: [] });
+        return pane;
+      }
+
+      function clearSubsectionState() {
+        panes.forEach((entry) => {
+          entry.subsectionButtons.forEach((button) => button.classList.remove("is-active"));
+        });
+      }
+
+      function activate(id, updateHash) {
+        const target = panes.find((entry) => entry.id === id) || panes[0];
+        panes.forEach((entry) => {
+          const active = entry === target;
+          entry.pane.classList.toggle("is-active", active);
+          entry.button.classList.toggle("is-active", active);
+          entry.button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        clearSubsectionState();
+        if (updateHash && target) {
+          history.replaceState(null, "", "#" + target.id);
+        }
+      }
+
+      function addSubsection(entry, heading) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "doc-subsection-button";
+        button.textContent = heading.textContent.trim();
+        button.dataset.sectionTarget = heading.id;
+        button.addEventListener("click", () => {
+          activate(entry.id, false);
+          clearSubsectionState();
+          button.classList.add("is-active");
+          history.replaceState(null, "", "#" + heading.id);
+          requestAnimationFrame(() => heading.scrollIntoView({ block: "start" }));
+        });
+        entry.subnav.append(button);
+        entry.subsectionButtons.push(button);
+      }
+
+      sectionElements.forEach((element) => {
+        if (element.tagName === "H2") {
+          activePane = createPane(element.id, element.textContent.trim());
+          activeEntry = panes[panes.length - 1];
+          activePane.append(element);
+          return;
+        }
+        if (element.tagName === "H3" && activeEntry) {
+          addSubsection(activeEntry, element);
+        }
+        if (activePane) {
+          activePane.append(element);
+        }
+      });
+
+      const requested = decodeURIComponent(location.hash.replace(/^#/, ""));
+      const requestedParent = panes.find((entry) => entry.id === requested);
+      const requestedChild = panes
+        .flatMap((entry) => entry.subsectionButtons.map((button) => ({ entry, button })))
+        .find((item) => item.button.dataset.sectionTarget === requested);
+      if (requestedChild) {
+        activate(requestedChild.entry.id, false);
+        requestedChild.button.classList.add("is-active");
+        const target = document.getElementById(requested);
+        if (target) {
+          requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+        }
+      } else {
+        activate((requestedParent && requestedParent.id) || panes[0].id, false);
+      }
+    })();
+  </script>
+  
+</body>
+</html>

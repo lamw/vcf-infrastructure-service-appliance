@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VIS Usage · VIS</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">VIS</div>
+      <div>
+        <strong>VCF Infrastructure Services Appliance</strong>
+        <span>WilliamLam.com</span>
+      </div>
+    </a>
+    <nav aria-label="Documentation navigation">
+      
+<a href="services.html">Services</a>
+<a href="https://github.com/lamw/vcf-infrastructure-service-appliance/releases">Download</a>
+<a href="usage.html">Usage</a>
+<a href="architecture.html">Architecture</a>
+<a href="deploy.html">Deploy</a>
+<a href="develop.html">Develop</a>
+<a href="build.html">Build</a>
+
+    </nav>
+  </header>
+  <main>
+    <h1 id="vis-usage">VIS Usage</h1>
+<p>Examples of using VIS services with VMware Cloud Foundation deployments and workflows.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<h2 id="login-to-vis">Login to VIS</h2>
+<p>After the VIS OVA has been successfully deployed and powered on, the VIS UI interface will be available at:</p>
+<pre><code>http://&lt;VIS-IP-or-FQDN&gt;</code></pre>
+<p>The username will be what you had defined as <code>VIS Admin Username</code> during OVF property configuration along with the credentials you had specified.</p>
+<p><img src="images/usage-login.png" alt="" /></p>
+<p>&gt; <strong>Note:</strong> Port 80 redirects to the VIS UI on port 8080 (e.g. http://&lt;VIS-IP-or-FQDN&gt;:8080). Individual services continue to use their own service ports.</p>
+<h3 id="updates">Updates</h3>
+<p>VIS can be updated by simply pulling the latest updates from the VIS GitHub repository without requiring a re-deployment.</p>
+<p><img src="images/vis-update.png" alt="" /></p>
+<h3 id="system-health">System Health</h3>
+<p>You can view the compute and storage resource utilization for VIS.</p>
+<p><img src="images/vis-system-health.png" alt="" /></p>
+<p>If you need to expand a specific disk partition such as the software depot, first perform the operation within vSphere and then navigate back here to expand the filesystem.</p>
+<p><img src="images/vis-disk-expand.png" alt="" /></p>
+<h3 id="logs">Logs</h3>
+<p>You can view both VIS system logs as well as individual service logs.</p>
+<p><img src="images/vis-logs.png" alt="" /></p>
+<h3 id="configuration">Configuration</h3>
+<p>You can export and import VIS configuration for backup or re-deployments.</p>
+<p><img src="images/vis-config.png" alt="" /></p>
+<h3 id="initialize-certificate-authority">Initialize Certificate Authority</h3>
+<p>VIS optionally supports secure TLS for a number of services, which can be enabled by clicking the Initialize VIS CA button to generate and/or rotate the VIS CA.</p>
+<p><img src="images/vis-init-ca.png" alt="" /></p>
+<p>&gt; <strong>Note:</strong> For VCF Single Sign-On (SSO), the OIDC Service must be configured using TLS and you can download the full PEM certificate from this page</p>
+<p>Once enabled, you can issue new TLS certificates as well as see which services are currently using the shared TLS certificate.</p>
+<p><img src="images/vis-ca.png" alt="" /></p>
+<h2 id="setup-http-server-for-vcf-offline-depot">Setup HTTP Server for VCF Offline Depot</h2>
+<p><strong>Required Input to Initialize Service:</strong></p>
+<ul>
+<li>TLS (Optional)</li>
+<li>Basic Auth (Optional)</li>
+<li>Username</li>
+<li>Password</li>
+</ul>
+<p>For an HTTP-only Offline Depot without basic authentication, simply click &quot;Save Configuration&quot; to initialize and then click &quot;Enable Service&quot;.</p>
+<p><img src="images/vis-software-depot-enable-service-http.png" alt="" /></p>
+<p>&gt; <strong>Note:</strong> You will need to follow this <a href="https://williamlam.com/2026/05/vcf-9-1-new-http-offline-depot-support-for-vcf-installer-fleet-depot-service.html">blog post</a> for configuring your VCF Installer to use HTTP Software Depot</p>
+<p>For an HTTPS Offline Depot with basic authentication, check the TLS checkbox and configure your desired credentials before saving configuration to initialize and then clicking &quot;Enable Service&quot;.</p>
+<p><img src="images/vis-software-depot-enable-service-https.png" alt="" /></p>
+<p>If you have outbound connectivity to Broadcom.com to download the VCF Install/Upgrade Binaries, VIS can perform that on your behalf. You will need to manually download the VCF Download Tool (VCFDT) from the Broadcom Support Portal, then drag and drop it to install VCFDT on VIS.</p>
+<p><img src="images/vis-software-depot-vcfdt-install.png" alt="" /></p>
+<p>If you choose to have VIS download the binaries, you will need to register your VCFDT System ID with Broadcom Support Portal and generate Broadcom Activation Code</p>
+<p><img src="images/vis-software-depot-automatic-download.png" alt="" /></p>
+<p>If you have already downloaded the VCF binaries through alternative means, you can simply drag/drop the <code>PROD</code> folder into VIS file explorer at the bottom of the page and once it has completed, you can access your offline depot.</p>
+<p><img src="images/vis-software-depot-manual-upload.png" alt="" /></p>
+<p>For HTTPS Offline Depot, you will need to add VIS CA certificate into the VCF Installer keystore, so a trust can be established. Navigate to &quot;Certificate Authority&quot; page on VIS and click on &quot;Download Full PEM&quot; certificate and SCP that to your VCF Installer. Switch to root user and then run the following command to add VIS certificate to VCF Installer:</p>
+<pre><code>keytool -import -trustcacerts -file vis-full.pem -keystore /etc/alternatives/jre/lib/security/cacerts -alias vis_offline_depot -storepass changeit -noprompt
+
+echo &#x27;y&#x27; | /opt/vmware/vcf/operationsmanager/scripts/cli/sddcmanager_restart_services.sh</code></pre>
+<p><img src="images/vis-software-depot-configure-vcf-installer.png" alt="" /></p>
+<h2 id="setup-sftp-server-for-vcf-offline-depot">Setup SFTP Server for VCF Offline Depot</h2>
+<p><strong>Required Input to Initialize Service:</strong></p>
+<ul>
+<li>Username</li>
+<li>Password</li>
+</ul>
+<p>Enter your desired username/password and save the configuration to initialize and click Enable service.</p>
+<p><img src="images/vis-sftp-init.png" alt="" /></p>
+<p>Make a note of the SFTP server configuration and log in to VCF Operations to configure your VCF backup schedule.</p>
+<p><img src="images/vis-sftp-vcf-backup.png" alt="" /></p>
+<p>Similar to Software Depot, you can manage files directly from VIS UI or you can SSH to VIS and manage any clean up that you might require.</p>
+<p><img src="images/vis-sftp-file-management.png" alt="" /></p>
+<h2 id="setup-container-registry-for-vcf-supervisor-services-amp-cli-container-images">Setup Container Registry for VCF Supervisor Services &amp; CLI Container Images</h2>
+<p>In addition to storing your own container images, you may also have a need for private Container Registry for the following:</p>
+<ul>
+<li><a href="https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-service-administration-and-development/9-0/managing-supervisor-services-with-vsphere-iaas-control-plane/deploying-supervisor-services-from-a-private-container-image-registry/relocate-supervisor-services-to-a-private-registry.html">Hosting VCF Supervisor Service Container Images with private Container Registry</a></li>
+<li><a href="https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-consumption/latest/consumer-interfaces-in-vcf/installing-and-using-vcf-cli-v9/installing-the-vcf-cli-in-internet-connected-environments/installing-the-vcf-cli-in-internet-restricted-environments%282%29.html">Hosting VCF Consumption CLI Plugin Container Images with private Container Registry</a></li>
+</ul>
+<p><strong>Required Input to Initialize Service:</strong></p>
+<ul>
+<li>TLS (Optional)</li>
+<li>Username</li>
+<li>Password</li>
+</ul>
+<p>For the VCF specific use case, you will want to select the TLS checkbox and configure your desired credentials before saving configuration to initialize and click on Enable service.</p>
+<p><img src="images/vis-container-registry-init.png" alt="" /></p>
+<p>To manage your container images and policies, you can access the Harbor Admin UI. Simply click the URL in the upper-right corner of the service and enter the credentials that you configured.</p>
+<p><img src="images/vis-container-registry-harbor-ui.png" alt="" /></p>
+<p>There are several different ways to add self-signed TLS certificate with various Docker clients, please refer to the <a href="https://docs.docker.com/engine/security/certificates/">official Docker documentation for more information</a>.</p>
+<p>If you are using the Docker Desktop client UI, you can simply append the Harbor endpoint/port to the insecure registry list and restart the Docker client.</p>
+<p><img src="images/vis-container-registry-docker-client.png" alt="" /></p>
+<p>You should now be able to log in to one of your Harbor projects using the Harbor endpoint/port along with credentials:</p>
+<pre><code>docker login vis.vcf.lab:9443/demo -u admin -p VMware1!</code></pre>
+<p>Then you can push an image that has been tagged for your Harbor registry like the following:</p>
+<pre><code>docker push vis.vcf.lab:9443/demo/vibauthor:latest</code></pre>
+<p>Here are some additional blog posts that might be of use for using container registry with self-signed TLS certificate:</p>
+<ul>
+<li><a href="https://williamlam.com/2025/08/quick-tip-configuring-vsphere-supervisor-services-with-self-signed-container-registry.html">Configuring vSphere Supervisor Services with self-signed container registry</a></li>
+<li><a href="https://williamlam.com/2025/08/quick-tip-configuring-vsphere-kubernetes-service-vks-cluster-with-self-signed-container-registry.html">Configuring vSphere Kubernetes Service (VKS) Cluster with self-signed container registry</a></li>
+</ul>
+<h2 id="setup-ldap-provider-for-vcf-sso">Setup LDAP Provider for VCF SSO</h2>
+<p><strong>Required Input to Initialize Service:</strong></p>
+<ul>
+<li>Protocol (e.g LDAP or LDAPS)</li>
+<li>BaseDN (e.g. dc=williamlam,dc=local)</li>
+<li>BindDN (e.g. cn=admin,dc=williamlam,dc=local)</li>
+<li>Admin User (e.g. admin)</li>
+<li>Admin Password</li>
+</ul>
+<p>After saving your configuration to initialize and click Enable service.</p>
+<p><img src="images/vis-ldap-init.png" alt="" /></p>
+<p>By default, the LDAP provider already contains two pre-created groups: <code>vcf-admins</code> and <code>vcf-users</code>, and you will need to create at least one user in the desired group for use with VCF SSO.</p>
+<p><img src="images/vis-ldap-add-user.png" alt="" /></p>
+<p>All configuration values required for VCF SSO using the LDAP provider are located in the VCF SSO Directory Values panel for ease of setup.</p>
+<p><img src="images/vis-ldap-vcf-sso-config.png" alt="" /></p>
+<p>Log in to VCF Operations under Manage &gt; Fleet Management &gt; Identity and Access &gt; Configure SSO to begin the setup after accepting all prerequisites.</p>
+<p>Choose your Identity Broker deployment model (recommend using Instance).</p>
+<p><img src="images/vis-ldap-vcf-sso-idb-delpoyment-model.png" alt="" /></p>
+<p>Select <code>OpenLDAP</code> for your Identity Provider</p>
+<p><img src="images/vis-ldap-vcf-sso-select-idp.png" alt="" /></p>
+<p>Configure the highlighted section for the Directory Information</p>
+<p><img src="images/vis-ldap-vcf-sso-dir-info.png" alt="" /></p>
+<p>Configure the highlighted section for the LDAP Configuration</p>
+<p><img src="images/vis-ldap-vcf-sso-ldap-config.png" alt="" /></p>
+<p>Configure the highlighted section for the Attribute Mappings</p>
+<p><img src="images/vis-ldap-vcf-sso-attribute-mapping.png" alt="" /></p>
+<p>Configure the highlighted section for the Group Provisioning</p>
+<p><img src="images/vis-ldap-vcf-sso-group-prov.png" alt="" /></p>
+<p>Configure the highlighted section for the User Provisioning and select the user(s) you had created earlier</p>
+<p><img src="images/vis-ldap-vcf-sso-user-prov.png" alt="" /></p>
+<p>To confirm everything was configured correctly, click on the Test Login and enter the full username@domain and password you had configured earlier</p>
+<p><img src="images/vis-ldap-vcf-sso-test-login.png" alt="" /></p>
+<p>You should see a successful login, which confirms VCF SSO has been properly configured with the LDAP provider.</p>
+<p><img src="images/vis-ldap-vcf-sso-login-success.png" alt="" /></p>
+<p>You can complete the remainder of the VCF SSO workflow to configure VCF components as well as assign a VCF-level role.</p>
+<h2 id="setup-oidc-provider-for-vcf-sso">Setup OIDC Provider for VCF SSO</h2>
+<p><strong>Required Input to Initialize Service:</strong></p>
+<ul>
+<li>TLS (required for VCF SSO)</li>
+<li>Admin Password</li>
+</ul>
+<p>After saving your configuration to initialize and click Enable service.</p>
+<p><img src="images/vis-oidc-init.png" alt="" /></p>
+<p>&gt; <strong>Note:</strong> The OIDC Provider uses Keycloak. To manage advanced configurations, access the Keycloak Admin UI by clicking the URL in the upper-right corner of the service and entering the credentials you configured.</p>
+<p>By default, the OIDC provider already contains two pre-created groups: <code>vcf-admins</code> and <code>vcf-users</code> and you will need to create at least one user in the desired group for use with VCF SSO</p>
+<p><img src="images/vis-oidc-add-user.png" alt="" /></p>
+<p>Choose your Identity Broker deployment model (recommend using Instance).</p>
+<p><img src="images/vis-ldap-vcf-sso-idb-delpoyment-model.png" alt="" /></p>
+<p>Select <code>OIDC</code> for your Identity Provider</p>
+<p><img src="images/vis-odic-vcf-sso-select-idp.png" alt="" /></p>
+<p>Configure the highlighted section for the Identity Provider Configuration, which will require copying information between the VCF SSO wizard and VIS OIDC Provider</p>
+<p><img src="images/vis-oidc-vcf-sso-oidc-config.png" alt="" /></p>
+<p>Copy the <code>Redirect URI</code> and navigate to your OIDC Provider to create a new OIDC Client, where you will get your OIDC Client ID/Secret along with the OIDC Discovery URL required by the VCF SSO wizard.</p>
+<p><img src="images/vis-oidc-client.png" alt="" /></p>
+<p>Return to the VCF SSO wizard and populate the values along with the VIS Full PEM certificate which is required to ensure a trust can be established.</p>
+<p>Configure the highlighted section for the User/Group Provisioning</p>
+<p><img src="images/vis-oidc-vcf-sso-user-group-prov.png" alt="" /></p>
+<p>Configure the highlighted section for the Group Provisioning</p>
+<p><img src="images/vis-oidc-vcf-sso-group-prov.png" alt="" /></p>
+<p>Configure the highlighted section for the OIDC Domain (e.g. your DNS domain)</p>
+<p><img src="images/vis-oidc-vcf-sso-domains.png" alt="" /></p>
+<p>Configure the highlighted section for the OIDC Provider Group (e.g. <code>vcf-admins</code>)</p>
+<p><img src="images/vis-oidc-vcf-sso-group.png" alt="" /></p>
+<p>Configure the highlighted section for attribute mappings.</p>
+<p><img src="images/vis-oidc-vcf-sso-attributes-mapping.png" alt="" /></p>
+<p>To confirm everything was configured correctly, click on the Test Login and enter the full username (no domain) and password you had configured earlier</p>
+<p><img src="images/vis-oidc-vcf-sso-test-login.png" alt="" /></p>
+<p>You should see a successful login, which confirms VCF SSO has been properly configured with the OIDC provider.</p>
+<p><img src="images/vis-oidc-vcf-sso-login-success.png" alt="" /></p>
+<h2 id="setup-dns-server-for-vcf-environment">Setup DNS Server for VCF Environment</h2>
+<p><strong>Required Input to Initialize Service:</strong></p>
+<ul>
+<li>DNS Domain</li>
+</ul>
+<p>After saving your configuration to initialize and click Enable service.</p>
+<p><img src="images/vis-dns-init.png" alt="" /></p>
+<p>You can add and manage DNS using the admin panel</p>
+<p><img src="images/vis-dns-add.png" alt="" /></p>
+<h2 id="setup-ntp-server-for-vcf-environment">Setup NTP Server for VCF Environment</h2>
+<p><strong>Required Input to Initialize Service:</strong></p>
+<ul>
+<li>Mode (e.g. NTP or NTP+PTP)</li>
+<li>Upstream NTP Sources</li>
+</ul>
+<p>After saving your configuration to initialize and click Enable service.</p>
+<p><img src="images/vis-ntp-init.png" alt="" /></p>
+<h2 id="setup-dhcp-server-for-vcf-environment">Setup DHCP Server for VCF Environment</h2>
+<p><strong>Required Input to Initialize Service:</strong></p>
+<ul>
+<li>Subnet CIDR</li>
+<li>IP Pool Start</li>
+<li>IP Pool End</li>
+<li>Gateway</li>
+<li>DNS Servers</li>
+<li>DNS Domain Name</li>
+</ul>
+<p>After saving your configuration to initialize and click Enable service.</p>
+<p><img src="images/vis-dhcp-server-init.png" alt="" /></p>
+<h2 id="setup-kms-server-for-vcf-environment">Setup KMS Server for VCF Environment</h2>
+<p><strong>Required Input to Initialize Service:</strong></p>
+<p><img src="images/vis-kms-server-init.png" alt="" /></p>
+  </main>
+  <footer class="doc-footer">VCF Infrastructure Services Appliance documentation.</footer>
+  <script>
+    (() => {
+      const main = document.querySelector("main");
+      if (!main) {
+        return;
+      }
+
+      const children = Array.from(main.children);
+      const fixedHeader = [];
+      const documentElements = [];
+      let headerDone = false;
+
+      children.forEach((element) => {
+        const isDocumentNav = element.tagName === "P" && element.querySelector('a[href="index.html"]');
+        if (!headerDone && (element.tagName === "H1" || isDocumentNav)) {
+          fixedHeader.push(element);
+        } else {
+          headerDone = true;
+          documentElements.push(element);
+        }
+      });
+
+      const filtered = [];
+      let skipNextTocList = false;
+      documentElements.forEach((element) => {
+        if (element.matches("h2#table-of-contents")) {
+          skipNextTocList = true;
+          return;
+        }
+        if (skipNextTocList && (element.tagName === "UL" || element.tagName === "OL")) {
+          skipNextTocList = false;
+          return;
+        }
+        skipNextTocList = false;
+        filtered.push(element);
+      });
+
+      const firstHeadingIndex = filtered.findIndex((element) => element.tagName === "H2");
+      const introElements = firstHeadingIndex > 0 ? filtered.slice(0, firstHeadingIndex) : [];
+      const sectionElements = firstHeadingIndex >= 0 ? filtered.slice(firstHeadingIndex) : filtered;
+      const headings = sectionElements.filter((element) => element.tagName === "H2");
+      if (!headings.length) {
+        return;
+      }
+
+      main.replaceChildren(...fixedHeader, ...introElements);
+
+      const shell = document.createElement("div");
+      shell.className = "doc-shell";
+      const nav = document.createElement("aside");
+      nav.className = "doc-section-nav";
+      nav.setAttribute("aria-label", "Page sections");
+      const content = document.createElement("div");
+      content.className = "doc-section-content";
+      shell.append(nav, content);
+      main.append(shell);
+
+      const panes = [];
+      let activePane = null;
+      let activeEntry = null;
+
+      function createPane(id, title) {
+        const navGroup = document.createElement("div");
+        navGroup.className = "doc-section-nav-group";
+        const pane = document.createElement("section");
+        pane.className = "doc-section-pane";
+        pane.dataset.sectionId = id;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "doc-section-button";
+        button.textContent = title;
+        button.dataset.sectionTarget = id;
+        button.addEventListener("click", () => activate(id, true));
+        const subnav = document.createElement("div");
+        subnav.className = "doc-subsection-nav";
+        navGroup.append(button, subnav);
+        nav.append(navGroup);
+        content.append(pane);
+        panes.push({ id, pane, button, subnav, subsectionButtons: [] });
+        return pane;
+      }
+
+      function clearSubsectionState() {
+        panes.forEach((entry) => {
+          entry.subsectionButtons.forEach((button) => button.classList.remove("is-active"));
+        });
+      }
+
+      function activate(id, updateHash) {
+        const target = panes.find((entry) => entry.id === id) || panes[0];
+        panes.forEach((entry) => {
+          const active = entry === target;
+          entry.pane.classList.toggle("is-active", active);
+          entry.button.classList.toggle("is-active", active);
+          entry.button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        clearSubsectionState();
+        if (updateHash && target) {
+          history.replaceState(null, "", "#" + target.id);
+        }
+      }
+
+      function addSubsection(entry, heading) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "doc-subsection-button";
+        button.textContent = heading.textContent.trim();
+        button.dataset.sectionTarget = heading.id;
+        button.addEventListener("click", () => {
+          activate(entry.id, false);
+          clearSubsectionState();
+          button.classList.add("is-active");
+          history.replaceState(null, "", "#" + heading.id);
+          requestAnimationFrame(() => heading.scrollIntoView({ block: "start" }));
+        });
+        entry.subnav.append(button);
+        entry.subsectionButtons.push(button);
+      }
+
+      sectionElements.forEach((element) => {
+        if (element.tagName === "H2") {
+          activePane = createPane(element.id, element.textContent.trim());
+          activeEntry = panes[panes.length - 1];
+          activePane.append(element);
+          return;
+        }
+        if (element.tagName === "H3" && activeEntry) {
+          addSubsection(activeEntry, element);
+        }
+        if (activePane) {
+          activePane.append(element);
+        }
+      });
+
+      const requested = decodeURIComponent(location.hash.replace(/^#/, ""));
+      const requestedParent = panes.find((entry) => entry.id === requested);
+      const requestedChild = panes
+        .flatMap((entry) => entry.subsectionButtons.map((button) => ({ entry, button })))
+        .find((item) => item.button.dataset.sectionTarget === requested);
+      if (requestedChild) {
+        activate(requestedChild.entry.id, false);
+        requestedChild.button.classList.add("is-active");
+        const target = document.getElementById(requested);
+        if (target) {
+          requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+        }
+      } else {
+        activate((requestedParent && requestedParent.id) || panes[0].id, false);
+      }
+    })();
+  </script>
+  
+</body>
+</html>

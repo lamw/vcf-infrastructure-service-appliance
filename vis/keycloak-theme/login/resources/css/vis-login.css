@@ -1,0 +1,241 @@
+:root {
+  --vis-bg: #111820;
+  --vis-panel: #18232d;
+  --vis-panel-soft: #202d38;
+  --vis-border: #31424f;
+  --vis-text: #eef3f6;
+  --vis-muted: #a8b5be;
+  --vis-accent: #49afd9;
+  --vis-bad: #ff806b;
+  --vis-good: #80c45c;
+}
+
+html,
+body,
+.login-pf {
+  min-height: 100%;
+  background: var(--vis-bg);
+  color: var(--vis-text);
+  font-family: Metropolis, "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+}
+
+.login-pf body {
+  background: var(--vis-bg);
+}
+
+.login-pf-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 18px;
+  background:
+    linear-gradient(180deg, rgba(0, 54, 77, .34), rgba(17, 24, 32, 0) 34%),
+    var(--vis-bg);
+}
+
+.login-pf-header {
+  margin-bottom: 18px;
+  text-align: center;
+  transform: translateY(16px);
+}
+
+#kc-header,
+#kc-header-wrapper {
+  color: var(--vis-text);
+  font-size: 0;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+#kc-header-wrapper::before {
+  content: "";
+  display: block;
+  width: 262px;
+  height: 200px;
+  margin: 0 auto 12px;
+  background: url("../img/vcf.png") center / contain no-repeat;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, .38));
+}
+
+#kc-header-wrapper::after {
+  content: "VCF 9.1 Private Cloud";
+  display: block;
+  color: var(--vis-text);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.card-pf {
+  position: relative;
+  width: min(100%, 430px);
+  margin: 0 auto;
+  padding: 28px;
+  border: 1px solid var(--vis-border);
+  border-radius: 6px;
+  background: var(--vis-panel);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .32);
+}
+
+#vis-login-credit {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  width: 100%;
+  transform: translateX(-50%);
+  color: var(--vis-muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+#vis-login-credit a {
+  color: var(--vis-accent);
+  text-decoration: none;
+}
+
+#vis-login-credit a:hover,
+#vis-login-credit a:focus {
+  color: #7fd0ee;
+  text-decoration: underline;
+}
+
+#kc-page-title {
+  margin: 0 0 18px;
+  color: var(--vis-text);
+  font-size: 24px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.control-label,
+.pf-c-form__label,
+label {
+  color: var(--vis-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.form-control,
+.pf-c-form-control,
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  min-height: 42px;
+  border: 1px solid var(--vis-border);
+  border-radius: 4px;
+  background: #121d26;
+  color: var(--vis-text);
+  box-shadow: none;
+}
+
+.form-control:focus,
+.pf-c-form-control:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+  border-color: var(--vis-accent);
+  outline: 2px solid color-mix(in srgb, var(--vis-accent) 34%, transparent);
+  outline-offset: 1px;
+  box-shadow: none;
+}
+
+.form-control::placeholder,
+.pf-c-form-control::placeholder {
+  color: #71818d;
+}
+
+.btn-primary,
+.pf-c-button.pf-m-primary,
+input[type="submit"] {
+  min-height: 40px;
+  border: 1px solid var(--vis-accent);
+  border-radius: 4px;
+  background: var(--vis-accent);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  box-shadow: none;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.pf-c-button.pf-m-primary:hover,
+.pf-c-button.pf-m-primary:focus,
+input[type="submit"]:hover,
+input[type="submit"]:focus {
+  filter: brightness(1.08);
+  background: var(--vis-accent);
+  border-color: var(--vis-accent);
+  color: #fff;
+}
+
+a,
+.login-pf a,
+#kc-info a {
+  color: var(--vis-accent);
+}
+
+.alert,
+.pf-c-alert {
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--vis-bad) 16%, var(--vis-panel));
+  color: var(--vis-bad);
+  box-shadow: inset 3px 0 0 var(--vis-bad);
+}
+
+.alert-success,
+.pf-m-success {
+  background: color-mix(in srgb, var(--vis-good) 16%, var(--vis-panel));
+  color: var(--vis-good);
+}
+
+#kc-info,
+#kc-info-wrapper {
+  color: var(--vis-muted);
+  background: transparent;
+}
+
+#kc-form-options,
+#kc-registration,
+#kc-username {
+  color: var(--vis-muted);
+}
+
+#kc-form-buttons {
+  margin-top: 20px;
+}
+
+@media (max-width: 520px) {
+  .login-pf-page {
+    padding: 18px 12px;
+  }
+
+  .card-pf {
+    padding: 22px 18px;
+  }
+
+  #kc-header,
+  #kc-header-wrapper {
+    font-size: 0;
+  }
+
+  #kc-header-wrapper::before {
+    width: 191px;
+    height: 146px;
+    margin-bottom: 10px;
+  }
+
+  #kc-header-wrapper::after {
+    font-size: 20px;
+  }
+}

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Services · VIS</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">VIS</div>
+      <div>
+        <strong>VCF Infrastructure Services Appliance</strong>
+        <span>WilliamLam.com</span>
+      </div>
+    </a>
+    <nav aria-label="Documentation navigation">
+      
+<a href="services.html">Services</a>
+<a href="https://github.com/lamw/vcf-infrastructure-service-appliance/releases">Download</a>
+<a href="usage.html">Usage</a>
+<a href="architecture.html">Architecture</a>
+<a href="deploy.html">Deploy</a>
+<a href="develop.html">Develop</a>
+<a href="build.html">Build</a>
+
+    </nav>
+  </header>
+  <main>
+    <h1 id="services">Services</h1>
+<p>VIS services are disabled by default. Configure and enable only the services needed for a given lab or proof-of-concept environment.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#software-depot">📦 Software Depot</a></li>
+<li><a href="#sftp-backup">💾 SFTP Backup</a></li>
+<li><a href="#container-registry">🐳 Container Registry</a></li>
+<li><a href="#ldap-provider">📇 LDAP Provider</a></li>
+<li><a href="#oidc-provider">🔐 OIDC Provider</a></li>
+<li><a href="#dns-server">🌐 DNS Server</a></li>
+<li><a href="#ntp-server">⏱ NTP Server</a></li>
+<li><a href="#dhcp-server">🧭 DHCP Server</a></li>
+<li><a href="#key-management-service">🔑 Key Management Service</a></li>
+<li><a href="#certificate-authority">🛡️ Certificate Authority</a></li>
+<li><a href="#config-export-import">🔄 Config Export/Import</a></li>
+<li><a href="#system-health">📊 System Health</a></li>
+<li><a href="#updates">↻ Updates</a></li>
+<li><a href="#logs">📋 Logs</a></li>
+</ul>
+<h2 id="software-depot">📦 Software Depot</h2>
+<ul>
+<li>Supports HTTP or HTTPS with optional basic authentication.</li>
+<li>Uses the shared VIS certificate when HTTPS is enabled.</li>
+<li>Provides repository browsing, folder management, delete confirmation, and drag-and-drop file or folder uploads with progress, percentage, and bandwidth.</li>
+<li>Supports both manual VCF binary staging and VCF Download Tool (VCFDT) workflows after VCFDT is installed through the VIS UI.</li>
+<li>Installs the manually downloaded VCFDT tarball from the Software Depot page using drag-and-drop upload.</li>
+<li>Supports Broadcom Activation Code workflows when VCFDT is installed.</li>
+<li>Validates credentials by downloading depot metadata into <code>/opt/vis/data/depot</code>.</li>
+<li>Runs long VCF/VVF binary downloads asynchronously with single-job enforcement, status, cancellation, and log visibility.</li>
+<li>Supports Install, Upgrade, and ESX Patch downloads with a validated Activation Code.</li>
+</ul>
+<h2 id="sftp-backup">💾 SFTP Backup</h2>
+<ul>
+<li>Creates an SFTP-only local account with configurable username and password.</li>
+<li>Shows copy-ready host, port, user, password, and backup path values.</li>
+<li>Uses a chrooted repository under <code>/opt/vis/data/sftp</code>.</li>
+<li>Provides read-oriented backup artifact browsing.</li>
+<li>Health checks validate SSH/SFTP state and repository readiness.</li>
+</ul>
+<h2 id="container-registry">🐳 Container Registry</h2>
+<ul>
+<li>Uses Harbor as the registry backend.</li>
+<li>Supports configurable administrator credentials and shared VIS TLS.</li>
+<li>Provides endpoint details for browser and CLI access.</li>
+<li>Includes enable, disable, restart, and health check actions.</li>
+<li>Pulls Harbor artifacts during the Packer build according to the configured BOM/version.</li>
+</ul>
+<h2 id="ldap-provider">📇 LDAP Provider</h2>
+<ul>
+<li>Uses OpenLDAP as a simple directory service for VCF SSO.</li>
+<li>Supports LDAP and LDAPS using the shared VIS certificate.</li>
+<li>Pre-creates <code>vcf-admins</code> and <code>vcf-users</code>.</li>
+<li>Manages users, groups, membership, disabled state, and passwords.</li>
+<li>Provides copy-ready VCF SSO values, LDAP filters, attribute mappings, Base DNs, bind DN, and bind password.</li>
+<li>Health checks validate service state and LDAP bind behavior.</li>
+</ul>
+<h2 id="oidc-provider">🔐 OIDC Provider</h2>
+<ul>
+<li>Uses Keycloak for OIDC federation with VCF SSO.</li>
+<li>Deploys Keycloak with a default <code>VCF</code> realm and shared VIS TLS.</li>
+<li>Pre-creates <code>vcf-admins</code> and <code>vcf-users</code>.</li>
+<li>Manages OIDC users, groups, membership, disabled state, and passwords.</li>
+<li>Shows the OIDC discovery endpoint.</li>
+<li>Creates VCF SSO OIDC clients, enables client authentication/direct access grants, and displays the generated client secret.</li>
+<li>Includes a VIS-themed Keycloak login page.</li>
+</ul>
+<h2 id="dns-server">🌐 DNS Server</h2>
+<ul>
+<li>Uses Unbound as the DNS server.</li>
+<li>Configures the DNS domain before records are created.</li>
+<li>Adds each DNS entry as paired forward and reverse records.</li>
+<li>Lists, edits, and deletes records as one logical host/IP row.</li>
+<li>Validates duplicate names, duplicate IP addresses, and domain requirements.</li>
+<li>Renders Unbound configuration and performs health checks against the generated state.</li>
+</ul>
+<h2 id="ntp-server">⏱ NTP Server</h2>
+<ul>
+<li>Provides a local NTP endpoint for VCF appliances, ESX hosts, and supporting lab systems.</li>
+<li>Uses Chrony as the backend service.</li>
+<li>Shows copy-ready NTP FQDN, IP, and port values for VCF configuration.</li>
+<li>Supports an optional local clock fallback for isolated lab environments.</li>
+<li>Includes service enable, disable, restart, and health check actions.</li>
+</ul>
+<h2 id="dhcp-server">🧭 DHCP Server</h2>
+<ul>
+<li>Provides appliance-managed DHCP addressing for lab networks that need quick bring-up.</li>
+<li>Uses the appliance interface automatically to keep configuration minimal.</li>
+<li>Configures subnet, range, gateway, DNS servers, domain, and lease timing.</li>
+<li>Supports static reservations for predictable appliance addressing.</li>
+<li>Renders DHCP backend configuration and validates ranges before saving.</li>
+</ul>
+<h2 id="key-management-service">🔑 Key Management Service</h2>
+<ul>
+<li>Provides a KMIP-compatible key management endpoint for VCF encryption workflows.</li>
+<li>Uses PyKMIP with the shared VIS certificate.</li>
+<li>Shows copy-ready KMIP FQDN, IP, port, and trusted root CA values.</li>
+<li>Keeps configuration intentionally small so labs can quickly test key-provider workflows.</li>
+</ul>
+<h2 id="certificate-authority">🛡️ Certificate Authority</h2>
+<ul>
+<li>Centralizes trust for TLS-capable VIS services.</li>
+<li>Generates a shared VIS certificate authority and server certificate.</li>
+<li>Exposes the root CA and full PEM bundle for download.</li>
+<li>Lets Software Depot, Container Registry, LDAP/LDAPS, OIDC, and Key Management Service use the shared VIS certificate where appropriate.</li>
+<li>Keeps SFTP separate because SSH host keys and SFTP trust are handled differently.</li>
+</ul>
+<h2 id="config-export-import">🔄 Config Export/Import</h2>
+<ul>
+<li>Captures and reuses VIS service configuration across appliances.</li>
+<li>Exports service settings as JSON for backup, review, or repeatable lab setup.</li>
+<li>Imports JSON profiles from file upload or pasted content.</li>
+<li>Preserves credentials and tokens in the profile, so exported files must be stored securely.</li>
+<li>Optionally applies enabled service backends after import.</li>
+</ul>
+<h2 id="system-health">📊 System Health</h2>
+<ul>
+<li>Views appliance capacity and service partition health.</li>
+<li>Shows CPU, memory, and aggregate storage usage.</li>
+<li>Displays each service partition in VMDK order with capacity, used, and available space.</li>
+<li>Provides an Expand Filesystem action after a backing VMDK has been increased.</li>
+<li>Refreshes and grows filesystems online when possible.</li>
+</ul>
+<h2 id="updates">↻ Updates</h2>
+<ul>
+<li>Pulls the latest VIS source from the configured GitHub repository and branch.</li>
+<li>Applies web application, Python dependency, helper script, and supported systemd unit updates without redeploying the appliance.</li>
+<li>Runs asynchronously from the VIS UI because the web service may restart during the update.</li>
+<li>Shows recent update status and <code>/opt/vis/state/vis-update.log</code> output.</li>
+<li>Can also be run directly on the appliance with <code>sudo vis-update --repo-url &lt;repo&gt; --branch &lt;branch&gt;</code>.</li>
+</ul>
+<h2 id="logs">📋 Logs</h2>
+<ul>
+<li>Inspects VIS-managed services from one place.</li>
+<li>Shows VIS web and service logs for depot, SFTP, Harbor, LDAP, OIDC, DNS, NTP, DHCP, KMS, and VCFDT where available.</li>
+<li>Filters by service, line count, search text, and severity.</li>
+<li>Downloads log snippets for troubleshooting.</li>
+</ul>
+  </main>
+  <footer class="doc-footer">VCF Infrastructure Services Appliance documentation.</footer>
+  <script>
+    (() => {
+      const main = document.querySelector("main");
+      if (!main) {
+        return;
+      }
+
+      const children = Array.from(main.children);
+      const fixedHeader = [];
+      const documentElements = [];
+      let headerDone = false;
+
+      children.forEach((element) => {
+        const isDocumentNav = element.tagName === "P" && element.querySelector('a[href="index.html"]');
+        if (!headerDone && (element.tagName === "H1" || isDocumentNav)) {
+          fixedHeader.push(element);
+        } else {
+          headerDone = true;
+          documentElements.push(element);
+        }
+      });
+
+      const filtered = [];
+      let skipNextTocList = false;
+      documentElements.forEach((element) => {
+        if (element.matches("h2#table-of-contents")) {
+          skipNextTocList = true;
+          return;
+        }
+        if (skipNextTocList && (element.tagName === "UL" || element.tagName === "OL")) {
+          skipNextTocList = false;
+          return;
+        }
+        skipNextTocList = false;
+        filtered.push(element);
+      });
+
+      const firstHeadingIndex = filtered.findIndex((element) => element.tagName === "H2");
+      const introElements = firstHeadingIndex > 0 ? filtered.slice(0, firstHeadingIndex) : [];
+      const sectionElements = firstHeadingIndex >= 0 ? filtered.slice(firstHeadingIndex) : filtered;
+      const headings = sectionElements.filter((element) => element.tagName === "H2");
+      if (!headings.length) {
+        return;
+      }
+
+      main.replaceChildren(...fixedHeader, ...introElements);
+
+      const shell = document.createElement("div");
+      shell.className = "doc-shell";
+      const nav = document.createElement("aside");
+      nav.className = "doc-section-nav";
+      nav.setAttribute("aria-label", "Page sections");
+      const content = document.createElement("div");
+      content.className = "doc-section-content";
+      shell.append(nav, content);
+      main.append(shell);
+
+      const panes = [];
+      let activePane = null;
+      let activeEntry = null;
+
+      function createPane(id, title) {
+        const navGroup = document.createElement("div");
+        navGroup.className = "doc-section-nav-group";
+        const pane = document.createElement("section");
+        pane.className = "doc-section-pane";
+        pane.dataset.sectionId = id;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "doc-section-button";
+        button.textContent = title;
+        button.dataset.sectionTarget = id;
+        button.addEventListener("click", () => activate(id, true));
+        const subnav = document.createElement("div");
+        subnav.className = "doc-subsection-nav";
+        navGroup.append(button, subnav);
+        nav.append(navGroup);
+        content.append(pane);
+        panes.push({ id, pane, button, subnav, subsectionButtons: [] });
+        return pane;
+      }
+
+      function clearSubsectionState() {
+        panes.forEach((entry) => {
+          entry.subsectionButtons.forEach((button) => button.classList.remove("is-active"));
+        });
+      }
+
+      function activate(id, updateHash) {
+        const target = panes.find((entry) => entry.id === id) || panes[0];
+        panes.forEach((entry) => {
+          const active = entry === target;
+          entry.pane.classList.toggle("is-active", active);
+          entry.button.classList.toggle("is-active", active);
+          entry.button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        clearSubsectionState();
+        if (updateHash && target) {
+          history.replaceState(null, "", "#" + target.id);
+        }
+      }
+
+      function addSubsection(entry, heading) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "doc-subsection-button";
+        button.textContent = heading.textContent.trim();
+        button.dataset.sectionTarget = heading.id;
+        button.addEventListener("click", () => {
+          activate(entry.id, false);
+          clearSubsectionState();
+          button.classList.add("is-active");
+          history.replaceState(null, "", "#" + heading.id);
+          requestAnimationFrame(() => heading.scrollIntoView({ block: "start" }));
+        });
+        entry.subnav.append(button);
+        entry.subsectionButtons.push(button);
+      }
+
+      sectionElements.forEach((element) => {
+        if (element.tagName === "H2") {
+          activePane = createPane(element.id, element.textContent.trim());
+          activeEntry = panes[panes.length - 1];
+          activePane.append(element);
+          return;
+        }
+        if (element.tagName === "H3" && activeEntry) {
+          addSubsection(activeEntry, element);
+        }
+        if (activePane) {
+          activePane.append(element);
+        }
+      });
+
+      const requested = decodeURIComponent(location.hash.replace(/^#/, ""));
+      const requestedParent = panes.find((entry) => entry.id === requested);
+      const requestedChild = panes
+        .flatMap((entry) => entry.subsectionButtons.map((button) => ({ entry, button })))
+        .find((item) => item.button.dataset.sectionTarget === requested);
+      if (requestedChild) {
+        activate(requestedChild.entry.id, false);
+        requestedChild.button.classList.add("is-active");
+        const target = document.getElementById(requested);
+        if (target) {
+          requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+        }
+      } else {
+        activate((requestedParent && requestedParent.id) || panes[0].id, false);
+      }
+    })();
+  </script>
+  
+</body>
+</html>

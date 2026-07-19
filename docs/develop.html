@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Develop · VIS</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">VIS</div>
+      <div>
+        <strong>VCF Infrastructure Services Appliance</strong>
+        <span>WilliamLam.com</span>
+      </div>
+    </a>
+    <nav aria-label="Documentation navigation">
+      
+<a href="services.html">Services</a>
+<a href="https://github.com/lamw/vcf-infrastructure-service-appliance/releases">Download</a>
+<a href="usage.html">Usage</a>
+<a href="architecture.html">Architecture</a>
+<a href="deploy.html">Deploy</a>
+<a href="develop.html">Develop</a>
+<a href="build.html">Build</a>
+
+    </nav>
+  </header>
+  <main>
+    <h1 id="develop">Develop</h1>
+<p>This page is for contributors who want to run VIS locally, make changes, verify behavior, and keep new features consistent with the appliance.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#contributing-to-vis">Contributing to VIS</a></li>
+<li><a href="#what-you-need">What You Need</a></li>
+<li><a href="#repository-layout">Repository Layout</a></li>
+<li><a href="#run-the-web-app-locally">Run the Web App Locally</a></li>
+<li><a href="#run-tests">Run Tests</a></li>
+<li><a href="#preview-documentation">Preview Documentation</a></li>
+<li><a href="#state-and-configuration">State and Configuration</a></li>
+<li><a href="#common-development-workflow">Common Development Workflow</a></li>
+<li><a href="#ui-conventions">UI Conventions</a></li>
+<li><a href="#ai-assisted-development">AI-Assisted Development</a></li>
+</ul>
+<h2 id="contributing-to-vis">Contributing to VIS</h2>
+<p>VIS is meant to be practical infrastructure for VCF lab and proof-of-concept users, so contributions should favor reliability, clear workflows, and predictable appliance behavior over broad abstractions.</p>
+<p>Good contributions usually follow these guidelines:</p>
+<ul>
+<li>Start with a focused issue, enhancement, or bug fix. Keep each pull request scoped to one service, one workflow, or one documentation improvement when possible.</li>
+<li>Inspect existing service patterns before adding a new one. Most service work touches the Flask route, service definition, adapter, template, tests, Packer setup, and documentation.</li>
+<li>Prefer small, reviewable commits with clear messages that explain the user-facing behavior or bug being fixed.</li>
+<li>Keep the UI consistent with the established VIS pages. Avoid one-off controls when an existing form, toggle, badge, notice, or copy-row pattern already exists.</li>
+<li>Treat appliance changes as product changes. If a feature requires packages, systemd units, directories, first-boot setup, firewall behavior, or generated configuration, update the Packer scripts as part of the same change.</li>
+<li>Add tests for behavior that can regress: service seeding, route validation, adapter output, rendered controls, required-configuration gates, logs, and Packer expectations.</li>
+<li>Do not include private artifacts, credentials, SSH keys, ISO files, VCF Download Tool archives, generated OVAs, or split release files in commits.</li>
+<li>Update documentation when behavior changes. A contributor should be able to understand how to build, deploy, configure, or test the feature without reading the implementation first.</li>
+<li>Validate locally before submitting. At minimum, run focused tests for the area changed and regenerate docs when Markdown changes.</li>
+</ul>
+<p>For larger changes, open the design in a draft pull request or discussion first. This is especially useful for new appliance services, storage layout changes, networking behavior, authentication flows, or anything that changes how VIS integrates with VCF.</p>
+<h2 id="what-you-need">What You Need</h2>
+<p>For local web application development:</p>
+<ul>
+<li>Python 3.10 or newer.</li>
+<li><code>pip</code> and <code>venv</code>.</li>
+<li>A shell environment on macOS, Linux, or another Unix-like workstation.</li>
+<li>The VIS repository checked out locally.</li>
+</ul>
+<p>For appliance or Packer development, also review the <a href="build.html">Build</a> page because those workflows require Packer, OVF Tool, an Ubuntu ISO, and access to a standalone ESX build host.</p>
+<h2 id="repository-layout">Repository Layout</h2>
+<table>
+<thead><tr><th>Path</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>vis/</code></td><td>Flask application, service adapters, templates, and static UI assets</td></tr>
+<tr><td><code>tests/</code></td><td>Unit tests for service models, adapters, routes, and packaging expectations</td></tr>
+<tr><td><code>docs/</code></td><td>Markdown and generated HTML documentation</td></tr>
+<tr><td><code>scripts/</code></td><td>Packer provisioning and deployment helper scripts</td></tr>
+<tr><td><code>files/</code></td><td>Appliance setup payloads copied into the VM</td></tr>
+<tr><td><code>vis.json</code></td><td>Packer template</td></tr>
+<tr><td><code>vis-version.json</code></td><td>Appliance version, default VM sizing, disk layout, and OVF defaults</td></tr>
+<tr><td><code>vis-builder.json</code></td><td>Local ESX build-host settings</td></tr>
+</tbody></table>
+<h2 id="run-the-web-app-locally">Run the Web App Locally</h2>
+<p>Create a local virtual environment:</p>
+<pre><code>python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r vis/requirements.txt</code></pre>
+<p>Start VIS with a local SQLite database:</p>
+<pre><code>VIS_DB_PATH=/tmp/vis-dev.db VIS_PORT=8080 python -m vis.app</code></pre>
+<p>Then open:</p>
+<pre><code>http://localhost:8080</code></pre>
+<p>Use a different <code>VIS_PORT</code> if port <code>8080</code> is already in use. Local development does not require real system services unless you are specifically testing appliance adapters.</p>
+<h2 id="run-tests">Run Tests</h2>
+<p>Run the full test suite:</p>
+<pre><code>python3 -m unittest discover</code></pre>
+<p>Run a focused test file:</p>
+<pre><code>python3 -m unittest tests.test_services</code></pre>
+<p>Run a single test when iterating on a specific behavior:</p>
+<pre><code>python3 -m unittest tests.test_services.WebAppTest.test_dns_config_route_sets_required_domain</code></pre>
+<h2 id="preview-documentation">Preview Documentation</h2>
+<p>After changing Markdown docs, regenerate the static HTML:</p>
+<pre><code>python3 docs/render_docs.py</code></pre>
+<p>Preview the docs locally:</p>
+<pre><code>cd docs
+python3 -m http.server 8094</code></pre>
+<p>Then open:</p>
+<pre><code>http://localhost:8094/</code></pre>
+<h2 id="state-and-configuration">State and Configuration</h2>
+<p>On an appliance, VIS stores application state in:</p>
+<pre><code>/opt/vis/state/vis.db</code></pre>
+<p>For local development, always set <code>VIS_DB_PATH</code> to a temporary path so local experiments do not touch appliance state:</p>
+<pre><code>VIS_DB_PATH=/tmp/vis-dev.db</code></pre>
+<p>Generated service configuration normally lives under <code>/opt/vis/config</code>, and service data normally lives under <code>/opt/vis/data</code>. Local development can render and test most behavior without mutating those paths.</p>
+<h2 id="common-development-workflow">Common Development Workflow</h2>
+<ol>
+<li>Inspect the existing service pattern before adding a new feature.</li>
+<li>Make the smallest code and UI change that supports the requested behavior.</li>
+<li>Add or update focused tests for the service adapter, route, or rendered page.</li>
+<li>Run the focused tests first.</li>
+<li>Run the broader test suite before handing off the change.</li>
+<li>Regenerate docs when Markdown changes.</li>
+<li>If the change affects appliance behavior, make sure the Packer scripts or first-boot setup include the same behavior.</li>
+</ol>
+<h2 id="ui-conventions">UI Conventions</h2>
+<p>These conventions keep new VIS services visually consistent with the original service pages.</p>
+<h3 id="detail-page-structure">Detail Page Structure</h3>
+<ul>
+<li>Use the shared service detail shell: heading, action buttons, status metrics, then a <code>Configuration</code> panel.</li>
+<li>Keep top-level status badges/metric panels on one row on desktop when there are four or fewer. Use a page-specific grid class when a non-service page needs four metrics, and let the existing responsive rules wrap them on smaller screens.</li>
+<li>Put required setup in the smallest panel that actually blocks <code>Enable Service</code>.</li>
+<li>Use <code>required_config_notice(...)</code> only inside the panel that needs user action.</li>
+<li>Use local dismissible notices in the panel where the action occurred.</li>
+</ul>
+<h3 id="configuration-forms">Configuration Forms</h3>
+<ul>
+<li>Use <code>credential-form compact</code> for compact credential-oriented settings.</li>
+<li>Use <code>service-config-form</code> for infrastructure settings that need wider fields, text areas, or multiple related controls.</li>
+<li>Use <code>dns-entry-form</code> only for DNS record/domain workflows.</li>
+<li>Keep save buttons aligned under the editable field column.</li>
+</ul>
+<h3 id="tls">TLS</h3>
+<ul>
+<li>TLS-capable services must use the established checkbox row:</li>
+</ul>
+<p><code>Expose using shared VIS certificate</code>.</p>
+<ul>
+<li>If TLS is required and not optional, show the same checkbox checked and disabled rather than inventing a new read-only visual.</li>
+<li>Do not expose certificate file paths in the primary service configuration panel. Show certificate details in generated config or the Certificate Authority page.</li>
+</ul>
+<h3 id="binary-choices">Binary Choices</h3>
+<ul>
+<li>Use <code>toggle-row</code> for checkboxes.</li>
+<li>Use <code>segmented-choice</code> for radio-button choices.</li>
+<li>Avoid mixing ad hoc checkbox containers with established VIS controls.</li>
+</ul>
+<h3 id="client-values">Client Values</h3>
+<ul>
+<li>Use labeled, copyable rows for values users paste into VCF or other clients.</li>
+<li>Labels should say what the value is, for example <code>NTP Server FQDN</code>, <code>DHCP Server IP</code>, or <code>KMIP Port</code>.</li>
+<li>Keep generated server configuration below client values in a <code>stacked-config</code> block.</li>
+</ul>
+<h3 id="service-backends">Service Backends</h3>
+<ul>
+<li>Real service adapters should render the effective backend config.</li>
+<li>Mock or placeholder services should not expose fake controls that look functional.</li>
+<li>Logs should map each real backend service to its systemd unit in <code>_log_targets</code>.</li>
+</ul>
+<h2 id="ai-assisted-development">AI-Assisted Development</h2>
+<p>VIS has repository-level guidance for AI coding agents in <a href="https://github.com/lamw/vcf-infrastructure-service-appliance/blob/main/AGENTS.md">AGENTS.md</a>.</p>
+<p>Before using an AI assistant to add or modify VIS features:</p>
+<ul>
+<li>Share the relevant goal and ask the agent to inspect existing service patterns before changing code.</li>
+<li>Ensure new service UI follows the UI conventions on this page.</li>
+<li>Keep backend behavior wired to real adapters and tests whenever a control looks functional.</li>
+<li>Preserve Packer/appliance conventions when adding dependencies, services, or first-boot behavior.</li>
+<li>Ask the agent to run targeted tests and summarize what was changed before handing work back.</li>
+</ul>
+  </main>
+  <footer class="doc-footer">VCF Infrastructure Services Appliance documentation.</footer>
+  <script>
+    (() => {
+      const main = document.querySelector("main");
+      if (!main) {
+        return;
+      }
+
+      const children = Array.from(main.children);
+      const fixedHeader = [];
+      const documentElements = [];
+      let headerDone = false;
+
+      children.forEach((element) => {
+        const isDocumentNav = element.tagName === "P" && element.querySelector('a[href="index.html"]');
+        if (!headerDone && (element.tagName === "H1" || isDocumentNav)) {
+          fixedHeader.push(element);
+        } else {
+          headerDone = true;
+          documentElements.push(element);
+        }
+      });
+
+      const filtered = [];
+      let skipNextTocList = false;
+      documentElements.forEach((element) => {
+        if (element.matches("h2#table-of-contents")) {
+          skipNextTocList = true;
+          return;
+        }
+        if (skipNextTocList && (element.tagName === "UL" || element.tagName === "OL")) {
+          skipNextTocList = false;
+          return;
+        }
+        skipNextTocList = false;
+        filtered.push(element);
+      });
+
+      const firstHeadingIndex = filtered.findIndex((element) => element.tagName === "H2");
+      const introElements = firstHeadingIndex > 0 ? filtered.slice(0, firstHeadingIndex) : [];
+      const sectionElements = firstHeadingIndex >= 0 ? filtered.slice(firstHeadingIndex) : filtered;
+      const headings = sectionElements.filter((element) => element.tagName === "H2");
+      if (!headings.length) {
+        return;
+      }
+
+      main.replaceChildren(...fixedHeader, ...introElements);
+
+      const shell = document.createElement("div");
+      shell.className = "doc-shell";
+      const nav = document.createElement("aside");
+      nav.className = "doc-section-nav";
+      nav.setAttribute("aria-label", "Page sections");
+      const content = document.createElement("div");
+      content.className = "doc-section-content";
+      shell.append(nav, content);
+      main.append(shell);
+
+      const panes = [];
+      let activePane = null;
+      let activeEntry = null;
+
+      function createPane(id, title) {
+        const navGroup = document.createElement("div");
+        navGroup.className = "doc-section-nav-group";
+        const pane = document.createElement("section");
+        pane.className = "doc-section-pane";
+        pane.dataset.sectionId = id;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "doc-section-button";
+        button.textContent = title;
+        button.dataset.sectionTarget = id;
+        button.addEventListener("click", () => activate(id, true));
+        const subnav = document.createElement("div");
+        subnav.className = "doc-subsection-nav";
+        navGroup.append(button, subnav);
+        nav.append(navGroup);
+        content.append(pane);
+        panes.push({ id, pane, button, subnav, subsectionButtons: [] });
+        return pane;
+      }
+
+      function clearSubsectionState() {
+        panes.forEach((entry) => {
+          entry.subsectionButtons.forEach((button) => button.classList.remove("is-active"));
+        });
+      }
+
+      function activate(id, updateHash) {
+        const target = panes.find((entry) => entry.id === id) || panes[0];
+        panes.forEach((entry) => {
+          const active = entry === target;
+          entry.pane.classList.toggle("is-active", active);
+          entry.button.classList.toggle("is-active", active);
+          entry.button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        clearSubsectionState();
+        if (updateHash && target) {
+          history.replaceState(null, "", "#" + target.id);
+        }
+      }
+
+      function addSubsection(entry, heading) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "doc-subsection-button";
+        button.textContent = heading.textContent.trim();
+        button.dataset.sectionTarget = heading.id;
+        button.addEventListener("click", () => {
+          activate(entry.id, false);
+          clearSubsectionState();
+          button.classList.add("is-active");
+          history.replaceState(null, "", "#" + heading.id);
+          requestAnimationFrame(() => heading.scrollIntoView({ block: "start" }));
+        });
+        entry.subnav.append(button);
+        entry.subsectionButtons.push(button);
+      }
+
+      sectionElements.forEach((element) => {
+        if (element.tagName === "H2") {
+          activePane = createPane(element.id, element.textContent.trim());
+          activeEntry = panes[panes.length - 1];
+          activePane.append(element);
+          return;
+        }
+        if (element.tagName === "H3" && activeEntry) {
+          addSubsection(activeEntry, element);
+        }
+        if (activePane) {
+          activePane.append(element);
+        }
+      });
+
+      const requested = decodeURIComponent(location.hash.replace(/^#/, ""));
+      const requestedParent = panes.find((entry) => entry.id === requested);
+      const requestedChild = panes
+        .flatMap((entry) => entry.subsectionButtons.map((button) => ({ entry, button })))
+        .find((item) => item.button.dataset.sectionTarget === requested);
+      if (requestedChild) {
+        activate(requestedChild.entry.id, false);
+        requestedChild.button.classList.add("is-active");
+        const target = document.getElementById(requested);
+        if (target) {
+          requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+        }
+      } else {
+        activate((requestedParent && requestedParent.id) || panes[0].id, false);
+      }
+    })();
+  </script>
+  
+</body>
+</html>

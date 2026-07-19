@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Architecture · VIS</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">VIS</div>
+      <div>
+        <strong>VCF Infrastructure Services Appliance</strong>
+        <span>WilliamLam.com</span>
+      </div>
+    </a>
+    <nav aria-label="Documentation navigation">
+      
+<a href="services.html">Services</a>
+<a href="https://github.com/lamw/vcf-infrastructure-service-appliance/releases">Download</a>
+<a href="usage.html">Usage</a>
+<a href="architecture.html">Architecture</a>
+<a href="deploy.html">Deploy</a>
+<a href="develop.html">Develop</a>
+<a href="build.html">Build</a>
+
+    </nav>
+  </header>
+  <main>
+    <h1 id="architecture">Architecture</h1>
+<p>VIS is an Ubuntu-based virtual appliance with a web management UI and local service adapters. The UI stores appliance state in SQLite and manages backend services through explicit adapters so services can be configured, enabled, restarted, disabled, and health checked from one control plane.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#data-layout">Data Layout</a></li>
+<li><a href="#state">State</a></li>
+</ul>
+<div class="mermaid">flowchart LR
+  Admin[&quot;VI / VCF administrator&quot;] --&gt; UI[&quot;VIS Web UI&quot;]
+  UI --&gt; Depot[&quot;Software Depot&quot;]
+  UI --&gt; SFTP[&quot;SFTP Backup&quot;]
+  UI --&gt; Registry[&quot;Container Registry&quot;]
+  UI --&gt; LDAP[&quot;LDAP Provider&quot;]
+  UI --&gt; OIDC[&quot;OIDC Provider&quot;]
+  UI --&gt; DNS[&quot;DNS Server&quot;]
+  UI --&gt; NTP[&quot;NTP Server&quot;]
+  UI --&gt; DHCP[&quot;DHCP Server&quot;]
+  UI --&gt; KMS[&quot;Key Management Service&quot;]
+  UI --&gt; Certs[&quot;Shared Certificates&quot;]
+  UI --&gt; Health[&quot;System Health&quot;]
+
+  Depot --&gt; DepotDisk[&quot;/opt/vis/data/depot&quot;]
+  SFTP --&gt; SFTPDisk[&quot;/opt/vis/data/sftp&quot;]
+  Registry --&gt; RegistryDisk[&quot;/opt/vis/data/registry&quot;]
+  LDAP --&gt; IdentityDisk[&quot;/opt/vis/data/identity&quot;]
+  OIDC --&gt; IdentityDisk
+  DNS --&gt; DNSDisk[&quot;/opt/vis/data/dns&quot;]
+  NTP --&gt; TimeData[&quot;/opt/vis/data/time&quot;]
+  DHCP --&gt; DHCPData[&quot;/opt/vis/data/dhcp&quot;]
+  KMS --&gt; KMSData[&quot;/opt/vis/data/kms&quot;]</div>
+<h2 id="data-layout">Data Layout</h2>
+<p>The default service disks are:</p>
+<table>
+<thead><tr><th>Disk</th><th>Mount</th><th>Size</th></tr></thead>
+<tbody>
+<tr><td>Disk 1</td><td>OS</td><td>40 GB</td></tr>
+<tr><td>Disk 2</td><td><code>/opt/vis/data/depot</code></td><td>200 GB</td></tr>
+<tr><td>Disk 3</td><td><code>/opt/vis/data/sftp</code></td><td>15 GB</td></tr>
+<tr><td>Disk 4</td><td><code>/opt/vis/data/registry</code></td><td>60 GB</td></tr>
+<tr><td>Disk 5</td><td><code>/opt/vis/data/dns</code></td><td>2 GB</td></tr>
+<tr><td>Disk 6</td><td><code>/opt/vis/data/identity</code></td><td>2 GB</td></tr>
+</tbody></table>
+<p>Each service data path is on its own VMDK so a busy depot or registry can be expanded without consuming space from another VIS service.</p>
+<p>By default VIS stores application state in:</p>
+<pre><code>/opt/vis/state/vis.db</code></pre>
+<p>Set <code>VIS_DB_PATH</code> for local development and tests.</p>
+  </main>
+  <footer class="doc-footer">VCF Infrastructure Services Appliance documentation.</footer>
+  <script>
+    (() => {
+      const main = document.querySelector("main");
+      if (!main) {
+        return;
+      }
+
+      const children = Array.from(main.children);
+      const fixedHeader = [];
+      const documentElements = [];
+      let headerDone = false;
+
+      children.forEach((element) => {
+        const isDocumentNav = element.tagName === "P" && element.querySelector('a[href="index.html"]');
+        if (!headerDone && (element.tagName === "H1" || isDocumentNav)) {
+          fixedHeader.push(element);
+        } else {
+          headerDone = true;
+          documentElements.push(element);
+        }
+      });
+
+      const filtered = [];
+      let skipNextTocList = false;
+      documentElements.forEach((element) => {
+        if (element.matches("h2#table-of-contents")) {
+          skipNextTocList = true;
+          return;
+        }
+        if (skipNextTocList && (element.tagName === "UL" || element.tagName === "OL")) {
+          skipNextTocList = false;
+          return;
+        }
+        skipNextTocList = false;
+        filtered.push(element);
+      });
+
+      const firstHeadingIndex = filtered.findIndex((element) => element.tagName === "H2");
+      const introElements = firstHeadingIndex > 0 ? filtered.slice(0, firstHeadingIndex) : [];
+      const sectionElements = firstHeadingIndex >= 0 ? filtered.slice(firstHeadingIndex) : filtered;
+      const headings = sectionElements.filter((element) => element.tagName === "H2");
+      if (!headings.length) {
+        return;
+      }
+
+      main.replaceChildren(...fixedHeader, ...introElements);
+
+      const shell = document.createElement("div");
+      shell.className = "doc-shell";
+      const nav = document.createElement("aside");
+      nav.className = "doc-section-nav";
+      nav.setAttribute("aria-label", "Page sections");
+      const content = document.createElement("div");
+      content.className = "doc-section-content";
+      shell.append(nav, content);
+      main.append(shell);
+
+      const panes = [];
+      let activePane = null;
+      let activeEntry = null;
+
+      function createPane(id, title) {
+        const navGroup = document.createElement("div");
+        navGroup.className = "doc-section-nav-group";
+        const pane = document.createElement("section");
+        pane.className = "doc-section-pane";
+        pane.dataset.sectionId = id;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "doc-section-button";
+        button.textContent = title;
+        button.dataset.sectionTarget = id;
+        button.addEventListener("click", () => activate(id, true));
+        const subnav = document.createElement("div");
+        subnav.className = "doc-subsection-nav";
+        navGroup.append(button, subnav);
+        nav.append(navGroup);
+        content.append(pane);
+        panes.push({ id, pane, button, subnav, subsectionButtons: [] });
+        return pane;
+      }
+
+      function clearSubsectionState() {
+        panes.forEach((entry) => {
+          entry.subsectionButtons.forEach((button) => button.classList.remove("is-active"));
+        });
+      }
+
+      function activate(id, updateHash) {
+        const target = panes.find((entry) => entry.id === id) || panes[0];
+        panes.forEach((entry) => {
+          const active = entry === target;
+          entry.pane.classList.toggle("is-active", active);
+          entry.button.classList.toggle("is-active", active);
+          entry.button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        clearSubsectionState();
+        if (updateHash && target) {
+          history.replaceState(null, "", "#" + target.id);
+        }
+      }
+
+      function addSubsection(entry, heading) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "doc-subsection-button";
+        button.textContent = heading.textContent.trim();
+        button.dataset.sectionTarget = heading.id;
+        button.addEventListener("click", () => {
+          activate(entry.id, false);
+          clearSubsectionState();
+          button.classList.add("is-active");
+          history.replaceState(null, "", "#" + heading.id);
+          requestAnimationFrame(() => heading.scrollIntoView({ block: "start" }));
+        });
+        entry.subnav.append(button);
+        entry.subsectionButtons.push(button);
+      }
+
+      sectionElements.forEach((element) => {
+        if (element.tagName === "H2") {
+          activePane = createPane(element.id, element.textContent.trim());
+          activeEntry = panes[panes.length - 1];
+          activePane.append(element);
+          return;
+        }
+        if (element.tagName === "H3" && activeEntry) {
+          addSubsection(activeEntry, element);
+        }
+        if (activePane) {
+          activePane.append(element);
+        }
+      });
+
+      const requested = decodeURIComponent(location.hash.replace(/^#/, ""));
+      const requestedParent = panes.find((entry) => entry.id === requested);
+      const requestedChild = panes
+        .flatMap((entry) => entry.subsectionButtons.map((button) => ({ entry, button })))
+        .find((item) => item.button.dataset.sectionTarget === requested);
+      if (requestedChild) {
+        activate(requestedChild.entry.id, false);
+        requestedChild.button.classList.add("is-active");
+        const target = document.getElementById(requested);
+        if (target) {
+          requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+        }
+      } else {
+        activate((requestedParent && requestedParent.id) || panes[0].id, false);
+      }
+    })();
+  </script>
+  
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+      securityLevel: "strict",
+      themeVariables: {
+        background: "#0b1822",
+        primaryColor: "#142536",
+        primaryTextColor: "#f4f8fb",
+        primaryBorderColor: "#345267",
+        lineColor: "#59b2e0",
+        secondaryColor: "#1a3042",
+        tertiaryColor: "#0f1f2b"
+      }
+    });
+  </script>
+
+</body>
+</html>

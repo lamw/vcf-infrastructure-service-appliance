@@ -1,0 +1,18 @@
+{
+  "vis_appliance_fqdn": "vis.vcf.lab",
+  "vis_appliance_ip": "172.30.0.9",
+  "vis_admin_username": "admin",
+  "vis_admin_password": "VMware1!",
+  "vis_sftp_user": "",
+  "vis_sftp_password": "",
+  "install_vcf_download_tool": "false",
+  "harbor_version": "v2.15.1",
+  "harbor_port": "9443",
+  "harbor_http_port": "9080",
+  "harbor_admin_password": "",
+  "depot_disk_size": "204800",
+  "sftp_disk_size": "15360",
+  "registry_disk_size": "61440",
+  "dns_disk_size": "2048",
+  "identity_disk_size": "2048"
+}

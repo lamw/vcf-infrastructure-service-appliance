@@ -1,0 +1,231 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+  network:
+    version: 2
+    ethernets:
+      buildnic:
+        match:
+          name: "en*"
+        dhcp4: true
+        dhcp6: false
+  identity:
+    hostname: vis-appliance
+    username: visadmin
+    password: "$6$8XU8ys5.jhYHIRxp$p407nm6o.jdg1G4uXd3dtiZFu/XseaFp.ZKU3sb6zEDoXuVyAevwt4hFdeCgCht6iQ1gr2pDKtE9L/uZ05.L61"
+  ssh:
+    install-server: true
+    allow-pw: true
+  storage:
+    swap:
+      size: 0
+    config:
+      - id: disk0
+        type: disk
+        ptable: gpt
+        match:
+          path: /dev/sda
+        wipe: superblock-recursive
+        preserve: false
+        grub_device: true
+      - id: disk-depot
+        type: disk
+        ptable: gpt
+        match:
+          path: /dev/sdb
+        wipe: superblock-recursive
+        preserve: false
+      - id: disk-sftp
+        type: disk
+        ptable: gpt
+        match:
+          path: /dev/sdc
+        wipe: superblock-recursive
+        preserve: false
+      - id: disk-registry
+        type: disk
+        ptable: gpt
+        match:
+          path: /dev/sdd
+        wipe: superblock-recursive
+        preserve: false
+      - id: disk-dns
+        type: disk
+        ptable: gpt
+        match:
+          path: /dev/sde
+        wipe: superblock-recursive
+        preserve: false
+      - id: disk-identity
+        type: disk
+        ptable: gpt
+        match:
+          path: /dev/sdf
+        wipe: superblock-recursive
+        preserve: false
+      - id: disk0-bios-grub
+        type: partition
+        device: disk0
+        size: 1M
+        flag: bios_grub
+        number: 1
+        preserve: false
+      - id: disk0-boot
+        type: partition
+        device: disk0
+        size: 2G
+        flag: boot
+        number: 2
+        preserve: false
+      - id: disk0-pv
+        type: partition
+        device: disk0
+        size: -1
+        number: 3
+        preserve: false
+      - id: part-depot
+        type: partition
+        device: disk-depot
+        size: -1
+        number: 1
+        preserve: false
+      - id: part-sftp
+        type: partition
+        device: disk-sftp
+        size: -1
+        number: 1
+        preserve: false
+      - id: part-registry
+        type: partition
+        device: disk-registry
+        size: -1
+        number: 1
+        preserve: false
+      - id: part-dns
+        type: partition
+        device: disk-dns
+        size: -1
+        number: 1
+        preserve: false
+      - id: part-identity
+        type: partition
+        device: disk-identity
+        size: -1
+        number: 1
+        preserve: false
+      - id: vg-vis
+        type: lvm_volgroup
+        name: vg_vis
+        devices:
+          - disk0-pv
+        preserve: false
+      - id: lv-root
+        type: lvm_partition
+        name: root
+        volgroup: vg-vis
+        size: 20G
+        preserve: false
+      - id: lv-var
+        type: lvm_partition
+        name: var
+        volgroup: vg-vis
+        size: 8G
+        preserve: false
+      - id: lv-vis-state
+        type: lvm_partition
+        name: vis_state
+        volgroup: vg-vis
+        size: 4G
+        preserve: false
+      - id: fmt-boot
+        type: format
+        volume: disk0-boot
+        fstype: ext4
+        preserve: false
+      - id: fmt-root
+        type: format
+        volume: lv-root
+        fstype: ext4
+        preserve: false
+      - id: fmt-var
+        type: format
+        volume: lv-var
+        fstype: ext4
+        preserve: false
+      - id: fmt-vis-state
+        type: format
+        volume: lv-vis-state
+        fstype: ext4
+        preserve: false
+      - id: fmt-vis-depot
+        type: format
+        volume: part-depot
+        fstype: ext4
+        preserve: false
+      - id: fmt-vis-sftp
+        type: format
+        volume: part-sftp
+        fstype: ext4
+        preserve: false
+      - id: fmt-vis-registry
+        type: format
+        volume: part-registry
+        fstype: ext4
+        preserve: false
+      - id: fmt-vis-dns
+        type: format
+        volume: part-dns
+        fstype: ext4
+        preserve: false
+      - id: fmt-vis-identity
+        type: format
+        volume: part-identity
+        fstype: ext4
+        preserve: false
+      - id: mount-root
+        type: mount
+        device: fmt-root
+        path: /
+      - id: mount-boot
+        type: mount
+        device: fmt-boot
+        path: /boot
+      - id: mount-var
+        type: mount
+        device: fmt-var
+        path: /var
+      - id: mount-vis-state
+        type: mount
+        device: fmt-vis-state
+        path: /opt/vis/state
+      - id: mount-vis-depot
+        type: mount
+        device: fmt-vis-depot
+        path: /opt/vis/data/depot
+      - id: mount-vis-sftp
+        type: mount
+        device: fmt-vis-sftp
+        path: /opt/vis/data/sftp
+      - id: mount-vis-registry
+        type: mount
+        device: fmt-vis-registry
+        path: /opt/vis/data/registry
+      - id: mount-vis-dns
+        type: mount
+        device: fmt-vis-dns
+        path: /opt/vis/data/dns
+      - id: mount-vis-identity
+        type: mount
+        device: fmt-vis-identity
+        path: /opt/vis/data/identity
+  late-commands:
+    - curtin in-target --target=/target -- systemctl enable ssh
+    - curtin in-target --target=/target -- usermod -aG sudo visadmin
+  user-data:
+    disable_root: false
+    package_update: true
+    package_upgrade: false
+  shutdown: reboot
