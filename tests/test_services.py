@@ -360,6 +360,7 @@ class ServiceManagerTest(unittest.TestCase):
             with open(adapter.config_path, "r", encoding="utf-8") as handle:
                 rendered = handle.read()
             self.assertIn('local-zone: "williamlam.local." static', rendered)
+            self.assertIn("access-control: 0.0.0.0/0 allow", rendered)
             self.assertIn('local-data: "sddc-manager.williamlam.local. 300 IN A 192.168.30.60"', rendered)
             self.assertIn('local-data-ptr: "192.168.30.60 sddc-manager.williamlam.local."', rendered)
             with open(adapter.resolved_dropin_path, "r", encoding="utf-8") as handle:
@@ -400,6 +401,7 @@ class ServiceManagerTest(unittest.TestCase):
             with open(adapter.config_path, "r", encoding="utf-8") as handle:
                 rendered = handle.read()
             self.assertIn('local-zone: "williamlam.local." static', rendered)
+            self.assertIn("access-control: 0.0.0.0/0 allow", rendered)
             self.assertIn("# Add DNS entries to render local-data records.", rendered)
             self.assertNotIn("local-data:", rendered)
             commands = [call[0][0] for call in run.call_args_list]
