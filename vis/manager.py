@@ -532,6 +532,7 @@ class DNSServiceAdapter(ServiceAdapter):
             "server:",
             "  interface: 0.0.0.0",
             "  port: {}".format(self.service.settings.get("port", 53)),
+            "  access-control: 0.0.0.0/0 allow",
         ]
         domain = str(self.service.settings.get("domain", "")).strip(".")
         if domain:
