@@ -58,7 +58,14 @@ vcf-infrastructure-services-appliance-1.0.0.ova.parts.sha256</code></pre>
 <p>Verify the downloaded parts first:</p>
 <pre><code>shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.0.ova.parts.sha256</code></pre>
 <p>Reconstruct the OVA:</p>
+<ul>
+<li>Linux/macOS</li>
+</ul>
 <pre><code>cat vcf-infrastructure-services-appliance-1.0.0.ova.part-* &gt; vcf-infrastructure-services-appliance-1.0.0.ova</code></pre>
+<ul>
+<li>Windows PowerShell</li>
+</ul>
+<pre><code>cmd /c &#x27;copy /b vcf-infrastructure-services-appliance-1.0.0.ova.part-a* vcf-infrastructure-services-appliance-1.0.0.ova&#x27;</code></pre>
 <p>Verify the reconstructed OVA before importing it:</p>
 <pre><code>shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.0.ova.sha256</code></pre>
 <p>The final checksum must pass before deploying the OVA. If it fails, delete the reconstructed OVA, re-download the failed part listed by <code>shasum</code>, and repeat the verification.</p>
