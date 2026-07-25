@@ -43,9 +43,17 @@ shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.0.ova.parts.sha256
 
 Reconstruct the OVA:
 
+* Linux/macOS
+
 ```shell
 cat vcf-infrastructure-services-appliance-1.0.0.ova.part-* > vcf-infrastructure-services-appliance-1.0.0.ova
 ```
+
+* Windows PowerShell
+```shell
+cmd /c 'copy /b vcf-infrastructure-services-appliance-1.0.0.ova.part-a* vcf-infrastructure-services-appliance-1.0.0.ova'
+```
+
 
 Verify the reconstructed OVA before importing it:
 
