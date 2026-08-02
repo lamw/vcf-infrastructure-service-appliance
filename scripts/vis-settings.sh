@@ -47,6 +47,7 @@ sudo apt-get install -y \
   wget
 
 echo '> Staging DNS and LDAP services for VIS control...'
+sudo rm -f /etc/chrony/sources.d/ubuntu-ntp-pools.sources
 sudo systemctl disable --now chrony || true
 sudo systemctl disable --now unbound || true
 sudo systemctl disable --now slapd || true
