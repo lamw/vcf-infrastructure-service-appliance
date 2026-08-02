@@ -421,6 +421,8 @@ class ServiceManagerTest(unittest.TestCase):
             adapter.ptp_config_dir = os.path.join(tmpdir, "time")
             adapter.ptp_config_path = os.path.join(adapter.ptp_config_dir, "ptp4l.conf")
             adapter.ptp_unit_path = os.path.join(tmpdir, "vis-ptp4l.service")
+            adapter.ubuntu_sources_path = os.path.join(tmpdir, "ubuntu-ntp-pools.sources")
+            Path(adapter.ubuntu_sources_path).write_text("pool ntp.ubuntu.com iburst\n", encoding="utf-8")
 
             def active(command, check=False, **kwargs):
                 if command[:3] == ["systemctl", "is-active", "--quiet"]:
@@ -435,6 +437,7 @@ class ServiceManagerTest(unittest.TestCase):
                 rendered = handle.read()
             self.assertIn("server time.google.com iburst", rendered)
             self.assertIn("allow 172.30.0.0/24", rendered)
+            self.assertFalse(os.path.exists(adapter.ubuntu_sources_path))
             commands = [call[0][0] for call in run.call_args_list]
             self.assertIn(["systemctl", "disable", "--now", "systemd-timesyncd"], commands)
             self.assertIn(["systemctl", "enable", "--now", "chrony.service"], commands)

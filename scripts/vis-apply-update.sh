@@ -47,6 +47,9 @@ if [ -f "${SOURCE_DIR}/scripts/vis-apply-update.sh" ]; then
   install -o root -g root -m 0755 "${SOURCE_DIR}/scripts/vis-apply-update.sh" /usr/local/sbin/vis-apply-update
 fi
 
+echo "> Removing default Ubuntu Chrony NTP pools"
+rm -f /etc/chrony/sources.d/ubuntu-ntp-pools.sources
+
 echo "> Refreshing VIS systemd units"
 if [ -f "${SOURCE_DIR}/files/vis-redirect.service" ]; then
   install -o root -g root -m 0644 "${SOURCE_DIR}/files/vis-redirect.service" /etc/systemd/system/vis-redirect.service

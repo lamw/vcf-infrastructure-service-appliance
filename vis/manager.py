@@ -589,6 +589,7 @@ class DNSServiceAdapter(ServiceAdapter):
 class TimeServerAdapter(ServiceAdapter):
     chrony_config_dir = "/etc/chrony/conf.d"
     chrony_config_path = "/etc/chrony/conf.d/vis.conf"
+    ubuntu_sources_path = "/etc/chrony/sources.d/ubuntu-ntp-pools.sources"
     chrony_service_name = "chrony.service"
     ptp_config_dir = "/opt/vis/config/time"
     ptp_config_path = "/opt/vis/config/time/ptp4l.conf"
@@ -721,6 +722,8 @@ class TimeServerAdapter(ServiceAdapter):
 
     def _write_config(self) -> None:
         os.makedirs(self.chrony_config_dir, exist_ok=True)
+        if os.path.exists(self.ubuntu_sources_path):
+            os.remove(self.ubuntu_sources_path)
         lines = [
             "# Managed by VIS NTP Server",
             "bindaddress {}".format(self.service.settings.get("listen_address", "0.0.0.0")),
