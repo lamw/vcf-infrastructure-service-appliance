@@ -7,6 +7,7 @@ VIS currently uses Packer's `vmware-iso` workflow against a standalone ESX host.
 - [Repository Layout](#repository-layout)
 - [Requirements](#requirements)
 - [Build Artifacts](#build-artifacts)
+- [Signed Offline Update Releases](#signed-offline-update-releases)
 - [Configure Builder Settings](#configure-builder-settings)
 
 ## Repository Layout
@@ -77,6 +78,31 @@ For private lab builds, you can still preinstall VCFDT by placing `artifacts/vcf
 When enabled, Packer installs VCFDT under `/usr/local/lib/vcf-download-tool` and links `vcf-download-tool` into `/usr/local/bin`.
 
 `files/` is reserved for appliance setup payloads. Do not place large user downloads there.
+
+## Signed Offline Update Releases
+
+Offline VIS updates use a signed SHA256 manifest so disconnected appliances can reject tampered or corrupted release archives. The private signing key must never be committed to the repository or copied into the appliance. Only the public key in `files/vis-update-signing.pub` is shipped with VIS.
+
+To create an offline update bundle from a release checkout:
+
+```shell
+VERSION=$(jq -r .version vis-version.json)
+BUNDLE="vis-update-${VERSION}.zip"
+
+git archive --format=zip --output="${BUNDLE}" --prefix="vis-update-${VERSION}/" HEAD
+shasum -a 256 "${BUNDLE}" > "${BUNDLE}.sha256"
+openssl pkeyutl -sign -rawin   -inkey ~/.vis-signing/vis-update-signing-private.pem   -in "${BUNDLE}.sha256"   -out "${BUNDLE}.sha256.sig"
+```
+
+Publish all three files in the GitHub release:
+
+```text
+vis-update-<version>.zip
+vis-update-<version>.zip.sha256
+vis-update-<version>.zip.sha256.sig
+```
+
+The appliance verifies the `.sha256.sig` file with `/etc/vis/update-signing.pub`, verifies the ZIP hash from the signed SHA256 file, rejects unsafe ZIP paths or unsupported file types, and then applies the staged source with `/usr/local/sbin/vis-apply-update`.
 
 ## Configure Builder Settings
 

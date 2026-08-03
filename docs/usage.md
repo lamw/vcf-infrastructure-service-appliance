@@ -20,9 +20,17 @@ The username will be what you had defined as `VIS Admin Username` during OVF pro
 
 ### Updates
 
-VIS can be updated by simply pulling the latest updates from the VIS GitHub repository without requiring a re-deployment.
+VIS can be updated without requiring a re-deployment. Appliances with internet access can pull directly from the VIS GitHub repository. Appliances in disconnected environments can use an offline update bundle from a VIS GitHub release.
 
 ![](images/vis-update.png)
+
+For offline updates, download the matching release files from a trusted machine and upload all three files in **Appliance > Updates**:
+
+- `vis-update-<version>.zip`
+- `vis-update-<version>.zip.sha256`
+- `vis-update-<version>.zip.sha256.sig`
+
+VIS verifies the SHA256 signature with the built-in VIS release public key, verifies the archive hash, safely extracts the release, and then applies the same update workflow used by online updates.
 
 ### System Health
 

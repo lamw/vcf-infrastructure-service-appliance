@@ -124,11 +124,13 @@ VIS services are disabled by default. Configure and enable only the services nee
 
 ## ↻ Updates
 
-- Pulls the latest VIS source from the configured GitHub repository and branch.
+- Pulls the latest VIS source from the configured GitHub repository and branch when internet access is available.
+- Applies signed offline release ZIP bundles for disconnected appliances.
+- Verifies offline updates with the built-in VIS release public key, signed SHA256 manifest, and archive hash before applying changes.
 - Applies web application, Python dependency, helper script, and supported systemd unit updates without redeploying the appliance.
 - Runs asynchronously from the VIS UI because the web service may restart during the update.
 - Shows recent update status and `/opt/vis/state/vis-update.log` output.
-- Can also be run directly on the appliance with `sudo vis-update --repo-url <repo> --branch <branch>`.
+- Can also be run directly on the appliance with `sudo vis-update --repo-url <repo> --branch <branch>` or `sudo vis-offline-update --archive <zip> --sha256 <sha256> --signature <sig>`.
 
 ## 📋 Logs
 
