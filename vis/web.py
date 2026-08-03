@@ -942,8 +942,14 @@ def create_app(config=None):
             return redirect(url_for("service_detail", service_id="unbound-dns", dns_config_error="Default TTL must be a whole number of seconds.", _anchor="dns-config"))
         if default_ttl < 60 or default_ttl > 86400:
             return redirect(url_for("service_detail", service_id="unbound-dns", dns_config_error="Default TTL must be between 60 and 86400 seconds.", _anchor="dns-config"))
+        upstream_enabled = request.form.get("forward_upstream_enabled") == "on"
+        upstream_servers, upstream_error = _dns_forward_upstream_servers_from_form(upstream_enabled)
+        if upstream_error:
+            return redirect(url_for("service_detail", service_id="unbound-dns", dns_config_error=upstream_error, _anchor="dns-config"))
         service.settings["domain"] = domain
         service.settings["default_ttl"] = default_ttl
+        service.settings["forward_upstream_enabled"] = upstream_enabled
+        service.settings["forward_upstream_servers"] = upstream_servers
         service.configured = bool(domain)
         store.save_service(service)
         refresh_service_backend("unbound-dns")
@@ -1710,6 +1716,18 @@ def _dns_domain_from_form():
     if not raw_domain:
         return "", "DNS domain is required before adding DNS entries."
     return _normalize_dns_domain(raw_domain)
+
+
+def _dns_forward_upstream_servers_from_form(enabled):
+    servers = []
+    for value in _lines(request.form.get("forward_upstream_servers", "")):
+        try:
+            servers.append(str(ipaddress.ip_address(value)))
+        except ValueError:
+            return None, "{} is not a valid upstream DNS server IP address.".format(value)
+    if enabled and not servers:
+        return None, "Add at least one upstream DNS server or disable Forward Upstream DNS."
+    return servers, ""
 
 
 def _normalize_dns_domain(raw_domain):
