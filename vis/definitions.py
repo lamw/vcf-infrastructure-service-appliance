@@ -171,6 +171,8 @@ INITIAL_SERVICES = [
             "transport": ["udp", "tcp"],
             "domain": "",
             "default_ttl": 3600,
+            "forward_upstream_enabled": False,
+            "forward_upstream_servers": [],
             "entries": [],
         },
         last_validation_result=ValidationResult(False, "DNS Server is not configured yet", ""),

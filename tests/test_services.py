@@ -372,6 +372,41 @@ class ServiceManagerTest(unittest.TestCase):
             self.assertIn(["systemctl", "restart", "systemd-resolved"], commands)
             self.assertIn(["systemctl", "enable", "--now", "unbound.service"], commands)
 
+    def test_dns_adapter_renders_upstream_forwarding(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            store = ServiceStore(os.path.join(tmpdir, "vis.db"))
+            store.initialize()
+            service = store.get_service("unbound-dns")
+            service.settings["domain"] = "williamlam.local"
+            service.settings["forward_upstream_enabled"] = True
+            service.settings["forward_upstream_servers"] = ["172.30.0.1", "192.168.30.29"]
+            adapter = DNSServiceAdapter(service)
+
+            rendered = adapter.render_config()
+            validation = adapter.validate()
+
+            self.assertTrue(validation.ok)
+            self.assertIn("forward-zone:", rendered)
+            self.assertIn('  name: "."', rendered)
+            self.assertIn("  forward-addr: 172.30.0.1", rendered)
+            self.assertIn("  forward-addr: 192.168.30.29", rendered)
+            self.assertIn("  forward-no-cache: yes", rendered)
+
+    def test_dns_adapter_rejects_invalid_upstream_forwarder(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            store = ServiceStore(os.path.join(tmpdir, "vis.db"))
+            store.initialize()
+            service = store.get_service("unbound-dns")
+            service.settings["domain"] = "williamlam.local"
+            service.settings["forward_upstream_enabled"] = True
+            service.settings["forward_upstream_servers"] = ["not-an-ip"]
+            adapter = DNSServiceAdapter(service)
+
+            validation = adapter.validate()
+
+            self.assertFalse(validation.ok)
+            self.assertIn("not-an-ip is not a valid upstream DNS server IP address", validation.message)
+
     def test_dns_adapter_allows_enable_with_domain_only(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             store = ServiceStore(os.path.join(tmpdir, "vis.db"))
@@ -403,6 +438,7 @@ class ServiceManagerTest(unittest.TestCase):
             self.assertIn('local-zone: "williamlam.local." static', rendered)
             self.assertIn("access-control: 0.0.0.0/0 allow", rendered)
             self.assertIn("# Add DNS entries to render local-data records.", rendered)
+            self.assertNotIn("forward-zone:", rendered)
             self.assertNotIn("local-data:", rendered)
             commands = [call[0][0] for call in run.call_args_list]
             self.assertIn(["systemctl", "enable", "--now", "unbound.service"], commands)
@@ -1482,6 +1518,9 @@ class WebAppTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertIn("Add DNS Entry", body)
         self.assertIn("DNS Domain Configuration", body)
+        self.assertIn("Forward Upstream DNS", body)
+        self.assertIn("Upstream DNS Servers", body)
+        self.assertIn('placeholder="172.30.0.1"', body)
         self.assertIn("Configure a DNS domain before adding entries.", body)
         self.assertIn("DNS Entries", body)
         self.assertIn("One row per hostname and address pair", body)
@@ -1497,15 +1536,37 @@ class WebAppTest(unittest.TestCase):
     def test_dns_config_route_sets_required_domain(self):
         response = self.client.post(
             "/services/unbound-dns/config",
-            data={"domain": "williamlam.local", "default_ttl": "300"},
+            data={
+                "domain": "williamlam.local",
+                "default_ttl": "300",
+                "forward_upstream_enabled": "on",
+                "forward_upstream_servers": "172.30.0.1\n192.168.30.29",
+            },
         )
         service = self.app.config["service_manager"].get_service("unbound-dns")
 
         self.assertEqual(302, response.status_code)
         self.assertEqual("williamlam.local", service.settings["domain"])
         self.assertEqual(300, service.settings["default_ttl"])
+        self.assertTrue(service.settings["forward_upstream_enabled"])
+        self.assertEqual(["172.30.0.1", "192.168.30.29"], service.settings["forward_upstream_servers"])
         self.assertTrue(service.configured)
         self.assertIn("dns_config_status=DNS+configuration+updated", response.headers["Location"])
+        self.assertIn("#dns-config", response.headers["Location"])
+
+    def test_dns_config_route_rejects_invalid_upstream_forwarder(self):
+        response = self.client.post(
+            "/services/unbound-dns/config",
+            data={
+                "domain": "williamlam.local",
+                "default_ttl": "300",
+                "forward_upstream_enabled": "on",
+                "forward_upstream_servers": "not-an-ip",
+            },
+        )
+
+        self.assertEqual(302, response.status_code)
+        self.assertIn("dns_config_error=not-an-ip+is+not+a+valid+upstream+DNS+server+IP+address", response.headers["Location"])
         self.assertIn("#dns-config", response.headers["Location"])
 
     def test_dns_config_error_is_scoped_to_dns_config_panel(self):

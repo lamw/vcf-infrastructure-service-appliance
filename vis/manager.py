@@ -447,7 +447,16 @@ class DNSServiceAdapter(ServiceAdapter):
         if not domain:
             return ValidationResult(False, "Configure a DNS domain before enabling DNS Server", utc_now())
         entries = self._entries()
+        upstream_servers = self._forward_upstream_servers()
         problems = []
+        if bool(self.service.settings.get("forward_upstream_enabled", False)):
+            if not upstream_servers:
+                problems.append("Add at least one upstream DNS server or disable Forward Upstream DNS")
+            for server in upstream_servers:
+                try:
+                    ipaddress.ip_address(server)
+                except ValueError:
+                    problems.append("{} is not a valid upstream DNS server IP address".format(server))
         names = set()
         addresses = set()
         for entry in entries:
@@ -541,6 +550,11 @@ class DNSServiceAdapter(ServiceAdapter):
             lines.extend(["", "# Configure DNS domain before adding records."])
             return "\n".join(lines) + "\n"
         entries = self._entries()
+        if bool(self.service.settings.get("forward_upstream_enabled", False)) and self._forward_upstream_servers():
+            lines.extend(["", "forward-zone:", '  name: "."'])
+            for server in self._forward_upstream_servers():
+                lines.append("  forward-addr: {}".format(server))
+            lines.append("  forward-no-cache: yes")
         if not entries:
             lines.extend(["", "# Add DNS entries to render local-data records."])
             return "\n".join(lines) + "\n"
@@ -552,6 +566,14 @@ class DNSServiceAdapter(ServiceAdapter):
             lines.append('local-data: "{}. {} IN A {}"'.format(name, ttl, address))
             lines.append('local-data-ptr: "{} {}."'.format(address, name))
         return "\n".join(lines) + "\n"
+
+    def _forward_upstream_servers(self) -> List[str]:
+        servers = self.service.settings.get("forward_upstream_servers", [])
+        if isinstance(servers, str):
+            return [line.strip() for line in servers.splitlines() if line.strip()]
+        if isinstance(servers, list):
+            return [str(server).strip() for server in servers if str(server).strip()]
+        return []
 
     def _entries(self) -> List[Dict[str, object]]:
         entries = self.service.settings.get("entries", [])
