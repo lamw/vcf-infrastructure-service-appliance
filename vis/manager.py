@@ -436,6 +436,8 @@ class LocalHarborServiceAdapter(ServiceAdapter):
 class DNSServiceAdapter(ServiceAdapter):
     config_path = "/etc/unbound/unbound.conf.d/vis.conf"
     check_config_path = "/etc/unbound/unbound.conf"
+    root_trust_anchor_path = "/etc/unbound/unbound.conf.d/root-auto-trust-anchor-file.conf"
+    disabled_root_trust_anchor_path = "/etc/unbound/unbound.conf.d/root-auto-trust-anchor-file.conf.disabled"
     service_name = "unbound.service"
     resolved_dropin_dir = "/etc/systemd/resolved.conf.d"
     resolved_dropin_path = "/etc/systemd/resolved.conf.d/vis-dns.conf"
@@ -493,6 +495,7 @@ class DNSServiceAdapter(ServiceAdapter):
             return self.service
         self.service.enabled = True
         self._write_config()
+        self._apply_dnssec_setting()
         self._prepare_systemd_resolved()
         subprocess.run(["systemctl", "daemon-reload"], check=False)
         subprocess.run(["systemctl", "enable", "--now", self.service_name], check=False)
@@ -511,6 +514,7 @@ class DNSServiceAdapter(ServiceAdapter):
         self.service.configured = validation.ok
         if validation.ok:
             self._write_config()
+            self._apply_dnssec_setting()
             self._prepare_systemd_resolved()
             if self.service.enabled:
                 subprocess.run(["systemctl", "restart", self.service_name], check=False)
@@ -543,6 +547,13 @@ class DNSServiceAdapter(ServiceAdapter):
             "  port: {}".format(self.service.settings.get("port", 53)),
             "  access-control: 0.0.0.0/0 allow",
         ]
+        if bool(self.service.settings.get("disable_dnssec", False)):
+            lines.extend([
+                "  # DNSSEC validation disabled by VIS",
+                "  # {} is disabled".format(self.root_trust_anchor_path),
+            ])
+        else:
+            lines.append("  # DNSSEC validation uses the system root trust anchor")
         domain = str(self.service.settings.get("domain", "")).strip(".")
         if domain:
             lines.append('  local-zone: "{}." static'.format(domain))
@@ -583,6 +594,14 @@ class DNSServiceAdapter(ServiceAdapter):
         os.makedirs(os.path.dirname(self.config_path), exist_ok=True)
         with open(self.config_path, "w", encoding="utf-8") as handle:
             handle.write(self.render_config())
+
+    def _apply_dnssec_setting(self) -> None:
+        if bool(self.service.settings.get("disable_dnssec", False)):
+            if os.path.exists(self.root_trust_anchor_path):
+                os.replace(self.root_trust_anchor_path, self.disabled_root_trust_anchor_path)
+            return
+        if os.path.exists(self.disabled_root_trust_anchor_path) and not os.path.exists(self.root_trust_anchor_path):
+            os.replace(self.disabled_root_trust_anchor_path, self.root_trust_anchor_path)
 
     def _prepare_systemd_resolved(self) -> None:
         os.makedirs(self.resolved_dropin_dir, exist_ok=True)

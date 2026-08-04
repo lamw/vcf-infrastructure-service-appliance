@@ -170,6 +170,7 @@ INITIAL_SERVICES = [
             "transport": ["udp", "tcp"],
             "domain": "",
             "default_ttl": 3600,
+            "disable_dnssec": False,
             "forward_upstream_enabled": False,
             "forward_upstream_servers": [],
             "entries": [],

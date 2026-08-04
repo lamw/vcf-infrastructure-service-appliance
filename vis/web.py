@@ -967,8 +967,10 @@ def create_app(config=None):
         upstream_servers, upstream_error = _dns_forward_upstream_servers_from_form(upstream_enabled)
         if upstream_error:
             return redirect(url_for("service_detail", service_id="unbound-dns", dns_config_error=upstream_error, _anchor="dns-config"))
+        disable_dnssec = request.form.get("disable_dnssec") == "on"
         service.settings["domain"] = domain
         service.settings["default_ttl"] = default_ttl
+        service.settings["disable_dnssec"] = disable_dnssec
         service.settings["forward_upstream_enabled"] = upstream_enabled
         service.settings["forward_upstream_servers"] = upstream_servers
         service.configured = bool(domain)

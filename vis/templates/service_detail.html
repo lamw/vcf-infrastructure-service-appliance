@@ -778,6 +778,12 @@
           <label class="field-label" for="dnsDefaultTtl">Default TTL</label>
           <input class="text-input" id="dnsDefaultTtl" name="default_ttl" type="number" min="60" max="86400" value="{{ service.settings.default_ttl or 3600 }}" required />
 
+          <label class="field-label" for="dnsDisableDnssec">DNSSEC</label>
+          <label class="toggle-row" for="dnsDisableDnssec">
+            <input id="dnsDisableDnssec" name="disable_dnssec" type="checkbox" {% if service.settings.disable_dnssec %}checked{% endif %} />
+            <span>Disable DNSSEC</span>
+          </label>
+
           <label class="field-label" for="dnsForwardUpstreamEnabled">Forwarding</label>
           <label class="toggle-row" for="dnsForwardUpstreamEnabled">
             <input id="dnsForwardUpstreamEnabled" name="forward_upstream_enabled" type="checkbox" {% if service.settings.forward_upstream_enabled %}checked{% endif %} />

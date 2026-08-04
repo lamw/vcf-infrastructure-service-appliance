@@ -361,6 +361,7 @@ class ServiceManagerTest(unittest.TestCase):
                 rendered = handle.read()
             self.assertIn('local-zone: "williamlam.local." static', rendered)
             self.assertIn("access-control: 0.0.0.0/0 allow", rendered)
+            self.assertIn("DNSSEC validation uses the system root trust anchor", rendered)
             self.assertIn('local-data: "sddc-manager.williamlam.local. 300 IN A 192.168.30.60"', rendered)
             self.assertIn('local-data-ptr: "192.168.30.60 sddc-manager.williamlam.local."', rendered)
             with open(adapter.resolved_dropin_path, "r", encoding="utf-8") as handle:
@@ -371,6 +372,57 @@ class ServiceManagerTest(unittest.TestCase):
             commands = [call[0][0] for call in run.call_args_list]
             self.assertIn(["systemctl", "restart", "systemd-resolved"], commands)
             self.assertIn(["systemctl", "enable", "--now", "unbound.service"], commands)
+
+    def test_dns_adapter_disables_and_restores_dnssec_trust_anchor(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            store = ServiceStore(os.path.join(tmpdir, "vis.db"))
+            store.initialize()
+            service = store.get_service("unbound-dns")
+            service.settings["domain"] = "williamlam.local"
+            service.settings["disable_dnssec"] = True
+            adapter = DNSServiceAdapter(service)
+            adapter.config_path = os.path.join(tmpdir, "unbound", "vis.conf")
+            adapter.check_config_path = os.path.join(tmpdir, "unbound.conf")
+            adapter.resolved_dropin_dir = os.path.join(tmpdir, "resolved.conf.d")
+            adapter.resolved_dropin_path = os.path.join(adapter.resolved_dropin_dir, "vis-dns.conf")
+            adapter.resolv_conf_path = os.path.join(tmpdir, "resolv.conf")
+            adapter.systemd_resolved_conf_path = os.path.join(tmpdir, "systemd-resolved-resolv.conf")
+            adapter.root_trust_anchor_path = os.path.join(tmpdir, "root-auto-trust-anchor-file.conf")
+            adapter.disabled_root_trust_anchor_path = "{}.disabled".format(adapter.root_trust_anchor_path)
+            Path(adapter.systemd_resolved_conf_path).write_text("nameserver 192.168.30.29\n", encoding="utf-8")
+            Path(adapter.root_trust_anchor_path).write_text('server:\n  auto-trust-anchor-file: "/var/lib/unbound/root.key"\n', encoding="utf-8")
+
+            with patch.object(adapter, "_config_valid", return_value=True), \
+                patch.object(adapter, "_service_active", return_value=True), \
+                patch("vis.manager.subprocess.run"):
+                result = adapter.enable()
+
+            self.assertEqual("healthy", result.health_status)
+            self.assertFalse(os.path.exists(adapter.root_trust_anchor_path))
+            self.assertTrue(os.path.exists(adapter.disabled_root_trust_anchor_path))
+            with open(adapter.config_path, "r", encoding="utf-8") as handle:
+                rendered = handle.read()
+            self.assertIn("DNSSEC validation disabled by VIS", rendered)
+
+            service.settings["disable_dnssec"] = False
+            adapter = DNSServiceAdapter(service)
+            adapter.config_path = os.path.join(tmpdir, "unbound", "vis.conf")
+            adapter.check_config_path = os.path.join(tmpdir, "unbound.conf")
+            adapter.resolved_dropin_dir = os.path.join(tmpdir, "resolved.conf.d")
+            adapter.resolved_dropin_path = os.path.join(adapter.resolved_dropin_dir, "vis-dns.conf")
+            adapter.resolv_conf_path = os.path.join(tmpdir, "resolv.conf")
+            adapter.systemd_resolved_conf_path = os.path.join(tmpdir, "systemd-resolved-resolv.conf")
+            adapter.root_trust_anchor_path = os.path.join(tmpdir, "root-auto-trust-anchor-file.conf")
+            adapter.disabled_root_trust_anchor_path = "{}.disabled".format(adapter.root_trust_anchor_path)
+
+            with patch.object(adapter, "_config_valid", return_value=True), \
+                patch.object(adapter, "_service_active", return_value=True), \
+                patch("vis.manager.subprocess.run"):
+                result = adapter.restart()
+
+            self.assertEqual("healthy", result.health_status)
+            self.assertTrue(os.path.exists(adapter.root_trust_anchor_path))
+            self.assertFalse(os.path.exists(adapter.disabled_root_trust_anchor_path))
 
     def test_dns_adapter_renders_upstream_forwarding(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -1573,6 +1625,7 @@ class WebAppTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertIn("Add DNS Entry", body)
         self.assertIn("DNS Domain Configuration", body)
+        self.assertIn("Disable DNSSEC", body)
         self.assertIn("Forward Upstream DNS", body)
         self.assertIn("Upstream DNS Servers", body)
         self.assertIn('placeholder="172.30.0.1"', body)
@@ -1594,6 +1647,7 @@ class WebAppTest(unittest.TestCase):
             data={
                 "domain": "williamlam.local",
                 "default_ttl": "300",
+                "disable_dnssec": "on",
                 "forward_upstream_enabled": "on",
                 "forward_upstream_servers": "172.30.0.1\n192.168.30.29",
             },
@@ -1603,6 +1657,7 @@ class WebAppTest(unittest.TestCase):
         self.assertEqual(302, response.status_code)
         self.assertEqual("williamlam.local", service.settings["domain"])
         self.assertEqual(300, service.settings["default_ttl"])
+        self.assertTrue(service.settings["disable_dnssec"])
         self.assertTrue(service.settings["forward_upstream_enabled"])
         self.assertEqual(["172.30.0.1", "192.168.30.29"], service.settings["forward_upstream_servers"])
         self.assertTrue(service.configured)
