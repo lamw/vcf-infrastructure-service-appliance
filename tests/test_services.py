@@ -16,7 +16,7 @@ from vis.file_manager import RepositoryFileManager
 from vis.manager import DHCPServerAdapter, DNSServiceAdapter, LDAPProviderAdapter, LocalSFTPServiceAdapter, OIDCProviderAdapter, PyKMIPServiceAdapter, ServiceManager, TimeServerAdapter
 from vis.redirect import VISRedirectHandler
 from vis.store import ServiceStore
-from vis.web import create_app, _render_harbor_config, _storage_health
+from vis.web import create_app, _launch_update_command, _render_harbor_config, _storage_health
 
 
 class VISRedirectTest(unittest.TestCase):
@@ -992,6 +992,46 @@ class WebAppTest(unittest.TestCase):
         self.assertIn("--sha256", marker_text)
         self.assertIn("--signature", marker_text)
         self.assertIn("--public-key {}".format(key), marker_text)
+
+    def test_update_launcher_uses_systemd_run_outside_web_service_cgroup(self):
+        app = create_app({"TESTING": False, "VIS_DB_PATH": os.path.join(self.tmpdir.name, "launcher.db")})
+        command = ["/usr/local/sbin/vis-update", "--repo-url", "https://github.com/lamw/vcf-infrastructure-service-appliance.git", "--branch", "main"]
+        env = {
+            "VIS_UPDATE_REPO_URL": "https://github.com/lamw/vcf-infrastructure-service-appliance.git",
+            "VIS_UPDATE_BRANCH": "main",
+            "VIS_UPDATE_STATE_DIR": "/opt/vis/state",
+            "VIS_UPDATE_LOG_FILE": "/opt/vis/state/vis-update.log",
+            "VIS_UPDATE_STATUS_FILE": "/opt/vis/state/vis-update-status.json",
+        }
+        result = subprocess.CompletedProcess(["systemd-run"], 0, stdout="started", stderr="")
+
+        with patch("vis.web.shutil.which", return_value="/usr/bin/systemd-run"), \
+            patch("vis.web.subprocess.run", return_value=result) as run, \
+            patch("vis.web.subprocess.Popen") as popen:
+            _launch_update_command(app, "vis-update", command, env)
+
+        popen.assert_not_called()
+        systemd_command = run.call_args[0][0]
+        self.assertEqual("systemd-run", systemd_command[0])
+        self.assertIn("--collect", systemd_command)
+        self.assertIn("--property=Type=exec", systemd_command)
+        self.assertIn("--setenv=VIS_UPDATE_STATE_DIR=/opt/vis/state", systemd_command)
+        self.assertIn("--setenv=VIS_UPDATE_STATUS_FILE=/opt/vis/state/vis-update-status.json", systemd_command)
+        self.assertEqual(command, systemd_command[-len(command):])
+
+    def test_update_launcher_falls_back_to_detached_process_without_systemd_run(self):
+        app = create_app({"TESTING": False, "VIS_DB_PATH": os.path.join(self.tmpdir.name, "launcher-fallback.db")})
+        command = ["/tmp/fake-vis-update"]
+        env = {"VIS_UPDATE_STATE_DIR": "/tmp/vis-state"}
+        fake_process = type("Process", (), {"pid": 4242})()
+
+        with patch("vis.web.shutil.which", return_value=None), \
+            patch("vis.web.subprocess.Popen", return_value=fake_process) as popen:
+            _launch_update_command(app, "vis-update", command, env)
+
+        popen.assert_called_once()
+        self.assertEqual(command, popen.call_args[0][0])
+        self.assertTrue(popen.call_args[1]["start_new_session"])
 
     def test_updates_offline_requires_signature_file(self):
         response = self.client.post(
