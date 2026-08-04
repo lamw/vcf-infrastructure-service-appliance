@@ -71,6 +71,13 @@ fi
 if [ -f /tmp/vis-apply-update.sh ]; then
   sudo install -o root -g root -m 0755 /tmp/vis-apply-update.sh /usr/local/sbin/vis-apply-update
 fi
+if [ -f /tmp/vis-offline-update.sh ]; then
+  sudo install -o root -g root -m 0755 /tmp/vis-offline-update.sh /usr/local/sbin/vis-offline-update
+fi
+if [ -f /tmp/vis-update-signing.pub ]; then
+  sudo install -o root -g root -m 0755 -d /etc/vis
+  sudo install -o root -g root -m 0644 /tmp/vis-update-signing.pub /etc/vis/update-signing.pub
+fi
 
 sudo systemctl daemon-reload
 sudo systemctl enable vis-web.service

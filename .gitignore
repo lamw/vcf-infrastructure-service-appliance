@@ -24,3 +24,8 @@ artifacts/ubuntu-*
 http/optional-artifacts/*
 !http/optional-artifacts/.keep
 .zed
+# Release signing private material must stay outside the repository.
+*private*.pem
+*signing-private*.pem
+*.key
+*.asc

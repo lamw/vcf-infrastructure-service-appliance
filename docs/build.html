@@ -35,6 +35,7 @@
 <li><a href="#repository-layout">Repository Layout</a></li>
 <li><a href="#requirements">Requirements</a></li>
 <li><a href="#build-artifacts">Build Artifacts</a></li>
+<li><a href="#signed-offline-update-releases">Signed Offline Update Releases</a></li>
 <li><a href="#configure-builder-settings">Configure Builder Settings</a></li>
 </ul>
 <h2 id="repository-layout">Repository Layout</h2>
@@ -83,6 +84,20 @@
 <pre><code>&quot;install_vcf_download_tool&quot;: &quot;true&quot;</code></pre>
 <p>When enabled, Packer installs VCFDT under <code>/usr/local/lib/vcf-download-tool</code> and links <code>vcf-download-tool</code> into <code>/usr/local/bin</code>.</p>
 <p><code>files/</code> is reserved for appliance setup payloads. Do not place large user downloads there.</p>
+<h2 id="signed-offline-update-releases">Signed Offline Update Releases</h2>
+<p>Offline VIS updates use a signed SHA256 manifest so disconnected appliances can reject tampered or corrupted release archives. The private signing key must never be committed to the repository or copied into the appliance. Only the public key in <code>files/vis-update-signing.pub</code> is shipped with VIS.</p>
+<p>To create an offline update bundle from a release checkout:</p>
+<pre><code>VERSION=$(jq -r .version vis-version.json)
+BUNDLE=&quot;vis-update-${VERSION}.zip&quot;
+
+git archive --format=zip --output=&quot;${BUNDLE}&quot; --prefix=&quot;vis-update-${VERSION}/&quot; HEAD
+shasum -a 256 &quot;${BUNDLE}&quot; &gt; &quot;${BUNDLE}.sha256&quot;
+openssl pkeyutl -sign -rawin   -inkey ~/.vis-signing/vis-update-signing-private.pem   -in &quot;${BUNDLE}.sha256&quot;   -out &quot;${BUNDLE}.sha256.sig&quot;</code></pre>
+<p>Publish all three files in the GitHub release:</p>
+<pre><code>vis-update-&lt;version&gt;.zip
+vis-update-&lt;version&gt;.zip.sha256
+vis-update-&lt;version&gt;.zip.sha256.sig</code></pre>
+<p>The appliance verifies the <code>.sha256.sig</code> file with <code>/etc/vis/update-signing.pub</code>, verifies the ZIP hash from the signed SHA256 file, rejects unsafe ZIP paths or unsupported file types, and then applies the staged source with <code>/usr/local/sbin/vis-apply-update</code>.</p>
 <h2 id="configure-builder-settings">Configure Builder Settings</h2>
 <p>Edit <code>vis-builder.json</code> for your ESX build host:</p>
 <pre><code>{

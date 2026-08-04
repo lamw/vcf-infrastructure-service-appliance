@@ -869,10 +869,16 @@ class WebAppTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertIn("<h1>Updates</h1>", body)
         self.assertIn('class="summary-grid service-metrics"', body)
-        self.assertIn("Appliance Update", body)
+        self.assertIn("Online Update", body)
+        self.assertIn("Offline Update", body)
         self.assertIn("Repository URL", body)
         self.assertIn("https://github.com/lamw/vcf-infrastructure-service-appliance.git", body)
-        self.assertIn("Run Update", body)
+        self.assertIn("Run Online Update", body)
+        self.assertIn("Release ZIP", body)
+        self.assertIn("SHA256 File", body)
+        self.assertIn("Signature File", body)
+        self.assertIn("Run Offline Update", body)
+        self.assertIn("trusted VIS release signing key", body)
         self.assertIn("Update Log", body)
 
     def test_updates_run_starts_configured_update_script(self):
@@ -898,6 +904,55 @@ class WebAppTest(unittest.TestCase):
         with open(marker, "r", encoding="utf-8") as handle:
             marker_text = handle.read()
         self.assertIn("--repo-url https://github.com/lamw/vcf-infrastructure-service-appliance.git --branch main", marker_text)
+
+    def test_updates_offline_starts_configured_signed_update_script(self):
+        marker = os.path.join(self.tmpdir.name, "offline-update-marker.txt")
+        script = os.path.join(self.tmpdir.name, "fake-vis-offline-update.sh")
+        key = os.path.join(self.tmpdir.name, "vis-update-signing.pub")
+        with open(script, "w", encoding="utf-8") as handle:
+            handle.write("#!/bin/sh\n")
+            handle.write("echo \"$@\" > '{}'\n".format(marker))
+        with open(key, "w", encoding="utf-8") as handle:
+            handle.write("public key")
+        os.chmod(script, 0o755)
+        self.app.config["VIS_OFFLINE_UPDATE_SCRIPT"] = script
+        self.app.config["VIS_UPDATE_PUBLIC_KEY"] = key
+
+        response = self.client.post(
+            "/updates/offline",
+            data={
+                "archive_file": (io.BytesIO(b"zip"), "vis-update.zip"),
+                "checksum_file": (io.BytesIO(b"abc  vis-update.zip\n"), "vis-update.zip.sha256"),
+                "signature_file": (io.BytesIO(b"sig"), "vis-update.zip.sha256.sig"),
+            },
+            content_type="multipart/form-data",
+        )
+
+        self.assertEqual(302, response.status_code)
+        for _ in range(20):
+            if os.path.exists(marker):
+                break
+            time.sleep(0.05)
+        self.assertTrue(os.path.exists(marker))
+        with open(marker, "r", encoding="utf-8") as handle:
+            marker_text = handle.read()
+        self.assertIn("--archive", marker_text)
+        self.assertIn("--sha256", marker_text)
+        self.assertIn("--signature", marker_text)
+        self.assertIn("--public-key {}".format(key), marker_text)
+
+    def test_updates_offline_requires_signature_file(self):
+        response = self.client.post(
+            "/updates/offline",
+            data={
+                "archive_file": (io.BytesIO(b"zip"), "vis-update.zip"),
+                "checksum_file": (io.BytesIO(b"abc  vis-update.zip\n"), "vis-update.zip.sha256"),
+            },
+            content_type="multipart/form-data",
+        )
+
+        self.assertEqual(302, response.status_code)
+        self.assertIn("update_error=Offline+update+requires+the+release+signature+file", response.headers["Location"])
 
     def test_config_profiles_page_exports_service_json(self):
         manager = self.app.config["service_manager"]

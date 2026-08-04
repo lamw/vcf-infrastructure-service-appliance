@@ -232,6 +232,27 @@ def create_app(config=None):
             return redirect(url_for("updates", update_error=str(err)))
         return redirect(url_for("updates", update_status_message="VIS update started. The web UI may briefly restart when the update is applied."))
 
+    @app.route("/updates/offline", methods=["POST"])
+    def updates_offline():
+        status = _read_update_status(app)
+        if status.get("state") == "running":
+            return redirect(url_for("updates", update_warning="VIS update is already running."))
+        archive = request.files.get("archive_file")
+        checksum = request.files.get("checksum_file")
+        signature = request.files.get("signature_file")
+        if not archive or not archive.filename:
+            return redirect(url_for("updates", update_error="Offline update requires a VIS release ZIP archive."))
+        if not checksum or not checksum.filename:
+            return redirect(url_for("updates", update_error="Offline update requires the release SHA256 file."))
+        if not signature or not signature.filename:
+            return redirect(url_for("updates", update_error="Offline update requires the release signature file."))
+        try:
+            archive_path, checksum_path, signature_path = _stage_offline_update_uploads(app, archive, checksum, signature)
+            _start_offline_update(app, archive_path, checksum_path, signature_path)
+        except OSError as err:
+            return redirect(url_for("updates", update_error=str(err)))
+        return redirect(url_for("updates", update_status_message="Signed offline VIS update started. The web UI may briefly restart when the update is applied."))
+
     @app.route("/config/export")
     def config_export():
         profile = _export_config_profile(manager, app.config["VIS_APPLIANCE_FQDN"], app.config["VIS_APPLIANCE_IP"])
@@ -3372,6 +3393,9 @@ def _update_paths(app):
         "status": state_dir / "vis-update-status.json",
         "log": state_dir / "vis-update.log",
         "script": Path(app.config.get("VIS_UPDATE_SCRIPT") or os.environ.get("VIS_UPDATE_SCRIPT", "/usr/local/sbin/vis-update")),
+        "offline_script": Path(app.config.get("VIS_OFFLINE_UPDATE_SCRIPT") or os.environ.get("VIS_OFFLINE_UPDATE_SCRIPT", "/usr/local/sbin/vis-offline-update")),
+        "signing_key": Path(app.config.get("VIS_UPDATE_PUBLIC_KEY") or os.environ.get("VIS_UPDATE_PUBLIC_KEY", "/etc/vis/update-signing.pub")),
+        "upload_dir": state_dir / "update-uploads",
     }
 
 
@@ -3417,6 +3441,28 @@ def _valid_git_ref(value):
     return bool(re.match(r"^[A-Za-z0-9._/-]{1,128}$", value or ""))
 
 
+def _stage_offline_update_uploads(app, archive, checksum, signature):
+    paths = _update_paths(app)
+    paths["upload_dir"].mkdir(mode=0o700, parents=True, exist_ok=True)
+    batch_dir = Path(tempfile.mkdtemp(prefix="offline-", dir=str(paths["upload_dir"])))
+    files = []
+    for upload, expected_suffix, label in (
+        (archive, ".zip", "release ZIP archive"),
+        (checksum, ".sha256", "release SHA256 file"),
+        (signature, ".sig", "release signature file"),
+    ):
+        filename = secure_filename(upload.filename or "")
+        if not filename:
+            raise OSError("Offline update {} has an invalid filename.".format(label))
+        if not filename.lower().endswith(expected_suffix):
+            raise OSError("Offline update {} must use a {} file.".format(label, expected_suffix))
+        target = batch_dir / filename
+        upload.save(str(target))
+        target.chmod(0o600)
+        files.append(target)
+    return tuple(files)
+
+
 def _start_update(app, repo_url, branch):
     paths = _update_paths(app)
     if not paths["script"].exists():
@@ -3431,6 +3477,39 @@ def _start_update(app, repo_url, branch):
             "VIS_UPDATE_STATE_DIR": str(paths["state_dir"]),
             "VIS_UPDATE_LOG_FILE": str(paths["log"]),
             "VIS_UPDATE_STATUS_FILE": str(paths["status"]),
+        }
+    )
+    with open(os.devnull, "wb") as devnull:
+        process = subprocess.Popen(command, stdout=devnull, stderr=devnull, env=env, start_new_session=True, close_fds=True)
+    if app.config.get("TESTING"):
+        process.wait(timeout=5)
+
+
+def _start_offline_update(app, archive_path, checksum_path, signature_path):
+    paths = _update_paths(app)
+    if not paths["offline_script"].exists():
+        raise OSError("VIS offline update script is not installed at {}.".format(paths["offline_script"]))
+    if not paths["signing_key"].exists():
+        raise OSError("VIS update signing public key is not installed at {}.".format(paths["signing_key"]))
+    paths["state_dir"].mkdir(parents=True, exist_ok=True)
+    command = [
+        str(paths["offline_script"]),
+        "--archive",
+        str(archive_path),
+        "--sha256",
+        str(checksum_path),
+        "--signature",
+        str(signature_path),
+        "--public-key",
+        str(paths["signing_key"]),
+    ]
+    env = os.environ.copy()
+    env.update(
+        {
+            "VIS_UPDATE_STATE_DIR": str(paths["state_dir"]),
+            "VIS_UPDATE_LOG_FILE": str(paths["log"]),
+            "VIS_UPDATE_STATUS_FILE": str(paths["status"]),
+            "VIS_UPDATE_PUBLIC_KEY": str(paths["signing_key"]),
         }
     )
     with open(os.devnull, "wb") as devnull:

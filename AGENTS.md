@@ -77,7 +77,9 @@ New services must be added to:
 - App Python dependencies belong in `vis/requirements.txt`; `scripts/vis-services.sh` installs them into `/opt/vis/app/venv`.
 - OS packages belong in `scripts/vis-settings.sh`.
 - Service data directories should be created in both Packer setup and first-boot scripts when applicable.
-- Appliance update behavior belongs in `scripts/vis-update.sh` and `scripts/vis-apply-update.sh`; keep those hooks current when new files, units, or dependency steps must be applied to already deployed appliances.
+- Appliance update behavior belongs in `scripts/vis-update.sh`, `scripts/vis-offline-update.sh`, and `scripts/vis-apply-update.sh`; keep those hooks current when new files, units, or dependency steps must be applied to already deployed appliances.
+- Offline update ZIPs must verify a signed SHA256 manifest with the VIS release public key before extraction or apply.
+- Never commit private release signing keys. Only public verification keys may live in the repository.
 - Do not rebuild the appliance unless explicitly requested.
 
 ## Live Appliance Patching

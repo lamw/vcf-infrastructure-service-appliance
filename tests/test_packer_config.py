@@ -180,6 +180,8 @@ class PackerOptionalArtifactTest(unittest.TestCase):
         services_script = (ROOT / "scripts" / "vis-services.sh").read_text(encoding="utf-8")
         update_script = (ROOT / "scripts" / "vis-update.sh").read_text(encoding="utf-8")
         apply_script = (ROOT / "scripts" / "vis-apply-update.sh").read_text(encoding="utf-8")
+        offline_script = (ROOT / "scripts" / "vis-offline-update.sh").read_text(encoding="utf-8")
+        signing_key = (ROOT / "files" / "vis-update-signing.pub").read_text(encoding="utf-8")
         file_provisioners = [
             provisioner
             for provisioner in self.config["provisioners"]
@@ -200,13 +202,35 @@ class PackerOptionalArtifactTest(unittest.TestCase):
                 for provisioner in file_provisioners
             )
         )
+        self.assertTrue(
+            any(
+                provisioner["source"] == "scripts/vis-offline-update.sh"
+                and provisioner["destination"] == "/tmp/vis-offline-update.sh"
+                for provisioner in file_provisioners
+            )
+        )
+        self.assertTrue(
+            any(
+                provisioner["source"] == "files/vis-update-signing.pub"
+                and provisioner["destination"] == "/tmp/vis-update-signing.pub"
+                for provisioner in file_provisioners
+            )
+        )
         self.assertIn("/usr/local/sbin/vis-update", services_script)
         self.assertIn("/usr/local/sbin/vis-apply-update", services_script)
+        self.assertIn("/usr/local/sbin/vis-offline-update", services_script)
+        self.assertIn("/etc/vis/update-signing.pub", services_script)
         self.assertIn("https://github.com/lamw/vcf-infrastructure-service-appliance.git", update_script)
         self.assertIn("git clone", update_script)
         self.assertIn("scripts/vis-apply-update.sh", update_script)
-        self.assertIn("pip\" install -r", apply_script)
+        self.assertIn('pip" install -r', apply_script)
         self.assertIn("systemctl restart vis-web.service", apply_script)
+        self.assertIn("vis-offline-update", apply_script)
+        self.assertIn("openssl pkeyutl -verify", offline_script)
+        self.assertIn("Archive SHA256 verified", offline_script)
+        self.assertIn("unsafe path", offline_script)
+        self.assertIn("/usr/local/sbin/vis-apply-update", offline_script)
+        self.assertIn("BEGIN PUBLIC KEY", signing_key)
 
     def test_packer_creates_service_data_directories(self):
         settings_script = (ROOT / "scripts" / "vis-settings.sh").read_text(encoding="utf-8")

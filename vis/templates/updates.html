@@ -52,7 +52,7 @@
 <section class="panel">
   <div class="panel-header">
     <div>
-      <h2>Appliance Update</h2>
+      <h2>Online Update</h2>
       <p class="subtle">Pull the latest VIS source from GitHub and apply web app, script, service unit, and Python dependency changes.</p>
     </div>
   </div>
@@ -69,7 +69,35 @@
       <p class="notice warn">Updates can restart the VIS web service. Export a configuration profile before applying changes to production-like lab appliances.</p>
 
       <span></span>
-      <button class="btn primary" type="submit" {% if update_status.state == "running" %}disabled{% endif %}>Run Update</button>
+      <button class="btn primary" type="submit" {% if update_status.state == "running" %}disabled{% endif %}>Run Online Update</button>
+    </form>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Offline Update</h2>
+      <p class="subtle">Upload a signed VIS release archive for appliances without internet access.</p>
+    </div>
+  </div>
+
+  <div class="detail-box">
+    <form class="service-config-form" method="post" action="{{ url_for('updates_offline') }}" enctype="multipart/form-data">
+      <label class="field-label" for="archiveFile">Release ZIP</label>
+      <input id="archiveFile" class="text-input" type="file" name="archive_file" accept=".zip,application/zip" />
+
+      <label class="field-label" for="checksumFile">SHA256 File</label>
+      <input id="checksumFile" class="text-input" type="file" name="checksum_file" accept=".sha256,text/plain" />
+
+      <label class="field-label" for="signatureFile">Signature File</label>
+      <input id="signatureFile" class="text-input" type="file" name="signature_file" accept=".sig,application/octet-stream" />
+
+      <span></span>
+      <p class="notice warn">Offline updates are applied only after the SHA256 file signature and archive hash are verified against the trusted VIS release signing key.</p>
+
+      <span></span>
+      <button class="btn primary" type="submit" {% if update_status.state == "running" %}disabled{% endif %}>Run Offline Update</button>
     </form>
   </div>
 </section>
