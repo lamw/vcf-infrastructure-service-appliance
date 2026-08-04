@@ -118,6 +118,16 @@
       "destination": "/tmp/vis-apply-update.sh"
     },
     {
+      "type": "file",
+      "source": "scripts/vis-offline-update.sh",
+      "destination": "/tmp/vis-offline-update.sh"
+    },
+    {
+      "type": "file",
+      "source": "files/vis-update-signing.pub",
+      "destination": "/tmp/vis-update-signing.pub"
+    },
+    {
       "type": "shell",
       "inline": [
         "mkdir -p /tmp/vis-optional-files",

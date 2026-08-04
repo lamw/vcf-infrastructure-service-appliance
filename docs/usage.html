@@ -38,8 +38,15 @@
 <p><img src="images/usage-login.png" alt="" /></p>
 <p>&gt; <strong>Note:</strong> Port 80 redirects to the VIS UI on port 8080 (e.g. http://&lt;VIS-IP-or-FQDN&gt;:8080). Individual services continue to use their own service ports.</p>
 <h3 id="updates">Updates</h3>
-<p>VIS can be updated by simply pulling the latest updates from the VIS GitHub repository without requiring a re-deployment.</p>
+<p>VIS can be updated without requiring a re-deployment. Appliances with internet access can pull directly from the VIS GitHub repository. Appliances in disconnected environments can use an offline update bundle from a VIS GitHub release.</p>
 <p><img src="images/vis-update.png" alt="" /></p>
+<p>For offline updates, download the matching release files from a trusted machine and upload all three files in <strong>Appliance &gt; Updates</strong>:</p>
+<ul>
+<li><code>vis-update-&lt;version&gt;.zip</code></li>
+<li><code>vis-update-&lt;version&gt;.zip.sha256</code></li>
+<li><code>vis-update-&lt;version&gt;.zip.sha256.sig</code></li>
+</ul>
+<p>VIS verifies the SHA256 signature with the built-in VIS release public key, verifies the archive hash, safely extracts the release, and then applies the same update workflow used by online updates.</p>
 <h3 id="system-health">System Health</h3>
 <p>You can view the compute and storage resource utilization for VIS.</p>
 <p><img src="images/vis-system-health.png" alt="" /></p>

@@ -152,11 +152,13 @@
 </ul>
 <h2 id="updates">↻ Updates</h2>
 <ul>
-<li>Pulls the latest VIS source from the configured GitHub repository and branch.</li>
+<li>Pulls the latest VIS source from the configured GitHub repository and branch when internet access is available.</li>
+<li>Applies signed offline release ZIP bundles for disconnected appliances.</li>
+<li>Verifies offline updates with the built-in VIS release public key, signed SHA256 manifest, and archive hash before applying changes.</li>
 <li>Applies web application, Python dependency, helper script, and supported systemd unit updates without redeploying the appliance.</li>
 <li>Runs asynchronously from the VIS UI because the web service may restart during the update.</li>
 <li>Shows recent update status and <code>/opt/vis/state/vis-update.log</code> output.</li>
-<li>Can also be run directly on the appliance with <code>sudo vis-update --repo-url &lt;repo&gt; --branch &lt;branch&gt;</code>.</li>
+<li>Can also be run directly on the appliance with <code>sudo vis-update --repo-url &lt;repo&gt; --branch &lt;branch&gt;</code> or <code>sudo vis-offline-update --archive &lt;zip&gt; --sha256 &lt;sha256&gt; --signature &lt;sig&gt;</code>.</li>
 </ul>
 <h2 id="logs">📋 Logs</h2>
 <ul>
