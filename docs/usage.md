@@ -302,6 +302,8 @@ You should see a successful login, which confirms VCF SSO has been properly conf
 
 After saving your configuration to initialize and click Enable service.
 
+If you would like to forward to an upstream DNS Server, select `Forwarding` and enter the list of DNS Server(s)
+
 ![](images/vis-dns-init.png)
 
 You can add and manage DNS using the admin panel
