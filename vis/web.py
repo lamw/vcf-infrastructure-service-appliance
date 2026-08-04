@@ -2352,21 +2352,25 @@ def _start_depot_binary_download(app, service, form):
     binary_types = [item for item in selected_types if item in ("INSTALL", "UPGRADE")]
     if binary_types and not re.match(r"^\d+\.\d+\.\d+(?:\.\d+)?$", version):
         raise OSError("Install and Upgrade downloads require x.y.z or x.y.z.a version format, such as 9.1.0 or 9.1.0.0.")
+    include_dayn = {
+        "INSTALL": form.get("include_dayn_install") == "on",
+        "UPGRADE": form.get("include_dayn_upgrade") == "on",
+    }
     commands = []
     for download_type in binary_types:
-        commands.append(
-            [
-                "vcf-download-tool",
-                "binaries",
-                "download",
-                "--depot-store=/opt/vis/data/depot",
-                "--depot-download-activation-code-file={}".format(credential_path),
-                "--sku={}".format(sku),
-                "--vcf-version={}".format(version),
-                "--type={}".format(download_type),
-                "--automated-install",
-            ]
-        )
+        command = [
+            "vcf-download-tool",
+            "binaries",
+            "download",
+            "--depot-store=/opt/vis/data/depot",
+            "--depot-download-activation-code-file={}".format(credential_path),
+            "--sku={}".format(sku),
+            "--vcf-version={}".format(version),
+            "--type={}".format(download_type),
+        ]
+        if not include_dayn.get(download_type):
+            command.append("--automated-install")
+        commands.append(command)
     if "ESX_PATCHES" in selected_types:
         esx_config_path = _write_esx_user_config(version)
         commands.append(
@@ -2391,6 +2395,7 @@ def _start_depot_binary_download(app, service, form):
         "sku": sku,
         "vcf_version": version,
         "types": selected_types,
+        "include_dayn": {key.lower(): value for key, value in include_dayn.items() if key in binary_types},
         "commands": commands,
         "esx_config_path": esx_config_path,
         "log_path": str(paths["log"]),

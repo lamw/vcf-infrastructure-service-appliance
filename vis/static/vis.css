@@ -2258,15 +2258,57 @@ input[type="file"] {
 }
 
 .binary-download-form {
-  grid-template-columns: 128px minmax(0, 406px);
-  max-width: 550px;
+  grid-template-columns: 128px minmax(0, 446px);
+  max-width: 590px;
 }
 
 .binary-download-form > .text-input,
-.binary-download-form .segmented-choice,
+.binary-download-form .download-type-stack,
 .binary-download-actions {
   width: 100%;
-  max-width: 406px;
+  max-width: 446px;
+}
+
+.download-type-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.download-type-card {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--vis-border);
+  border-radius: 5px;
+  background: var(--vis-panel-soft);
+}
+
+.download-type-main,
+.download-type-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.download-type-child {
+  margin-left: 24px;
+  color: var(--vis-muted);
+}
+
+.binary-command-preview {
+  max-width: 590px;
+  padding: 12px;
+  border: 1px solid var(--vis-border);
+  border-radius: 5px;
+  background: #0f1b24;
+  color: var(--vis-accent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .binary-download-actions {
@@ -2847,8 +2889,9 @@ pre.config-preview {
   .download-config-form .copy-row,
   .download-config-form .btn.primary,
   .binary-download-form > .text-input,
-  .binary-download-form .segmented-choice,
+  .binary-download-form .download-type-stack,
   .binary-download-actions,
+  .binary-command-preview,
   .tls-upload-form .btn {
     max-width: none;
   }
