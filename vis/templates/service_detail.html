@@ -324,10 +324,18 @@
               <input class="text-input" id="depotDownloadVersion" name="vcf_version" type="text" pattern="^\d+\.\d+\.\d+(\.\d+)?$" placeholder="9.1.0" required {% if job_running %}disabled{% endif %} />
 
               <label class="field-label">Type</label>
-              <div class="segmented-choice">
-                <label><input type="checkbox" name="download_type" value="INSTALL" checked {% if job_running %}disabled{% endif %} /> Install</label>
-                <label><input type="checkbox" name="download_type" value="UPGRADE" {% if job_running %}disabled{% endif %} /> Upgrade</label>
-                <label><input type="checkbox" name="download_type" value="ESX_PATCHES" {% if job_running %}disabled{% endif %} /> ESX Patches</label>
+              <div class="download-type-stack">
+                <div class="download-type-card">
+                  <label class="download-type-main"><input id="depotDownloadInstall" type="checkbox" name="download_type" value="INSTALL" checked {% if job_running %}disabled{% endif %} /> Install</label>
+                  <label class="download-type-child"><input id="depotDownloadInstallDayN" type="checkbox" name="include_dayn_install" value="on" {% if job_running %}disabled{% endif %} /> Include Day-N</label>
+                </div>
+                <div class="download-type-card">
+                  <label class="download-type-main"><input id="depotDownloadUpgrade" type="checkbox" name="download_type" value="UPGRADE" {% if job_running %}disabled{% endif %} /> Upgrade</label>
+                  <label class="download-type-child"><input id="depotDownloadUpgradeDayN" type="checkbox" name="include_dayn_upgrade" value="on" disabled /> Include Day-N</label>
+                </div>
+                <div class="download-type-card">
+                  <label class="download-type-main"><input id="depotDownloadEsxPatches" type="checkbox" name="download_type" value="ESX_PATCHES" {% if job_running %}disabled{% endif %} /> ESX Patches</label>
+                </div>
               </div>
 
               <div></div>
@@ -341,6 +349,7 @@
             {% if job_running %}
               <form id="depotBinaryDownloadCancelForm" class="download-cancel-form" method="post" action="{{ url_for('depot_download_cancel') }}" data-binary-download-cancel-form></form>
             {% endif %}
+            <div class="binary-command-preview" data-binary-command-preview aria-live="polite"></div>
           {% elif vcfdt_available %}
             <p class="validation-item warn">Save and validate an Activation Code before downloading binaries.</p>
           {% else %}
@@ -2151,6 +2160,73 @@
 
   const binaryDownloadForm = document.querySelector("[data-binary-download-form]");
   if (binaryDownloadForm) {
+    const binaryCommandPreview = document.querySelector("[data-binary-command-preview]");
+    const installCheckbox = document.getElementById("depotDownloadInstall");
+    const installDayNCheckbox = document.getElementById("depotDownloadInstallDayN");
+    const upgradeCheckbox = document.getElementById("depotDownloadUpgrade");
+    const upgradeDayNCheckbox = document.getElementById("depotDownloadUpgradeDayN");
+    const esxPatchesCheckbox = document.getElementById("depotDownloadEsxPatches");
+    const skuInput = document.getElementById("depotDownloadSku");
+    const versionInput = document.getElementById("depotDownloadVersion");
+    const credentialPath = {{ (service.settings.download_credential_path or '/opt/vis/config/depot/activation-code')|tojson }};
+    const depotStore = "/opt/vis/data/depot";
+
+    const buildBinaryCommand = (type, includeDayN) => {
+      const command = [
+        "vcf-download-tool binaries download",
+        `--depot-store=${depotStore}`,
+        `--depot-download-activation-code-file=${credentialPath}`,
+        `--sku=${skuInput ? skuInput.value : "VCF"}`,
+        `--vcf-version=${versionInput && versionInput.value ? versionInput.value : "9.1.0"}`,
+        `--type=${type}`
+      ];
+      if (!includeDayN) {
+        command.push("--automated-install");
+      }
+      return command.join(" ");
+    };
+
+    const refreshBinaryCommandPreview = () => {
+      if (installDayNCheckbox) {
+        installDayNCheckbox.disabled = !installCheckbox || !installCheckbox.checked || installCheckbox.disabled;
+        if (installDayNCheckbox.disabled) {
+          installDayNCheckbox.checked = false;
+        }
+      }
+      if (upgradeDayNCheckbox) {
+        upgradeDayNCheckbox.disabled = !upgradeCheckbox || !upgradeCheckbox.checked || upgradeCheckbox.disabled;
+        if (upgradeDayNCheckbox.disabled) {
+          upgradeDayNCheckbox.checked = false;
+        }
+      }
+      if (!binaryCommandPreview) {
+        return;
+      }
+
+      const lines = [];
+      if (installCheckbox && installCheckbox.checked) {
+        lines.push("# Install");
+        lines.push(buildBinaryCommand("INSTALL", !!(installDayNCheckbox && installDayNCheckbox.checked)));
+      }
+      if (upgradeCheckbox && upgradeCheckbox.checked) {
+        lines.push("# Upgrade");
+        lines.push(buildBinaryCommand("UPGRADE", !!(upgradeDayNCheckbox && upgradeDayNCheckbox.checked)));
+      }
+      if (esxPatchesCheckbox && esxPatchesCheckbox.checked) {
+        lines.push("# ESX Patches");
+        lines.push(`vcf-download-tool esx download --depot-store=${depotStore}/ --depot-download-activation-code-file=${credentialPath}`);
+      }
+      binaryCommandPreview.textContent = lines.length ? lines.join("\n") : "Select at least one download type.";
+    };
+
+    [installCheckbox, installDayNCheckbox, upgradeCheckbox, upgradeDayNCheckbox, esxPatchesCheckbox, skuInput, versionInput].forEach((element) => {
+      if (element) {
+        element.addEventListener("change", refreshBinaryCommandPreview);
+        element.addEventListener("input", refreshBinaryCommandPreview);
+      }
+    });
+    refreshBinaryCommandPreview();
+
     binaryDownloadForm.addEventListener("submit", () => {
       const submitButton = binaryDownloadForm.querySelector("button[type='submit']");
       if (submitButton) {

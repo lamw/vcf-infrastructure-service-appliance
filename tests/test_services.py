@@ -2281,6 +2281,10 @@ class WebAppTest(unittest.TestCase):
         self.assertIn('value="INSTALL"', body)
         self.assertIn('value="UPGRADE"', body)
         self.assertIn('value="ESX_PATCHES"', body)
+        self.assertIn('name="include_dayn_install"', body)
+        self.assertIn('name="include_dayn_upgrade"', body)
+        self.assertIn("Include Day-N", body)
+        self.assertIn("data-binary-command-preview", body)
         self.assertIn("Download", body)
         self.assertIn("data-binary-download-form", body)
         self.assertNotIn("Cancel Download", body)
@@ -2337,6 +2341,39 @@ class WebAppTest(unittest.TestCase):
         self.assertIn("--vcf-version=9.1.0", command)
         self.assertIn("--type=INSTALL", command)
         self.assertIn("--automated-install", command)
+        self.assertEqual({"install": False}, command_payload["state"]["include_dayn"])
+
+    def test_depot_binary_download_route_omits_automated_install_for_dayn_downloads(self):
+        service = self.app.config["service_manager"].get_service("web-depot")
+        credential_path = os.path.join(self.tmpdir.name, "activation-code")
+        with open(credential_path, "w") as handle:
+            handle.write("activation")
+        service.settings["download_mode"] = "activation_code"
+        service.settings["download_credential_path"] = credential_path
+        self.app.config["service_manager"].store.save_service(service)
+
+        fake_process = type("Process", (), {"pid": 4242})()
+        with patch("vis.web.subprocess.Popen", return_value=fake_process) as popen:
+            response = self.client.post(
+                "/services/web-depot/download",
+                data={
+                    "sku": "VCF",
+                    "vcf_version": "9.1.0",
+                    "download_type": ["INSTALL", "UPGRADE"],
+                    "include_dayn_install": "on",
+                    "include_dayn_upgrade": "on",
+                },
+            )
+
+        self.assertEqual(302, response.status_code)
+        command_payload = json.loads(popen.call_args[0][0][3])
+        commands = command_payload["commands"]
+        self.assertEqual(2, len(commands))
+        self.assertIn("--type=INSTALL", commands[0])
+        self.assertNotIn("--automated-install", commands[0])
+        self.assertIn("--type=UPGRADE", commands[1])
+        self.assertNotIn("--automated-install", commands[1])
+        self.assertEqual({"install": True, "upgrade": True}, command_payload["state"]["include_dayn"])
 
     def test_depot_binary_download_route_supports_esx_patches_with_activation_code(self):
         service = self.app.config["service_manager"].get_service("web-depot")
