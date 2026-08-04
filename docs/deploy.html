@@ -50,30 +50,30 @@
 <h2 id="download-split-ova-from-github">Download Split OVA from GitHub</h2>
 <p>GitHub release assets have a file size limit, so VIS release OVAs may be published as split parts. Download every part and the checksum manifest before reconstructing the OVA.</p>
 <p>Example release assets:</p>
-<pre><code>vcf-infrastructure-services-appliance-1.0.1.ova.part-aa
-vcf-infrastructure-services-appliance-1.0.1.ova.part-ab
-vcf-infrastructure-services-appliance-1.0.1.ova.part-ac
-vcf-infrastructure-services-appliance-1.0.1.ova.sha256
-vcf-infrastructure-services-appliance-1.0.1.ova.parts.sha256</code></pre>
+<pre><code>vcf-infrastructure-services-appliance-1.0.2.ova.part-aa
+vcf-infrastructure-services-appliance-1.0.2.ova.part-ab
+vcf-infrastructure-services-appliance-1.0.2.ova.part-ac
+vcf-infrastructure-services-appliance-1.0.2.ova.sha256
+vcf-infrastructure-services-appliance-1.0.2.ova.parts.sha256</code></pre>
 <p>Verify the downloaded parts first:</p>
-<pre><code>shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.1.ova.parts.sha256</code></pre>
+<pre><code>shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.2.ova.parts.sha256</code></pre>
 <p>Reconstruct the OVA:</p>
 <ul>
 <li>Linux/macOS</li>
 </ul>
-<pre><code>cat vcf-infrastructure-services-appliance-1.0.1.ova.part-* &gt; vcf-infrastructure-services-appliance-1.0.1.ova</code></pre>
+<pre><code>cat vcf-infrastructure-services-appliance-1.0.2.ova.part-* &gt; vcf-infrastructure-services-appliance-1.0.2.ova</code></pre>
 <ul>
 <li>Windows PowerShell</li>
 </ul>
-<pre><code>cmd /c &#x27;copy /b vcf-infrastructure-services-appliance-1.0.1.ova.part-a* vcf-infrastructure-services-appliance-1.0.1.ova&#x27;</code></pre>
+<pre><code>cmd /c &#x27;copy /b vcf-infrastructure-services-appliance-1.0.2.ova.part-a* vcf-infrastructure-services-appliance-1.0.2.ova&#x27;</code></pre>
 <p>Verify the reconstructed OVA before importing it:</p>
-<pre><code>shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.1.ova.sha256</code></pre>
+<pre><code>shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.2.ova.sha256</code></pre>
 <p>The final checksum must pass before deploying the OVA. If it fails, delete the reconstructed OVA, re-download the failed part listed by <code>shasum</code>, and repeat the verification.</p>
 <p>Release maintainers can create the split files and checksums with:</p>
 <pre><code>cd output-vmware-iso
-shasum -a 256 vcf-infrastructure-services-appliance-1.0.1.ova &gt; vcf-infrastructure-services-appliance-1.0.1.ova.sha256
-split -b 1900m vcf-infrastructure-services-appliance-1.0.1.ova vcf-infrastructure-services-appliance-1.0.1.ova.part-
-shasum -a 256 vcf-infrastructure-services-appliance-1.0.1.ova.part-* &gt; vcf-infrastructure-services-appliance-1.0.1.ova.parts.sha256</code></pre>
+shasum -a 256 vcf-infrastructure-services-appliance-1.0.2.ova &gt; vcf-infrastructure-services-appliance-1.0.2.ova.sha256
+split -b 1900m vcf-infrastructure-services-appliance-1.0.2.ova vcf-infrastructure-services-appliance-1.0.2.ova.part-
+shasum -a 256 vcf-infrastructure-services-appliance-1.0.2.ova.part-* &gt; vcf-infrastructure-services-appliance-1.0.2.ova.parts.sha256</code></pre>
 <h2 id="vcenter-server-deployment">vCenter Server Deployment</h2>
 <p><img src="images/vis-vcenter-deployment-1.png" alt="" /></p>
 <p><img src="images/vis-vcenter-deployment-2.png" alt="" /></p>
@@ -85,7 +85,7 @@ shasum -a 256 vcf-infrastructure-services-appliance-1.0.1.ova.part-* &gt; vcf-in
 <pre><code>cp scripts/deploy_vis_esx.sh scripts/deploy_vis_esx.local.sh</code></pre>
 <p>Step 2 - Edit the variables based on your environment</p>
 <pre><code>OVFTOOL=&quot;/Applications/VMware OVF Tool/ovftool&quot;
-VIS_OVA=&quot;./output-vmware-iso/vcf-infrastructure-services-appliance-1.0.1.ova&quot;
+VIS_OVA=&quot;./output-vmware-iso/vcf-infrastructure-services-appliance-1.0.2.ova&quot;
 
 # ESX deployment target
 ESX_HOST=&quot;172.30.0.10&quot;

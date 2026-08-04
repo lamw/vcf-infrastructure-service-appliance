@@ -5,7 +5,7 @@
 set -euo pipefail
 
 OVFTOOL="/Applications/VMware OVF Tool/ovftool"
-VIS_OVA="./output-vmware-iso/vcf-infrastructure-services-appliance-1.0.1.ova"
+VIS_OVA="./output-vmware-iso/vcf-infrastructure-services-appliance-1.0.2.ova"
 
 # ESX deployment target
 ESX_HOST="172.30.0.10"
