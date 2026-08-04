@@ -3377,10 +3377,7 @@ def _start_update(app, repo_url, branch):
             "VIS_UPDATE_STATUS_FILE": str(paths["status"]),
         }
     )
-    with open(os.devnull, "wb") as devnull:
-        process = subprocess.Popen(command, stdout=devnull, stderr=devnull, env=env, start_new_session=True, close_fds=True)
-    if app.config.get("TESTING"):
-        process.wait(timeout=5)
+    _launch_update_command(app, "vis-update", command, env)
 
 
 def _start_offline_update(app, archive_path, checksum_path, signature_path):
@@ -3410,6 +3407,39 @@ def _start_offline_update(app, archive_path, checksum_path, signature_path):
             "VIS_UPDATE_PUBLIC_KEY": str(paths["signing_key"]),
         }
     )
+    _launch_update_command(app, "vis-offline-update", command, env)
+
+
+def _launch_update_command(app, unit_prefix, command, env):
+    if not app.config.get("TESTING") and shutil.which("systemd-run"):
+        run_env = {
+            key: env[key]
+            for key in (
+                "VIS_UPDATE_REPO_URL",
+                "VIS_UPDATE_BRANCH",
+                "VIS_UPDATE_STATE_DIR",
+                "VIS_UPDATE_LOG_FILE",
+                "VIS_UPDATE_STATUS_FILE",
+                "VIS_UPDATE_PUBLIC_KEY",
+            )
+            if key in env
+        }
+        unit_name = "{}-{}".format(unit_prefix, uuid.uuid4().hex[:8])
+        systemd_command = [
+            "systemd-run",
+            "--unit={}".format(unit_name),
+            "--collect",
+            "--property=Type=exec",
+        ]
+        for key, value in sorted(run_env.items()):
+            systemd_command.append("--setenv={}={}".format(key, value))
+        systemd_command.extend(command)
+        result = subprocess.run(systemd_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
+        if result.returncode != 0:
+            detail = (result.stderr or result.stdout or "").strip()
+            raise OSError(detail or "Unable to start VIS update job with systemd-run.")
+        return
+
     with open(os.devnull, "wb") as devnull:
         process = subprocess.Popen(command, stdout=devnull, stderr=devnull, env=env, start_new_session=True, close_fds=True)
     if app.config.get("TESTING"):
