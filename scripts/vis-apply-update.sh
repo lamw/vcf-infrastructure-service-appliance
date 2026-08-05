@@ -5,6 +5,7 @@ SOURCE_DIR="${VIS_UPDATE_SOURCE_DIR:-}"
 APP_ROOT="${VIS_APP_ROOT:-/opt/vis/app}"
 STATE_DIR="${VIS_STATE_DIR:-/opt/vis/state}"
 BACKUP_ROOT="${VIS_UPDATE_BACKUP_ROOT:-${STATE_DIR}/update-backups}"
+OFFLINE_UPDATE="${VIS_UPDATE_OFFLINE:-false}"
 
 if [ -z "${SOURCE_DIR}" ]; then
   SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -34,10 +35,17 @@ mv "${STAGED_APP}" "${CURRENT_APP}"
 
 echo "> Updating VIS Python dependencies"
 if [ ! -d "${APP_ROOT}/venv" ]; then
+  if [ "${OFFLINE_UPDATE}" = "true" ]; then
+    echo "VIS Python virtual environment is missing; offline update can not install dependencies." >&2
+    exit 1
+  fi
   python3 -m venv "${APP_ROOT}/venv"
 fi
-"${APP_ROOT}/venv/bin/pip" install --upgrade pip
-"${APP_ROOT}/venv/bin/pip" install -r "${CURRENT_APP}/requirements.txt"
+if [ "${OFFLINE_UPDATE}" = "true" ]; then
+  "${APP_ROOT}/venv/bin/pip" install --no-index -r "${CURRENT_APP}/requirements.txt"
+else
+  "${APP_ROOT}/venv/bin/pip" install -r "${CURRENT_APP}/requirements.txt"
+fi
 
 echo "> Installing update helper scripts"
 if [ -f "${SOURCE_DIR}/scripts/vis-update.sh" ]; then
