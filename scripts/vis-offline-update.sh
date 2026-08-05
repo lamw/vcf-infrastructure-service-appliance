@@ -217,7 +217,7 @@ PY_VERSION
 )"
 write_status "running" "Applying signed VIS offline update ${VERSION}." "$VERSION"
 
-VIS_UPDATE_SOURCE_DIR="$REPO_DIR" "$APPLY_SCRIPT"
+VIS_UPDATE_SOURCE_DIR="$REPO_DIR" VIS_UPDATE_OFFLINE=true "$APPLY_SCRIPT"
 
 write_status "complete" "Signed VIS offline update ${VERSION} applied successfully." "$VERSION"
 echo "== VIS offline update complete: ${VERSION} =="
