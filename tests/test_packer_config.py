@@ -223,6 +223,9 @@ class PackerOptionalArtifactTest(unittest.TestCase):
         self.assertIn("https://github.com/lamw/vcf-infrastructure-service-appliance.git", update_script)
         self.assertIn("git clone", update_script)
         self.assertIn("scripts/vis-apply-update.sh", update_script)
+        self.assertNotIn("install --upgrade pip", apply_script)
+        self.assertIn("VIS_UPDATE_OFFLINE", apply_script)
+        self.assertIn('pip" install --no-index -r', apply_script)
         self.assertIn('pip" install -r', apply_script)
         self.assertIn("systemctl restart vis-web.service", apply_script)
         self.assertIn("vis-offline-update", apply_script)
@@ -230,6 +233,7 @@ class PackerOptionalArtifactTest(unittest.TestCase):
         self.assertIn("Archive SHA256 verified", offline_script)
         self.assertIn("unsafe path", offline_script)
         self.assertIn("/usr/local/sbin/vis-apply-update", offline_script)
+        self.assertIn("VIS_UPDATE_OFFLINE=true", offline_script)
         self.assertIn("BEGIN PUBLIC KEY", signing_key)
 
     def test_packer_creates_service_data_directories(self):
