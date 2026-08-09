@@ -8,9 +8,10 @@ from typing import Dict, List, Optional
 
 
 class RepositoryFileManager:
-    def __init__(self, root: str, owner: Optional[str] = None):
+    def __init__(self, root: str, owner: Optional[str] = None, readonly: bool = False):
         self.root = Path(root).resolve()
         self.owner = owner
+        self.readonly = readonly
 
     def list_dir(self, relative_path: str = "") -> Dict[str, object]:
         current = self._resolve(relative_path)
@@ -47,6 +48,9 @@ class RepositoryFileManager:
         }
 
     def mkdir(self, relative_path: str, name: str) -> None:
+        if self.readonly:
+            raise ValueError("Read-only File Manager") 
+            
         if not name or "/" in name or name in (".", ".."):
             raise ValueError("Folder name must be a single path segment")
         target = self._resolve(os.path.join(relative_path, name))
@@ -54,6 +58,9 @@ class RepositoryFileManager:
         self._set_owner(target)
 
     def delete(self, relative_path: str) -> None:
+        if self.readonly:
+            raise ValueError("Read-only File Manager") 
+            
         target = self._resolve(relative_path)
         if target == self.root:
             raise ValueError("Refusing to delete repository root")
@@ -63,6 +70,9 @@ class RepositoryFileManager:
             target.unlink()
 
     def save_upload(self, relative_path: str, relative_file_path: str, file_storage, overwrite: bool = False) -> Dict[str, object]:
+        if self.readonly:
+            raise ValueError("Read-only File Manager") 
+
         target = self._upload_target(relative_path, relative_file_path, overwrite)
         target_parent = target.parent
         target_parent.mkdir(mode=0o750, parents=True, exist_ok=True)
@@ -102,6 +112,9 @@ class RepositoryFileManager:
         overwrite: bool = False,
         temp_root: Optional[str] = None,
     ) -> Dict[str, object]:
+        if self.readonly:
+            raise ValueError("Read-only File Manager") 
+
         if total_chunks < 1:
             raise ValueError("Total chunks must be greater than zero")
         if chunk_index < 0 or chunk_index >= total_chunks:
@@ -185,6 +198,9 @@ class RepositoryFileManager:
         return name in ("lost+found", ".vis-upload-tmp") or name.startswith(".uploading.")
 
     def _upload_target(self, relative_path: str, relative_file_path: str, overwrite: bool) -> Path:
+        if self.readonly:
+            raise ValueError("Read-only File Manager") 
+
         clean_file_path = self._clean_upload_path(relative_file_path)
         target = self._resolve(os.path.join(relative_path or "", clean_file_path))
         target_parent = target.parent

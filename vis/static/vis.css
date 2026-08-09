@@ -588,7 +588,7 @@ pre.config-preview {
   gap: 10px;
 }
 
-.depot-config-grid {
+.depot-config-grid, .content-library-config-grid {
   grid-template-columns: minmax(0, 1fr) minmax(320px, .82fr);
   gap: 10px;
 }
@@ -2014,19 +2014,22 @@ input[type="file"] {
   text-align: right;
 }
 
-.depot-config-form {
+.depot-config-form, .content-library-config-form {
   grid-template-columns: 128px minmax(0, 446px);
   max-width: 590px;
 }
 
 .depot-config-form > .text-input,
 .depot-config-form .secret-row,
-.depot-config-form .copy-row {
+.depot-config-form .copy-row,
+.content-library-config-form > .text-input,
+.content-library-config-form .secret-row,
+.content-library-config-form .copy-row{
   width: 100%;
   max-width: 446px;
 }
 
-.depot-config-form .btn.primary {
+.depot-config-form .btn.primary, .content-library-config-form .btn.primary {
   width: 100%;
   max-width: 446px;
 }
@@ -2689,6 +2692,7 @@ pre.config-preview {
   .config-profile-grid,
   .sftp-config-grid,
   .depot-config-grid,
+  .content-library-config-grid,
   .dns-config-grid,
   .directory-config-grid,
   .health-card-grid,
@@ -2792,6 +2796,7 @@ pre.config-preview {
   .detail-grid,
   .sftp-config-grid,
   .depot-config-grid,
+  .content-library-config-grid,
   .dns-config-grid,
   .directory-config-grid,
   .health-card-grid,
@@ -2833,6 +2838,10 @@ pre.config-preview {
   .depot-config-form .secret-row,
   .depot-config-form .copy-row,
   .depot-config-form .btn.primary,
+  .content-library-config-form > .text-input,
+  .content-library-config-form .secret-row,
+  .content-library-config-form .copy-row,
+  .content-library-config-form .btn.primary,
   .download-config-form > .text-input,
   .download-config-form .secret-row,
   .download-config-form .copy-row,

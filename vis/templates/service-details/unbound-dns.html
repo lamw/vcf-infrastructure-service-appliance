@@ -1,0 +1,98 @@
+<section class="panel" id="dns-entries">
+  <div class="panel-header">
+    <div>
+      <h2>DNS Entries</h2>
+      <p class="subtle">One row per hostname and address pair. VIS manages forward and reverse lookups together.</p>
+    </div>
+    <input class="text-input dns-search" type="search" placeholder="Search DNS entries" data-dns-search />
+  </div>
+
+  {% if request.args.get("dns_entry_status") %}
+    <p class="notice good">{{ request.args.get("dns_entry_status") }}</p>
+  {% endif %}
+  {% if request.args.get("dns_entry_error") %}
+    <p class="notice bad">{{ request.args.get("dns_entry_error") }}</p>
+  {% endif %}
+
+  <table class="record-table dns-record-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Forward Lookup</th>
+        <th>Reverse Lookup</th>
+        <th>TTL</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in dns_entries %}
+        <tr data-dns-row data-dns-name="{{ entry.name }}" data-dns-address="{{ entry.address }}" data-dns-ttl="{{ entry.ttl }}" data-update-url="{{ url_for('dns_entry_update', entry_id=entry.id) }}">
+          <td>{{ entry.name }}</td>
+          <td>{{ entry.address }}</td>
+          <td><span class="pill good">Configured</span></td>
+          <td><span class="pill good">Configured</span></td>
+          <td>{{ entry.ttl }}</td>
+          <td>
+            <div class="row-actions">
+              <button class="btn icon-btn" type="button" data-dns-edit title="Edit DNS entry" aria-label="Edit DNS entry">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              </button>
+              <form class="inline-form" method="post" action="{{ url_for('dns_entry_delete', entry_id=entry.id) }}" data-confirm-dns-delete="{{ entry.name }}">
+                <button class="btn danger icon-btn" type="submit" title="Remove DNS entry" aria-label="Remove DNS entry">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="6" class="subtle">No DNS entries have been added yet.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<div class="modal-backdrop" data-dns-modal>
+  <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="dnsModalTitle">
+    <form method="post" action="{{ url_for('dns_entry_create') }}" data-dns-modal-form>
+      <div class="modal-header">
+        <div>
+          <h2 id="dnsModalTitle">Edit DNS Entry</h2>
+          <p class="subtle">
+            {% if service.settings.domain %}
+              Short hostnames are saved under .{{ service.settings.domain }} with forward and reverse lookup records.
+            {% else %}
+              Forward and reverse lookup records are saved together.
+            {% endif %}
+          </p>
+        </div>
+        <button class="btn icon-btn" type="button" data-dns-modal-close aria-label="Close DNS entry editor">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="dns-entry-form modal-dns-form">
+          <label class="field-label" for="modalDnsName">Short Hostname</label>
+          <input class="text-input" id="modalDnsName" name="name" type="text" placeholder="vcf01" required />
+
+          <label class="field-label" for="modalDnsAddress">Address</label>
+          <input class="text-input" id="modalDnsAddress" name="address" type="text" placeholder="172.30.0.60" required />
+
+          <label class="field-label" for="modalDnsTtl">TTL</label>
+          <input class="text-input" id="modalDnsTtl" name="ttl" type="number" min="60" max="86400" required />
+        </div>
+        <div class="validation-list">
+          <div class="validation-item good">Hostname, address, and TTL are validated before save.</div>
+          <div class="validation-item warn">If the IP is already assigned, VIS will keep this modal open and explain which entry owns it.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" type="button" data-dns-modal-close>Cancel</button>
+        <button class="btn primary" type="submit">Save Entry</button>
+      </div>
+    </form>
+  </section>
+</div>

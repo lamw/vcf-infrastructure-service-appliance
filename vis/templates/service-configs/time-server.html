@@ -1,0 +1,131 @@
+<div class="detail-grid dns-config-grid">
+  <div class="detail-box {% if needs_required_config %}requires-configuration{% endif %}" id="time-config">
+    <strong>NTP Server Configuration</strong>
+    {% if needs_required_config %}
+      {{ required_config_notice("Add at least one upstream NTP source or enable local clock fallback before enabling NTP Server.") }}
+    {% endif %}
+    {% if request.args.get("time_config_status") %}
+      <div class="inline-success-notice dismissible-notice" role="status">
+        <div>
+          <strong>Configuration saved</strong>
+          <span>{{ request.args.get("time_config_status") }}</span>
+        </div>
+        <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+      </div>
+    {% endif %}
+    {% if request.args.get("time_config_error") %}
+      <div class="inline-error-notice dismissible-notice" role="alert">
+        <div>
+          <strong>Configuration error</strong>
+          <span>{{ request.args.get("time_config_error") }}</span>
+        </div>
+        <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+      </div>
+    {% endif %}
+
+    <form class="service-config-form" method="post" action="{{ url_for('time_server_config') }}">
+      <label class="field-label" for="timeMode">Mode</label>
+      <div class="segmented-choice">
+        <label><input id="timeMode" type="radio" name="mode" value="ntp" {% if service.settings.mode != "ntp_ptp" %}checked{% endif %} /> NTP only</label>
+        <label><input type="radio" name="mode" value="ntp_ptp" {% if service.settings.mode == "ntp_ptp" %}checked{% endif %} /> NTP + PTP</label>
+      </div>
+
+      <label class="field-label" for="timeAllowedClients">Allowed Clients</label>
+      <textarea class="text-input" id="timeAllowedClients" name="allowed_clients" rows="3" placeholder="172.30.0.0/24&#10;192.168.30.0/24">{{ service.settings.allowed_clients|join('\n') if service.settings.allowed_clients else '' }}</textarea>
+
+      <label class="field-label" for="timeUpstreamSources">Upstream NTP Sources</label>
+      <textarea class="text-input" id="timeUpstreamSources" name="upstream_sources" rows="3" placeholder="time.google.com&#10;pool.ntp.org">{{ service.settings.upstream_sources|join('\n') if service.settings.upstream_sources else '' }}</textarea>
+
+      <label class="field-label" for="timeLocalFallback">Local Clock Fallback</label>
+      <label class="toggle-row"><input id="timeLocalFallback" name="local_fallback_enabled" type="checkbox" {% if service.settings.local_fallback_enabled %}checked{% endif %} /> Allow appliance clock if upstream is unavailable</label>
+
+      <label class="field-label" for="timeFallbackStratum">Fallback Stratum</label>
+      <input class="text-input" id="timeFallbackStratum" name="fallback_stratum" type="number" min="1" max="15" value="{{ service.settings.fallback_stratum or 10 }}" required />
+
+      <div></div>
+      <button class="btn primary" type="submit">Save NTP Configuration</button>
+
+      <div class="form-subsection">
+        <strong>Precision Time Protocol</strong>
+        <span>Optional PTP service for environments that need hardware or software timestamp synchronization.</span>
+      </div>
+
+      <label class="field-label" for="ptpEnabled">PTP Service</label>
+      <label class="toggle-row"><input id="ptpEnabled" name="ptp_enabled" type="checkbox" {% if service.settings.ptp_enabled %}checked{% endif %} /> Enable PTP</label>
+
+      <label class="field-label" for="ptpInterface">Interface</label>
+      <input class="text-input" id="ptpInterface" name="ptp_interface" type="text" value="{{ service.settings.ptp_interface or '' }}" placeholder="ens160" />
+
+      <label class="field-label" for="ptpDomain">Domain Number</label>
+      <input class="text-input" id="ptpDomain" name="ptp_domain" type="number" min="0" max="127" value="{{ service.settings.ptp_domain or 0 }}" />
+
+      <label class="field-label" for="ptpTransport">Transport</label>
+      <select class="text-input" id="ptpTransport" name="ptp_transport">
+        <option value="udp4" {% if service.settings.ptp_transport != "l2" %}selected{% endif %}>UDP over IPv4</option>
+        <option value="l2" {% if service.settings.ptp_transport == "l2" %}selected{% endif %}>Layer 2 Ethernet</option>
+      </select>
+
+      <label class="field-label" for="ptpTimestamping">Timestamping</label>
+      <select class="text-input" id="ptpTimestamping" name="ptp_timestamping">
+        <option value="auto" {% if service.settings.ptp_timestamping == "auto" %}selected{% endif %}>Auto detect</option>
+        <option value="software" {% if service.settings.ptp_timestamping == "software" %}selected{% endif %}>Software</option>
+        <option value="hardware" {% if service.settings.ptp_timestamping == "hardware" %}selected{% endif %}>Hardware required</option>
+      </select>
+    </form>
+  </div>
+
+  <div class="detail-box">
+    <strong>VCF Client Configuration</strong>
+    <p class="subtle">Use either value when VCF, ESXi, or supporting components ask for an NTP server.</p>
+    <div class="client-config-list">
+      <label class="client-copy-field" for="timeClientHost">
+        <span>NTP Server FQDN</span>
+        <input class="text-input" id="timeClientHost" type="text" readonly value="{{ config.VIS_APPLIANCE_FQDN }}" />
+        <button class="btn icon-btn" type="button" data-copy-target="timeClientHost" title="Copy NTP server FQDN" aria-label="Copy NTP server FQDN">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </label>
+      <label class="client-copy-field" for="timeClientIp">
+        <span>NTP Server IP</span>
+        <input class="text-input" id="timeClientIp" type="text" readonly value="{{ config.VIS_APPLIANCE_IP }}" placeholder="Appliance IP" />
+        <button class="btn icon-btn" type="button" data-copy-target="timeClientIp" title="Copy NTP server IP" aria-label="Copy NTP server IP">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </label>
+      <label class="client-copy-field" for="timeClientPort">
+        <span>NTP Port</span>
+        <input class="text-input" id="timeClientPort" type="text" readonly value="123" />
+        <button class="btn icon-btn" type="button" data-copy-target="timeClientPort" title="Copy NTP port" aria-label="Copy NTP port">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </label>
+    </div>
+    <div class="stacked-config">
+      <strong>NTP Server Configuration</strong>
+      <pre class="config-preview">{{ rendered_config }}</pre>
+    </div>
+  </div>
+</div>
+
+<div class="detail-grid dns-config-grid">
+  <div class="detail-box">
+    <strong>Time Source Status</strong>
+    <table class="record-table">
+      <tbody>
+        <tr><th>NTP sources</th><td>{{ service.settings.upstream_sources|length if service.settings.upstream_sources else 0 }}</td></tr>
+        <tr><th>Allowed client networks</th><td>{{ service.settings.allowed_clients|join(', ') if service.settings.allowed_clients else 'Not restricted yet' }}</td></tr>
+        <tr><th>Local fallback</th><td>{{ "Enabled" if service.settings.local_fallback_enabled else "Disabled" }}</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="detail-box">
+    <strong>PTP Status</strong>
+    <table class="record-table">
+      <tbody>
+        <tr><th>PTP</th><td>{{ "Enabled" if service.settings.ptp_enabled else "Disabled" }}</td></tr>
+        <tr><th>Interface</th><td>{{ service.settings.ptp_interface or "Not selected" }}</td></tr>
+        <tr><th>Domain</th><td>{{ service.settings.ptp_domain }}</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>

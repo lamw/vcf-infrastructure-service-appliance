@@ -177,6 +177,7 @@ class ServiceStore:
                     WHEN 'time-server' THEN 7
                     WHEN 'dhcp-server' THEN 8
                     WHEN 'kms-service' THEN 9
+                    WHEN 'content-library' THEN 10
                     ELSE 99
                 END, id
                 """

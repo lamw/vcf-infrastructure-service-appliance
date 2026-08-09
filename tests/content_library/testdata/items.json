@@ -1,0 +1,5548 @@
+{
+  "items": [
+    {
+      "created": "2021-01-22T15:49:18.586932",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:61f7e2e8-e4f7-4119-a9ec-82411febc05a",
+      "name": "ob-17332787-photon-3-k8s-v1.17.13---vmware.1-tkg.2.2c133ed",
+      "selfHref": "ob-17332787-photon-3-k8s-v1.17.13---vmware.1-tkg.2.2c133ed/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "189043dcfcf91ce6a501e3eb51a6579e",
+          "hrefs": [
+            "ob-17332787-photon-3-k8s-v1.17.13---vmware.1-tkg.2.2c133ed/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "189043dcfcf91ce6a501e3eb51a6579e",
+          "hrefs": [
+            "ob-17332787-photon-3-k8s-v1.17.13---vmware.1-tkg.2.2c133ed/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 2341995008,
+          "etag": "189043dcfcf91ce6a501e3eb51a6579e",
+          "hrefs": [
+            "ob-17332787-photon-3-k8s-v1.17.13---vmware.1-tkg.2.2c133ed/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 129486,
+          "etag": "189043dcfcf91ce6a501e3eb51a6579e",
+          "hrefs": [
+            "ob-17332787-photon-3-k8s-v1.17.13---vmware.1-tkg.2.2c133ed/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2020-07-14T14:13:09.694432",
+      "description": "",
+      "version": "3",
+      "id": "urn:uuid:9d7f99d6-0e53-4dcf-bc8a-005807646443",
+      "name": "ob-16551547-photon-3-k8s-v1.17.8---vmware.1-tkg.1.5417466",
+      "selfHref": "ob-16551547-photon-3-k8s-v1.17.8---vmware.1-tkg.1.5417466/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "76f0145a2ac157d8e412edda1ac3df96",
+          "hrefs": [
+            "ob-16551547-photon-3-k8s-v1.17.8---vmware.1-tkg.1.5417466/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "76f0145a2ac157d8e412edda1ac3df96",
+          "hrefs": [
+            "ob-16551547-photon-3-k8s-v1.17.8---vmware.1-tkg.1.5417466/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1890822144,
+          "etag": "76f0145a2ac157d8e412edda1ac3df96",
+          "hrefs": [
+            "ob-16551547-photon-3-k8s-v1.17.8---vmware.1-tkg.1.5417466/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 117286,
+          "etag": "76f0145a2ac157d8e412edda1ac3df96",
+          "hrefs": [
+            "ob-16551547-photon-3-k8s-v1.17.8---vmware.1-tkg.1.5417466/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2020-09-24T12:40:36.402544",
+      "description": "",
+      "version": "3",
+      "id": "urn:uuid:f6a82598-c486-4e7c-8bc7-2d6f11a202e7",
+      "name": "ob-16897056-photon-3-k8s-v1.16.14---vmware.1-tkg.1.ada4837",
+      "selfHref": "ob-16897056-photon-3-k8s-v1.16.14---vmware.1-tkg.1.ada4837/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "44e6b83b9e6898cf7c0f155d754fbed0",
+          "hrefs": [
+            "ob-16897056-photon-3-k8s-v1.16.14---vmware.1-tkg.1.ada4837/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "44e6b83b9e6898cf7c0f155d754fbed0",
+          "hrefs": [
+            "ob-16897056-photon-3-k8s-v1.16.14---vmware.1-tkg.1.ada4837/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3009657344,
+          "etag": "44e6b83b9e6898cf7c0f155d754fbed0",
+          "hrefs": [
+            "ob-16897056-photon-3-k8s-v1.16.14---vmware.1-tkg.1.ada4837/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 116869,
+          "etag": "44e6b83b9e6898cf7c0f155d754fbed0",
+          "hrefs": [
+            "ob-16897056-photon-3-k8s-v1.16.14---vmware.1-tkg.1.ada4837/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-03-15T00:05:49.766874",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:f893fe93-5344-46fa-8aed-a21371397018",
+      "name": "ob-23319348-tkgs-ova-ubuntu-2004-v1.26.12---vmware.2-fips.1.ubuntu",
+      "selfHref": "ob-23319348-tkgs-ova-ubuntu-2004-v1.26.12---vmware.2-fips.1.ubuntu/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "93b767e61078e7bda8473b3ce540eccf",
+          "hrefs": [
+            "ob-23319348-tkgs-ova-ubuntu-2004-v1.26.12---vmware.2-fips.1.ubuntu/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 150998,
+          "etag": "93b767e61078e7bda8473b3ce540eccf",
+          "hrefs": [
+            "ob-23319348-tkgs-ova-ubuntu-2004-v1.26.12---vmware.2-fips.1.ubuntu/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "93b767e61078e7bda8473b3ce540eccf",
+          "hrefs": [
+            "ob-23319348-tkgs-ova-ubuntu-2004-v1.26.12---vmware.2-fips.1.ubuntu/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4198182400,
+          "etag": "93b767e61078e7bda8473b3ce540eccf",
+          "hrefs": [
+            "ob-23319348-tkgs-ova-ubuntu-2004-v1.26.12---vmware.2-fips.1.ubuntu/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-09-09T02:36:12.745247",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:2fd21296-eb3f-4f3d-b181-e5c6ced049ae",
+      "name": "ob-18532793-photon-3-k8s-v1.19.14---vmware.1-tkg.1.8753786",
+      "selfHref": "ob-18532793-photon-3-k8s-v1.19.14---vmware.1-tkg.1.8753786/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "175dcbf000a34ebe1c57385f2c5df7d4",
+          "hrefs": [
+            "ob-18532793-photon-3-k8s-v1.19.14---vmware.1-tkg.1.8753786/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "175dcbf000a34ebe1c57385f2c5df7d4",
+          "hrefs": [
+            "ob-18532793-photon-3-k8s-v1.19.14---vmware.1-tkg.1.8753786/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1799105024,
+          "etag": "175dcbf000a34ebe1c57385f2c5df7d4",
+          "hrefs": [
+            "ob-18532793-photon-3-k8s-v1.19.14---vmware.1-tkg.1.8753786/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 154027,
+          "etag": "175dcbf000a34ebe1c57385f2c5df7d4",
+          "hrefs": [
+            "ob-18532793-photon-3-k8s-v1.19.14---vmware.1-tkg.1.8753786/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-12-06T23:17:08.638700",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:a0401926-3119-4c89-ab61-745da24b71bc",
+      "name": "ob-18895415-photon-3-k8s-v1.19.16---vmware.1-tkg.1.df910e2",
+      "selfHref": "ob-18895415-photon-3-k8s-v1.19.16---vmware.1-tkg.1.df910e2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "e674431c94018cf6c46e586559868ede",
+          "hrefs": [
+            "ob-18895415-photon-3-k8s-v1.19.16---vmware.1-tkg.1.df910e2/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "e674431c94018cf6c46e586559868ede",
+          "hrefs": [
+            "ob-18895415-photon-3-k8s-v1.19.16---vmware.1-tkg.1.df910e2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1797816320,
+          "etag": "e674431c94018cf6c46e586559868ede",
+          "hrefs": [
+            "ob-18895415-photon-3-k8s-v1.19.16---vmware.1-tkg.1.df910e2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 154027,
+          "etag": "e674431c94018cf6c46e586559868ede",
+          "hrefs": [
+            "ob-18895415-photon-3-k8s-v1.19.16---vmware.1-tkg.1.df910e2/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2022-03-03T21:55:44.332803",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:e9559d2a-b28a-484d-a119-9ee9e8346447",
+      "name": "ob-19344082-tkgs-ova-ubuntu-2004-v1.21.6---vmware.1-tkg.1",
+      "selfHref": "ob-19344082-tkgs-ova-ubuntu-2004-v1.21.6---vmware.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 233,
+          "etag": "d6330ec27e568d0fb928633ef141fbc5",
+          "hrefs": [
+            "ob-19344082-tkgs-ova-ubuntu-2004-v1.21.6---vmware.1-tkg.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 170546,
+          "etag": "d6330ec27e568d0fb928633ef141fbc5",
+          "hrefs": [
+            "ob-19344082-tkgs-ova-ubuntu-2004-v1.21.6---vmware.1-tkg.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "d6330ec27e568d0fb928633ef141fbc5",
+          "hrefs": [
+            "ob-19344082-tkgs-ova-ubuntu-2004-v1.21.6---vmware.1-tkg.1/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4022360064,
+          "etag": "d6330ec27e568d0fb928633ef141fbc5",
+          "hrefs": [
+            "ob-19344082-tkgs-ova-ubuntu-2004-v1.21.6---vmware.1-tkg.1/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-02-25T09:55:04.000679",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:58aa460f-f462-4178-bf5d-5389613c59da",
+      "name": "ob-17654937-photon-3-k8s-v1.18.15---vmware.1-tkg.1.600e412",
+      "selfHref": "ob-17654937-photon-3-k8s-v1.18.15---vmware.1-tkg.1.600e412/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "64f616fe1ba1b0cf6fdd7d13cac3cc99",
+          "hrefs": [
+            "ob-17654937-photon-3-k8s-v1.18.15---vmware.1-tkg.1.600e412/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "64f616fe1ba1b0cf6fdd7d13cac3cc99",
+          "hrefs": [
+            "ob-17654937-photon-3-k8s-v1.18.15---vmware.1-tkg.1.600e412/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1683402752,
+          "etag": "64f616fe1ba1b0cf6fdd7d13cac3cc99",
+          "hrefs": [
+            "ob-17654937-photon-3-k8s-v1.18.15---vmware.1-tkg.1.600e412/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 129698,
+          "etag": "64f616fe1ba1b0cf6fdd7d13cac3cc99",
+          "hrefs": [
+            "ob-17654937-photon-3-k8s-v1.18.15---vmware.1-tkg.1.600e412/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-07-05T04:20:40.467956",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:196d75b5-fa4b-4008-b275-ca33ca98a8ea",
+      "name": "ob-18186591-photon-3-k8s-v1.20.7---vmware.1-tkg.1.7fb9067",
+      "selfHref": "ob-18186591-photon-3-k8s-v1.20.7---vmware.1-tkg.1.7fb9067/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "cf117a9d2ee2f4f043d422f60c52202b",
+          "hrefs": [
+            "ob-18186591-photon-3-k8s-v1.20.7---vmware.1-tkg.1.7fb9067/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "cf117a9d2ee2f4f043d422f60c52202b",
+          "hrefs": [
+            "ob-18186591-photon-3-k8s-v1.20.7---vmware.1-tkg.1.7fb9067/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1735813632,
+          "etag": "cf117a9d2ee2f4f043d422f60c52202b",
+          "hrefs": [
+            "ob-18186591-photon-3-k8s-v1.20.7---vmware.1-tkg.1.7fb9067/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 154610,
+          "etag": "cf117a9d2ee2f4f043d422f60c52202b",
+          "hrefs": [
+            "ob-18186591-photon-3-k8s-v1.20.7---vmware.1-tkg.1.7fb9067/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-04-18T00:05:21.415835",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:4b6bdbc6-266b-4d23-88f0-8097dc50979b",
+      "name": "ob-23660794-photon-3-amd64-vmi-k8s-v1.27.11---vmware.1-fips.1-tkg.2",
+      "selfHref": "ob-23660794-photon-3-amd64-vmi-k8s-v1.27.11---vmware.1-fips.1-tkg.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "0286df7a314c501943380867c08f9a02",
+          "hrefs": [
+            "ob-23660794-photon-3-amd64-vmi-k8s-v1.27.11---vmware.1-fips.1-tkg.2/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "0286df7a314c501943380867c08f9a02",
+          "hrefs": [
+            "ob-23660794-photon-3-amd64-vmi-k8s-v1.27.11---vmware.1-fips.1-tkg.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3504923136,
+          "etag": "0286df7a314c501943380867c08f9a02",
+          "hrefs": [
+            "ob-23660794-photon-3-amd64-vmi-k8s-v1.27.11---vmware.1-fips.1-tkg.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 113733,
+          "etag": "0286df7a314c501943380867c08f9a02",
+          "hrefs": [
+            "ob-23660794-photon-3-amd64-vmi-k8s-v1.27.11---vmware.1-fips.1-tkg.2/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-04-04T23:18:16.648704",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:f17cf911-ab98-413e-805a-4eb210d137c8",
+      "name": "ob-23376679-tkgs-ova-photon-3-v1.27.10---vmware.1-fips.1-tkg.1",
+      "selfHref": "ob-23376679-tkgs-ova-photon-3-v1.27.10---vmware.1-fips.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "c843b3323fcae1bb96502c963f50fc8c",
+          "hrefs": [
+            "ob-23376679-tkgs-ova-photon-3-v1.27.10---vmware.1-fips.1-tkg.1/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "c843b3323fcae1bb96502c963f50fc8c",
+          "hrefs": [
+            "ob-23376679-tkgs-ova-photon-3-v1.27.10---vmware.1-fips.1-tkg.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3561272320,
+          "etag": "c843b3323fcae1bb96502c963f50fc8c",
+          "hrefs": [
+            "ob-23376679-tkgs-ova-photon-3-v1.27.10---vmware.1-fips.1-tkg.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 151699,
+          "etag": "c843b3323fcae1bb96502c963f50fc8c",
+          "hrefs": [
+            "ob-23376679-tkgs-ova-photon-3-v1.27.10---vmware.1-fips.1-tkg.1/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-04-04T23:06:09.578009",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:b875a303-5a7e-4999-9576-f5993958bd25",
+      "name": "ob-21443892-tkgs-ova-ubuntu-2004-v1.22.9---vmware.1-tkg.1",
+      "selfHref": "ob-21443892-tkgs-ova-ubuntu-2004-v1.22.9---vmware.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 233,
+          "etag": "8e0a8cf84916ed77adc2082c65e04983",
+          "hrefs": [
+            "ob-21443892-tkgs-ova-ubuntu-2004-v1.22.9---vmware.1-tkg.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 140677,
+          "etag": "8e0a8cf84916ed77adc2082c65e04983",
+          "hrefs": [
+            "ob-21443892-tkgs-ova-ubuntu-2004-v1.22.9---vmware.1-tkg.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "8e0a8cf84916ed77adc2082c65e04983",
+          "hrefs": [
+            "ob-21443892-tkgs-ova-ubuntu-2004-v1.22.9---vmware.1-tkg.1/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3976200192,
+          "etag": "8e0a8cf84916ed77adc2082c65e04983",
+          "hrefs": [
+            "ob-21443892-tkgs-ova-ubuntu-2004-v1.22.9---vmware.1-tkg.1/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-04-19T15:25:13.255153",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:22b84bbe-e4e7-456e-b4e2-4506d0a98902",
+      "name": "ob-21554409-photon-3-amd64-vmi-k8s-v1.24.9---vmware.1-tkg.4",
+      "selfHref": "ob-21554409-photon-3-amd64-vmi-k8s-v1.24.9---vmware.1-tkg.4/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "ae005239659f2ab7ce16cb9814a3f742",
+          "hrefs": [
+            "ob-21554409-photon-3-amd64-vmi-k8s-v1.24.9---vmware.1-tkg.4/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 219,
+          "etag": "ae005239659f2ab7ce16cb9814a3f742",
+          "hrefs": [
+            "ob-21554409-photon-3-amd64-vmi-k8s-v1.24.9---vmware.1-tkg.4/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 2550809600,
+          "etag": "ae005239659f2ab7ce16cb9814a3f742",
+          "hrefs": [
+            "ob-21554409-photon-3-amd64-vmi-k8s-v1.24.9---vmware.1-tkg.4/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 107469,
+          "etag": "ae005239659f2ab7ce16cb9814a3f742",
+          "hrefs": [
+            "ob-21554409-photon-3-amd64-vmi-k8s-v1.24.9---vmware.1-tkg.4/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2020-04-01T23:26:27.786815",
+      "description": "",
+      "version": "3",
+      "id": "urn:uuid:5b660ff5-d227-477c-b736-88f99d92a20a",
+      "name": "ob-15957779-photon-3-k8s-v1.16.8---vmware.1-tkg.3.60d2ffd",
+      "selfHref": "ob-15957779-photon-3-k8s-v1.16.8---vmware.1-tkg.3.60d2ffd/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "e81bbcf39e50719bdb2df42f6383c28e",
+          "hrefs": [
+            "ob-15957779-photon-3-k8s-v1.16.8---vmware.1-tkg.3.60d2ffd/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "e81bbcf39e50719bdb2df42f6383c28e",
+          "hrefs": [
+            "ob-15957779-photon-3-k8s-v1.16.8---vmware.1-tkg.3.60d2ffd/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 2516872704,
+          "etag": "e81bbcf39e50719bdb2df42f6383c28e",
+          "hrefs": [
+            "ob-15957779-photon-3-k8s-v1.16.8---vmware.1-tkg.3.60d2ffd/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 92985,
+          "etag": "e81bbcf39e50719bdb2df42f6383c28e",
+          "hrefs": [
+            "ob-15957779-photon-3-k8s-v1.16.8---vmware.1-tkg.3.60d2ffd/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-05-16T11:35:07.612329",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:71b1f7e1-9fed-461e-ac43-b70ab5b94074",
+      "name": "ob-18035534-photon-3-k8s-v1.19.7---vmware.1-tkg.2.f52f85a",
+      "selfHref": "ob-18035534-photon-3-k8s-v1.19.7---vmware.1-tkg.2.f52f85a/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "bfc70180ccd4ea0836a33e44d6eaa8b2",
+          "hrefs": [
+            "ob-18035534-photon-3-k8s-v1.19.7---vmware.1-tkg.2.f52f85a/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "bfc70180ccd4ea0836a33e44d6eaa8b2",
+          "hrefs": [
+            "ob-18035534-photon-3-k8s-v1.19.7---vmware.1-tkg.2.f52f85a/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1708503552,
+          "etag": "bfc70180ccd4ea0836a33e44d6eaa8b2",
+          "hrefs": [
+            "ob-18035534-photon-3-k8s-v1.19.7---vmware.1-tkg.2.f52f85a/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 148049,
+          "etag": "bfc70180ccd4ea0836a33e44d6eaa8b2",
+          "hrefs": [
+            "ob-18035534-photon-3-k8s-v1.19.7---vmware.1-tkg.2.f52f85a/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-01-31T01:27:23.627699",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:d950bc3a-13df-4b40-8838-5a9363f13ac8",
+      "name": "ob-23049854-tkgs-ova-ubuntu-2004-v1.27.6---vmware.1-fips.1-tkg.1.ubuntu",
+      "selfHref": "ob-23049854-tkgs-ova-ubuntu-2004-v1.27.6---vmware.1-fips.1-tkg.1.ubuntu/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "1aef03e2828b1274186aa01531e52615",
+          "hrefs": [
+            "ob-23049854-tkgs-ova-ubuntu-2004-v1.27.6---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 151731,
+          "etag": "1aef03e2828b1274186aa01531e52615",
+          "hrefs": [
+            "ob-23049854-tkgs-ova-ubuntu-2004-v1.27.6---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "1aef03e2828b1274186aa01531e52615",
+          "hrefs": [
+            "ob-23049854-tkgs-ova-ubuntu-2004-v1.27.6---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4076914176,
+          "etag": "1aef03e2828b1274186aa01531e52615",
+          "hrefs": [
+            "ob-23049854-tkgs-ova-ubuntu-2004-v1.27.6---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-03-14T22:32:52.180436",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:ed116eab-63c3-4047-9385-21420cc3a839",
+      "name": "ob-23443126-photon-3-amd64-vmi-k8s-v1.26.13---vmware.1-fips.1-tkg.3",
+      "selfHref": "ob-23443126-photon-3-amd64-vmi-k8s-v1.26.13---vmware.1-fips.1-tkg.3/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "a08a68de3fa20d24b969159a034168b5",
+          "hrefs": [
+            "ob-23443126-photon-3-amd64-vmi-k8s-v1.26.13---vmware.1-fips.1-tkg.3/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "a08a68de3fa20d24b969159a034168b5",
+          "hrefs": [
+            "ob-23443126-photon-3-amd64-vmi-k8s-v1.26.13---vmware.1-fips.1-tkg.3/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3333986304,
+          "etag": "a08a68de3fa20d24b969159a034168b5",
+          "hrefs": [
+            "ob-23443126-photon-3-amd64-vmi-k8s-v1.26.13---vmware.1-fips.1-tkg.3/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 111687,
+          "etag": "a08a68de3fa20d24b969159a034168b5",
+          "hrefs": [
+            "ob-23443126-photon-3-amd64-vmi-k8s-v1.26.13---vmware.1-fips.1-tkg.3/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-03-14T23:13:29.747780",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:9c94172c-6fe2-4451-852b-ea2197e008b0",
+      "name": "ob-23443125-ubuntu-2004-amd64-vmi-k8s-v1.26.13---vmware.1-fips.1-tkg.3",
+      "selfHref": "ob-23443125-ubuntu-2004-amd64-vmi-k8s-v1.26.13---vmware.1-fips.1-tkg.3/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "74b3e49219b983b52ce61f78f801cb25",
+          "hrefs": [
+            "ob-23443125-ubuntu-2004-amd64-vmi-k8s-v1.26.13---vmware.1-fips.1-tkg.3/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 111703,
+          "etag": "74b3e49219b983b52ce61f78f801cb25",
+          "hrefs": [
+            "ob-23443125-ubuntu-2004-amd64-vmi-k8s-v1.26.13---vmware.1-fips.1-tkg.3/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "9cec557386e8ed15aad2488751ec97e0",
+          "hrefs": [
+            "ob-23443125-ubuntu-2004-amd64-vmi-k8s-v1.26.13---vmware.1-fips.1-tkg.3/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3261298688,
+          "etag": "74b3e49219b983b52ce61f78f801cb25",
+          "hrefs": [
+            "ob-23443125-ubuntu-2004-amd64-vmi-k8s-v1.26.13---vmware.1-fips.1-tkg.3/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2020-10-07T06:14:19.335847",
+      "description": "",
+      "version": "3",
+      "id": "urn:uuid:4bb9410d-a981-47ba-8939-de180fb5b7c0",
+      "name": "ob-16924026-photon-3-k8s-v1.18.5---vmware.1-tkg.1.c40d30d",
+      "selfHref": "ob-16924026-photon-3-k8s-v1.18.5---vmware.1-tkg.1.c40d30d/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "ec45980d745f33b86c41c8afd99a40e2",
+          "hrefs": [
+            "ob-16924026-photon-3-k8s-v1.18.5---vmware.1-tkg.1.c40d30d/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "ec45980d745f33b86c41c8afd99a40e2",
+          "hrefs": [
+            "ob-16924026-photon-3-k8s-v1.18.5---vmware.1-tkg.1.c40d30d/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 2030915584,
+          "etag": "ec45980d745f33b86c41c8afd99a40e2",
+          "hrefs": [
+            "ob-16924026-photon-3-k8s-v1.18.5---vmware.1-tkg.1.c40d30d/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 129382,
+          "etag": "ec45980d745f33b86c41c8afd99a40e2",
+          "hrefs": [
+            "ob-16924026-photon-3-k8s-v1.18.5---vmware.1-tkg.1.c40d30d/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2022-10-11T06:48:00.111346",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:515c5f07-fd4e-49a3-8132-6ea90dafec5d",
+      "name": "ob-20611104-ubuntu-2004-amd64-vmi-k8s-v1.23.8---vmware.2-tkg.1-zshippable",
+      "selfHref": "ob-20611104-ubuntu-2004-amd64-vmi-k8s-v1.23.8---vmware.2-tkg.1-zshippable/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 233,
+          "etag": "0bde52a6e65a2994226b03362cf20731",
+          "hrefs": [
+            "ob-20611104-ubuntu-2004-amd64-vmi-k8s-v1.23.8---vmware.2-tkg.1-zshippable/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 111670,
+          "etag": "0bde52a6e65a2994226b03362cf20731",
+          "hrefs": [
+            "ob-20611104-ubuntu-2004-amd64-vmi-k8s-v1.23.8---vmware.2-tkg.1-zshippable/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "0bde52a6e65a2994226b03362cf20731",
+          "hrefs": [
+            "ob-20611104-ubuntu-2004-amd64-vmi-k8s-v1.23.8---vmware.2-tkg.1-zshippable/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3272016384,
+          "etag": "0bde52a6e65a2994226b03362cf20731",
+          "hrefs": [
+            "ob-20611104-ubuntu-2004-amd64-vmi-k8s-v1.23.8---vmware.2-tkg.1-zshippable/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2022-10-11T06:27:53.182231",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:8d73f4a0-b692-4511-9eb2-048e623312b4",
+      "name": "ob-20611023-photon-3-amd64-vmi-k8s-v1.23.8---vmware.2-tkg.1-zshippable",
+      "selfHref": "ob-20611023-photon-3-amd64-vmi-k8s-v1.23.8---vmware.2-tkg.1-zshippable/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "e7a924e7556f2b7668960b3ed3b48d45",
+          "hrefs": [
+            "ob-20611023-photon-3-amd64-vmi-k8s-v1.23.8---vmware.2-tkg.1-zshippable/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 219,
+          "etag": "e7a924e7556f2b7668960b3ed3b48d45",
+          "hrefs": [
+            "ob-20611023-photon-3-amd64-vmi-k8s-v1.23.8---vmware.2-tkg.1-zshippable/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 2515374080,
+          "etag": "e7a924e7556f2b7668960b3ed3b48d45",
+          "hrefs": [
+            "ob-20611023-photon-3-amd64-vmi-k8s-v1.23.8---vmware.2-tkg.1-zshippable/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 111652,
+          "etag": "e7a924e7556f2b7668960b3ed3b48d45",
+          "hrefs": [
+            "ob-20611023-photon-3-amd64-vmi-k8s-v1.23.8---vmware.2-tkg.1-zshippable/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2020-07-14T14:13:09.694432",
+      "description": "",
+      "version": "3",
+      "id": "urn:uuid:05881159-7e7e-47c2-8d15-cb9e76ad1b2a",
+      "name": "ob-16545581-photon-3-k8s-v1.16.12---vmware.1-tkg.1.da7afe7",
+      "selfHref": "ob-16545581-photon-3-k8s-v1.16.12---vmware.1-tkg.1.da7afe7/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "a57355c6aa7fcf8cb62420035aaa60db",
+          "hrefs": [
+            "ob-16545581-photon-3-k8s-v1.16.12---vmware.1-tkg.1.da7afe7/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "a57355c6aa7fcf8cb62420035aaa60db",
+          "hrefs": [
+            "ob-16545581-photon-3-k8s-v1.16.12---vmware.1-tkg.1.da7afe7/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 2498729472,
+          "etag": "a57355c6aa7fcf8cb62420035aaa60db",
+          "hrefs": [
+            "ob-16545581-photon-3-k8s-v1.16.12---vmware.1-tkg.1.da7afe7/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 98372,
+          "etag": "a57355c6aa7fcf8cb62420035aaa60db",
+          "hrefs": [
+            "ob-16545581-photon-3-k8s-v1.16.12---vmware.1-tkg.1.da7afe7/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-08-23T19:58:16.294125",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:51c404f7-2e2a-4fd6-9bfc-619029b8fc76",
+      "name": "ob-22184929-photon-3-amd64-vmi-k8s-v1.26.5---vmware.2-fips.1-tkg.1",
+      "selfHref": "ob-22184929-photon-3-amd64-vmi-k8s-v1.26.5---vmware.2-fips.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "0f48fab448623edd5db21ca58ca7797c",
+          "hrefs": [
+            "ob-22184929-photon-3-amd64-vmi-k8s-v1.26.5---vmware.2-fips.1-tkg.1/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 233,
+          "etag": "0f48fab448623edd5db21ca58ca7797c",
+          "hrefs": [
+            "ob-22184929-photon-3-amd64-vmi-k8s-v1.26.5---vmware.2-fips.1-tkg.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3259741184,
+          "etag": "0f48fab448623edd5db21ca58ca7797c",
+          "hrefs": [
+            "ob-22184929-photon-3-amd64-vmi-k8s-v1.26.5---vmware.2-fips.1-tkg.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 111558,
+          "etag": "0f48fab448623edd5db21ca58ca7797c",
+          "hrefs": [
+            "ob-22184929-photon-3-amd64-vmi-k8s-v1.26.5---vmware.2-fips.1-tkg.1/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-05-17T23:12:47.438373",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:636dac6e-a4fe-4d46-adfd-8933b049ef95",
+      "name": "ob-21714607-tkgs-ova-ubuntu-2004-v1.23.8---vmware.3-tkg.1",
+      "selfHref": "ob-21714607-tkgs-ova-ubuntu-2004-v1.23.8---vmware.3-tkg.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 233,
+          "etag": "c76746e35545b1a1d23fc033e8ddfd81",
+          "hrefs": [
+            "ob-21714607-tkgs-ova-ubuntu-2004-v1.23.8---vmware.3-tkg.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 145257,
+          "etag": "c76746e35545b1a1d23fc033e8ddfd81",
+          "hrefs": [
+            "ob-21714607-tkgs-ova-ubuntu-2004-v1.23.8---vmware.3-tkg.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "c76746e35545b1a1d23fc033e8ddfd81",
+          "hrefs": [
+            "ob-21714607-tkgs-ova-ubuntu-2004-v1.23.8---vmware.3-tkg.1/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3642726912,
+          "etag": "c76746e35545b1a1d23fc033e8ddfd81",
+          "hrefs": [
+            "ob-21714607-tkgs-ova-ubuntu-2004-v1.23.8---vmware.3-tkg.1/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-07-13T20:37:21.836369",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:19c05598-e7e0-4a6a-b9ac-40fa5179297d",
+      "name": "ob-22035671-tkgs-ova-ubuntu-2004-v1.24.11---vmware.1-fips.1-tkg.1.ubuntu",
+      "selfHref": "ob-22035671-tkgs-ova-ubuntu-2004-v1.24.11---vmware.1-fips.1-tkg.1.ubuntu/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 249,
+          "etag": "0dc50a1ddb18a94ffa4afd542a9371b9",
+          "hrefs": [
+            "ob-22035671-tkgs-ova-ubuntu-2004-v1.24.11---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 160729,
+          "etag": "0dc50a1ddb18a94ffa4afd542a9371b9",
+          "hrefs": [
+            "ob-22035671-tkgs-ova-ubuntu-2004-v1.24.11---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "0dc50a1ddb18a94ffa4afd542a9371b9",
+          "hrefs": [
+            "ob-22035671-tkgs-ova-ubuntu-2004-v1.24.11---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4061722112,
+          "etag": "0dc50a1ddb18a94ffa4afd542a9371b9",
+          "hrefs": [
+            "ob-22035671-tkgs-ova-ubuntu-2004-v1.24.11---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-07-20T03:03:07.521153",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:cf243252-67d8-47b7-8905-68658523a63c",
+      "name": "ob-18284400-photon-3-k8s-v1.18.19---vmware.1-tkg.1.17af790",
+      "selfHref": "ob-18284400-photon-3-k8s-v1.18.19---vmware.1-tkg.1.17af790/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "ff556f4e6f7c600a5c3b53f2cb7b29d6",
+          "hrefs": [
+            "ob-18284400-photon-3-k8s-v1.18.19---vmware.1-tkg.1.17af790/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "ff556f4e6f7c600a5c3b53f2cb7b29d6",
+          "hrefs": [
+            "ob-18284400-photon-3-k8s-v1.18.19---vmware.1-tkg.1.17af790/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1763472384,
+          "etag": "ff556f4e6f7c600a5c3b53f2cb7b29d6",
+          "hrefs": [
+            "ob-18284400-photon-3-k8s-v1.18.19---vmware.1-tkg.1.17af790/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 129747,
+          "etag": "ff556f4e6f7c600a5c3b53f2cb7b29d6",
+          "hrefs": [
+            "ob-18284400-photon-3-k8s-v1.18.19---vmware.1-tkg.1.17af790/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2020-10-10T11:05:18.801889",
+      "description": "",
+      "version": "3",
+      "id": "urn:uuid:37ada410-4754-4681-aa40-e9093101e73f",
+      "name": "ob-17010758-photon-3-k8s-v1.17.11---vmware.1-tkg.2.ad3d374",
+      "selfHref": "ob-17010758-photon-3-k8s-v1.17.11---vmware.1-tkg.2.ad3d374/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "63d0bd5e90b4f3b947d59fc35d0dff3c",
+          "hrefs": [
+            "ob-17010758-photon-3-k8s-v1.17.11---vmware.1-tkg.2.ad3d374/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "63d0bd5e90b4f3b947d59fc35d0dff3c",
+          "hrefs": [
+            "ob-17010758-photon-3-k8s-v1.17.11---vmware.1-tkg.2.ad3d374/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 2023327744,
+          "etag": "63d0bd5e90b4f3b947d59fc35d0dff3c",
+          "hrefs": [
+            "ob-17010758-photon-3-k8s-v1.17.11---vmware.1-tkg.2.ad3d374/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 129416,
+          "etag": "63d0bd5e90b4f3b947d59fc35d0dff3c",
+          "hrefs": [
+            "ob-17010758-photon-3-k8s-v1.17.11---vmware.1-tkg.2.ad3d374/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-12-07T01:31:51.193263",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:d6efc790-e39f-4c24-b634-df8c2161c5e7",
+      "name": "ob-22748166-tkgs-ova-ubuntu-2004-v1.26.10---vmware.1-fips.1-tkg.1.ubuntu",
+      "selfHref": "ob-22748166-tkgs-ova-ubuntu-2004-v1.26.10---vmware.1-fips.1-tkg.1.ubuntu/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "00fd6880dce077c9098527af58571a53",
+          "hrefs": [
+            "ob-22748166-tkgs-ova-ubuntu-2004-v1.26.10---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 150998,
+          "etag": "00fd6880dce077c9098527af58571a53",
+          "hrefs": [
+            "ob-22748166-tkgs-ova-ubuntu-2004-v1.26.10---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "00fd6880dce077c9098527af58571a53",
+          "hrefs": [
+            "ob-22748166-tkgs-ova-ubuntu-2004-v1.26.10---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3988424192,
+          "etag": "00fd6880dce077c9098527af58571a53",
+          "hrefs": [
+            "ob-22748166-tkgs-ova-ubuntu-2004-v1.26.10---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-01-22T15:55:02.905920",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:2b233b22-f483-4e1e-9f8d-3201677422fc",
+      "name": "ob-17419070-photon-3-k8s-v1.18.10---vmware.1-tkg.1.3a6cd48",
+      "selfHref": "ob-17419070-photon-3-k8s-v1.18.10---vmware.1-tkg.1.3a6cd48/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "31fe51848c09c8f4ba060c2960775c08",
+          "hrefs": [
+            "ob-17419070-photon-3-k8s-v1.18.10---vmware.1-tkg.1.3a6cd48/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "31fe51848c09c8f4ba060c2960775c08",
+          "hrefs": [
+            "ob-17419070-photon-3-k8s-v1.18.10---vmware.1-tkg.1.3a6cd48/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 2366625280,
+          "etag": "31fe51848c09c8f4ba060c2960775c08",
+          "hrefs": [
+            "ob-17419070-photon-3-k8s-v1.18.10---vmware.1-tkg.1.3a6cd48/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 129484,
+          "etag": "31fe51848c09c8f4ba060c2960775c08",
+          "hrefs": [
+            "ob-17419070-photon-3-k8s-v1.18.10---vmware.1-tkg.1.3a6cd48/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-12-07T00:24:05.328189",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:2e14876a-bfef-426a-afe8-c72e89f44e45",
+      "name": "ob-22757591-tkgs-ova-ubuntu-2004-v1.25.13---vmware.1-fips.1-tkg.1.ubuntu",
+      "selfHref": "ob-22757591-tkgs-ova-ubuntu-2004-v1.25.13---vmware.1-fips.1-tkg.1.ubuntu/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "929b440244ba6e0ece29efe164b85f80",
+          "hrefs": [
+            "ob-22757591-tkgs-ova-ubuntu-2004-v1.25.13---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 148850,
+          "etag": "929b440244ba6e0ece29efe164b85f80",
+          "hrefs": [
+            "ob-22757591-tkgs-ova-ubuntu-2004-v1.25.13---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "929b440244ba6e0ece29efe164b85f80",
+          "hrefs": [
+            "ob-22757591-tkgs-ova-ubuntu-2004-v1.25.13---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4303710720,
+          "etag": "929b440244ba6e0ece29efe164b85f80",
+          "hrefs": [
+            "ob-22757591-tkgs-ova-ubuntu-2004-v1.25.13---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-07-26T20:44:57.185057",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:616de10a-c1da-4104-b42e-5212baf966a4",
+      "name": "ob-21961079-ubuntu-2004-amd64-vmi-k8s-v1.25.7---vmware.3-fips.1-tkg.1",
+      "selfHref": "ob-21961079-ubuntu-2004-amd64-vmi-k8s-v1.25.7---vmware.3-fips.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 247,
+          "etag": "f0c303a16f0aef53808ec3eecabf99d4",
+          "hrefs": [
+            "ob-21961079-ubuntu-2004-amd64-vmi-k8s-v1.25.7---vmware.3-fips.1-tkg.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 108142,
+          "etag": "f0c303a16f0aef53808ec3eecabf99d4",
+          "hrefs": [
+            "ob-21961079-ubuntu-2004-amd64-vmi-k8s-v1.25.7---vmware.3-fips.1-tkg.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "6f22bb923901e98ed13ba6cd823dbb7c",
+          "hrefs": [
+            "ob-21961079-ubuntu-2004-amd64-vmi-k8s-v1.25.7---vmware.3-fips.1-tkg.1/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3205811200,
+          "etag": "f0c303a16f0aef53808ec3eecabf99d4",
+          "hrefs": [
+            "ob-21961079-ubuntu-2004-amd64-vmi-k8s-v1.25.7---vmware.3-fips.1-tkg.1/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-10-07T01:07:21.951512",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:8d771e15-c216-439a-a430-46e61159b99e",
+      "name": "ob-18592554-photon-3-k8s-v1.21.2---vmware.1-tkg.1.ee25d55",
+      "selfHref": "ob-18592554-photon-3-k8s-v1.21.2---vmware.1-tkg.1.ee25d55/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "0a2d5198cbefe7649921d7b5059a6761",
+          "hrefs": [
+            "ob-18592554-photon-3-k8s-v1.21.2---vmware.1-tkg.1.ee25d55/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "0a2d5198cbefe7649921d7b5059a6761",
+          "hrefs": [
+            "ob-18592554-photon-3-k8s-v1.21.2---vmware.1-tkg.1.ee25d55/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1990108160,
+          "etag": "0a2d5198cbefe7649921d7b5059a6761",
+          "hrefs": [
+            "ob-18592554-photon-3-k8s-v1.21.2---vmware.1-tkg.1.ee25d55/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 171620,
+          "etag": "0a2d5198cbefe7649921d7b5059a6761",
+          "hrefs": [
+            "ob-18592554-photon-3-k8s-v1.21.2---vmware.1-tkg.1.ee25d55/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-04-19T15:25:13.255153",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:4b6c50d9-cc28-49ec-9404-c455a798bb30",
+      "name": "ob-21552850-ubuntu-2004-amd64-vmi-k8s-v1.24.9---vmware.1-tkg.4",
+      "selfHref": "ob-21552850-ubuntu-2004-amd64-vmi-k8s-v1.24.9---vmware.1-tkg.4/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 233,
+          "etag": "38af6bef1430835de4e5ff101508b4d9",
+          "hrefs": [
+            "ob-21552850-ubuntu-2004-amd64-vmi-k8s-v1.24.9---vmware.1-tkg.4/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 107485,
+          "etag": "38af6bef1430835de4e5ff101508b4d9",
+          "hrefs": [
+            "ob-21552850-ubuntu-2004-amd64-vmi-k8s-v1.24.9---vmware.1-tkg.4/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "38af6bef1430835de4e5ff101508b4d9",
+          "hrefs": [
+            "ob-21552850-ubuntu-2004-amd64-vmi-k8s-v1.24.9---vmware.1-tkg.4/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3405984768,
+          "etag": "38af6bef1430835de4e5ff101508b4d9",
+          "hrefs": [
+            "ob-21552850-ubuntu-2004-amd64-vmi-k8s-v1.24.9---vmware.1-tkg.4/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2022-06-21T02:05:15.546541",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:0794efb0-38f6-4441-b9a9-d6ab92d93111",
+      "name": "ob-19930037-photon-3-k8s-v1.22.9---vmware.1-tkg.1.cc71bc8",
+      "selfHref": "ob-19930037-photon-3-k8s-v1.22.9---vmware.1-tkg.1.cc71bc8/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "0294bc29bfe6ac02f57cdfb864262089",
+          "hrefs": [
+            "ob-19930037-photon-3-k8s-v1.22.9---vmware.1-tkg.1.cc71bc8/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "0294bc29bfe6ac02f57cdfb864262089",
+          "hrefs": [
+            "ob-19930037-photon-3-k8s-v1.22.9---vmware.1-tkg.1.cc71bc8/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1770613760,
+          "etag": "0294bc29bfe6ac02f57cdfb864262089",
+          "hrefs": [
+            "ob-19930037-photon-3-k8s-v1.22.9---vmware.1-tkg.1.cc71bc8/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 137586,
+          "etag": "0294bc29bfe6ac02f57cdfb864262089",
+          "hrefs": [
+            "ob-19930037-photon-3-k8s-v1.22.9---vmware.1-tkg.1.cc71bc8/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-09-08T22:34:43.979845",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:65b9b8d6-5914-4555-ba77-b70484a11968",
+      "name": "ob-18461281-photon-3-k8s-v1.20.9---vmware.1-tkg.1.a4cee5b",
+      "selfHref": "ob-18461281-photon-3-k8s-v1.20.9---vmware.1-tkg.1.a4cee5b/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "2f3e6588e520b9ef8983bf3e5b91a2f0",
+          "hrefs": [
+            "ob-18461281-photon-3-k8s-v1.20.9---vmware.1-tkg.1.a4cee5b/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "2f3e6588e520b9ef8983bf3e5b91a2f0",
+          "hrefs": [
+            "ob-18461281-photon-3-k8s-v1.20.9---vmware.1-tkg.1.a4cee5b/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1802658816,
+          "etag": "2f3e6588e520b9ef8983bf3e5b91a2f0",
+          "hrefs": [
+            "ob-18461281-photon-3-k8s-v1.20.9---vmware.1-tkg.1.a4cee5b/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 160578,
+          "etag": "2f3e6588e520b9ef8983bf3e5b91a2f0",
+          "hrefs": [
+            "ob-18461281-photon-3-k8s-v1.20.9---vmware.1-tkg.1.a4cee5b/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-07-13T20:11:46.610787",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:ffaacc43-8dfc-4b9b-be9d-67073465ab5b",
+      "name": "ob-22036247-tkgs-ova-photon-3-v1.24.11---vmware.1-fips.1-tkg.1",
+      "selfHref": "ob-22036247-tkgs-ova-photon-3-v1.24.11---vmware.1-fips.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "a44a8ee592140526a72e348ab8208666",
+          "hrefs": [
+            "ob-22036247-tkgs-ova-photon-3-v1.24.11---vmware.1-fips.1-tkg.1/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 235,
+          "etag": "a44a8ee592140526a72e348ab8208666",
+          "hrefs": [
+            "ob-22036247-tkgs-ova-photon-3-v1.24.11---vmware.1-fips.1-tkg.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3242353152,
+          "etag": "a44a8ee592140526a72e348ab8208666",
+          "hrefs": [
+            "ob-22036247-tkgs-ova-photon-3-v1.24.11---vmware.1-fips.1-tkg.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 160685,
+          "etag": "a44a8ee592140526a72e348ab8208666",
+          "hrefs": [
+            "ob-22036247-tkgs-ova-photon-3-v1.24.11---vmware.1-fips.1-tkg.1/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-12-06T23:56:26.743887",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:496435d1-8144-47d7-b2de-aca54c27498c",
+      "name": "ob-18903450-photon-3-k8s-v1.20.12---vmware.1-tkg.1.b9a42f3",
+      "selfHref": "ob-18903450-photon-3-k8s-v1.20.12---vmware.1-tkg.1.b9a42f3/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "bd7dadbf22dae02f92ad3f04ce37295b",
+          "hrefs": [
+            "ob-18903450-photon-3-k8s-v1.20.12---vmware.1-tkg.1.b9a42f3/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "bd7dadbf22dae02f92ad3f04ce37295b",
+          "hrefs": [
+            "ob-18903450-photon-3-k8s-v1.20.12---vmware.1-tkg.1.b9a42f3/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1811117056,
+          "etag": "bd7dadbf22dae02f92ad3f04ce37295b",
+          "hrefs": [
+            "ob-18903450-photon-3-k8s-v1.20.12---vmware.1-tkg.1.b9a42f3/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 160791,
+          "etag": "bd7dadbf22dae02f92ad3f04ce37295b",
+          "hrefs": [
+            "ob-18903450-photon-3-k8s-v1.20.12---vmware.1-tkg.1.b9a42f3/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-04-19T15:58:24.224781",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:47d89554-1baf-465d-9087-45bf9b88786d",
+      "name": "ob-21554036-ubuntu-2004-amd64-vmi-k8s-v1.23.15---vmware.1-tkg.4",
+      "selfHref": "ob-21554036-ubuntu-2004-amd64-vmi-k8s-v1.23.15---vmware.1-tkg.4/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 235,
+          "etag": "87e80b853b5619d25f93eff655954fb2",
+          "hrefs": [
+            "ob-21554036-ubuntu-2004-amd64-vmi-k8s-v1.23.15---vmware.1-tkg.4/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 111834,
+          "etag": "87e80b853b5619d25f93eff655954fb2",
+          "hrefs": [
+            "ob-21554036-ubuntu-2004-amd64-vmi-k8s-v1.23.15---vmware.1-tkg.4/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "87e80b853b5619d25f93eff655954fb2",
+          "hrefs": [
+            "ob-21554036-ubuntu-2004-amd64-vmi-k8s-v1.23.15---vmware.1-tkg.4/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3385172992,
+          "etag": "87e80b853b5619d25f93eff655954fb2",
+          "hrefs": [
+            "ob-21554036-ubuntu-2004-amd64-vmi-k8s-v1.23.15---vmware.1-tkg.4/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2020-06-30T14:20:08.577973",
+      "description": "",
+      "version": "3",
+      "id": "urn:uuid:452ae2d8-59ca-44fa-b0a9-5a898dd76935",
+      "name": "ob-16466772-photon-3-k8s-v1.17.7---vmware.1-tkg.1.154236c",
+      "selfHref": "ob-16466772-photon-3-k8s-v1.17.7---vmware.1-tkg.1.154236c/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "760c2b7d62a1b21c8a539feb6a3066f5",
+          "hrefs": [
+            "ob-16466772-photon-3-k8s-v1.17.7---vmware.1-tkg.1.154236c/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "760c2b7d62a1b21c8a539feb6a3066f5",
+          "hrefs": [
+            "ob-16466772-photon-3-k8s-v1.17.7---vmware.1-tkg.1.154236c/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1891191296,
+          "etag": "760c2b7d62a1b21c8a539feb6a3066f5",
+          "hrefs": [
+            "ob-16466772-photon-3-k8s-v1.17.7---vmware.1-tkg.1.154236c/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 117287,
+          "etag": "760c2b7d62a1b21c8a539feb6a3066f5",
+          "hrefs": [
+            "ob-16466772-photon-3-k8s-v1.17.7---vmware.1-tkg.1.154236c/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-07-26T20:11:22.913566",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:33c20d3f-2af4-4e5e-8edb-a6987c52fd8c",
+      "name": "ob-21961086-photon-3-amd64-vmi-k8s-v1.25.7---vmware.3-fips.1-tkg.1",
+      "selfHref": "ob-21961086-photon-3-amd64-vmi-k8s-v1.25.7---vmware.3-fips.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "8bddbc1e08851bd9ffe83b936ecd334f",
+          "hrefs": [
+            "ob-21961086-photon-3-amd64-vmi-k8s-v1.25.7---vmware.3-fips.1-tkg.1/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 233,
+          "etag": "8bddbc1e08851bd9ffe83b936ecd334f",
+          "hrefs": [
+            "ob-21961086-photon-3-amd64-vmi-k8s-v1.25.7---vmware.3-fips.1-tkg.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 2633430016,
+          "etag": "8bddbc1e08851bd9ffe83b936ecd334f",
+          "hrefs": [
+            "ob-21961086-photon-3-amd64-vmi-k8s-v1.25.7---vmware.3-fips.1-tkg.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 108126,
+          "etag": "8bddbc1e08851bd9ffe83b936ecd334f",
+          "hrefs": [
+            "ob-21961086-photon-3-amd64-vmi-k8s-v1.25.7---vmware.3-fips.1-tkg.1/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-04-04T23:58:00.411044",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:2e02f8ca-750b-4e4d-97d0-702b4047cd51",
+      "name": "ob-23376852-tkgs-ova-ubuntu-2004-v1.27.10---vmware.1-fips.1-tkg.1.ubuntu",
+      "selfHref": "ob-23376852-tkgs-ova-ubuntu-2004-v1.27.10---vmware.1-fips.1-tkg.1.ubuntu/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "fd06f1bab280420e657b1b19f047106c",
+          "hrefs": [
+            "ob-23376852-tkgs-ova-ubuntu-2004-v1.27.10---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 151743,
+          "etag": "fd06f1bab280420e657b1b19f047106c",
+          "hrefs": [
+            "ob-23376852-tkgs-ova-ubuntu-2004-v1.27.10---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "fd06f1bab280420e657b1b19f047106c",
+          "hrefs": [
+            "ob-23376852-tkgs-ova-ubuntu-2004-v1.27.10---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4028510208,
+          "etag": "fd06f1bab280420e657b1b19f047106c",
+          "hrefs": [
+            "ob-23376852-tkgs-ova-ubuntu-2004-v1.27.10---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-12-07T02:16:16.155009",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:d7710351-a738-4f0c-b2b0-1be420a9acda",
+      "name": "ob-18900476-photon-3-k8s-v1.21.6---vmware.1-tkg.1.b3d708a",
+      "selfHref": "ob-18900476-photon-3-k8s-v1.21.6---vmware.1-tkg.1.b3d708a/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "d8dc0a43e3421bfe6925555363fbe43f",
+          "hrefs": [
+            "ob-18900476-photon-3-k8s-v1.21.6---vmware.1-tkg.1.b3d708a/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "d8dc0a43e3421bfe6925555363fbe43f",
+          "hrefs": [
+            "ob-18900476-photon-3-k8s-v1.21.6---vmware.1-tkg.1.b3d708a/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1958004736,
+          "etag": "d8dc0a43e3421bfe6925555363fbe43f",
+          "hrefs": [
+            "ob-18900476-photon-3-k8s-v1.21.6---vmware.1-tkg.1.b3d708a/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 171840,
+          "etag": "d8dc0a43e3421bfe6925555363fbe43f",
+          "hrefs": [
+            "ob-18900476-photon-3-k8s-v1.21.6---vmware.1-tkg.1.b3d708a/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-04-18T00:43:17.047171",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:132299fa-0552-4c31-ab86-bfdd376362a2",
+      "name": "ob-23660512-ubuntu-2204-amd64-vmi-k8s-v1.27.11---vmware.1-fips.1-tkg.2",
+      "selfHref": "ob-23660512-ubuntu-2204-amd64-vmi-k8s-v1.27.11---vmware.1-fips.1-tkg.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "42d7cad5de2ecffd5225a78828f232a3",
+          "hrefs": [
+            "ob-23660512-ubuntu-2204-amd64-vmi-k8s-v1.27.11---vmware.1-fips.1-tkg.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 113789,
+          "etag": "42d7cad5de2ecffd5225a78828f232a3",
+          "hrefs": [
+            "ob-23660512-ubuntu-2204-amd64-vmi-k8s-v1.27.11---vmware.1-fips.1-tkg.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "9e1f46aa09be664fa166ca99852b0a75",
+          "hrefs": [
+            "ob-23660512-ubuntu-2204-amd64-vmi-k8s-v1.27.11---vmware.1-fips.1-tkg.2/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4167756800,
+          "etag": "42d7cad5de2ecffd5225a78828f232a3",
+          "hrefs": [
+            "ob-23660512-ubuntu-2204-amd64-vmi-k8s-v1.27.11---vmware.1-fips.1-tkg.2/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-01-05T01:33:04.909086",
+      "description": "",
+      "version": "3",
+      "id": "urn:uuid:c76e9afb-8e42-4fcb-9d2d-d8857006500f",
+      "name": "ob-20953521-tkgs-ova-photon-3-v1.23.8---vmware.3-tkg.1",
+      "selfHref": "ob-20953521-tkgs-ova-photon-3-v1.23.8---vmware.3-tkg.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "871cdf677d77aea3a3b5903ca6ee08a0",
+          "hrefs": [
+            "ob-20953521-tkgs-ova-photon-3-v1.23.8---vmware.3-tkg.1/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 219,
+          "etag": "871cdf677d77aea3a3b5903ca6ee08a0",
+          "hrefs": [
+            "ob-20953521-tkgs-ova-photon-3-v1.23.8---vmware.3-tkg.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3167463936,
+          "etag": "871cdf677d77aea3a3b5903ca6ee08a0",
+          "hrefs": [
+            "ob-20953521-tkgs-ova-photon-3-v1.23.8---vmware.3-tkg.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 145212,
+          "etag": "871cdf677d77aea3a3b5903ca6ee08a0",
+          "hrefs": [
+            "ob-20953521-tkgs-ova-photon-3-v1.23.8---vmware.3-tkg.1/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-02-26T09:54:00.407113",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:5485dc99-2e4a-4b0d-96c0-797e02f412fc",
+      "name": "ob-17658793-photon-3-k8s-v1.17.17---vmware.1-tkg.1.d44d45a",
+      "selfHref": "ob-17658793-photon-3-k8s-v1.17.17---vmware.1-tkg.1.d44d45a/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "4fc60f052ac45dd55072621c019b2c0b",
+          "hrefs": [
+            "ob-17658793-photon-3-k8s-v1.17.17---vmware.1-tkg.1.d44d45a/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "4fc60f052ac45dd55072621c019b2c0b",
+          "hrefs": [
+            "ob-17658793-photon-3-k8s-v1.17.17---vmware.1-tkg.1.d44d45a/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1667556864,
+          "etag": "4fc60f052ac45dd55072621c019b2c0b",
+          "hrefs": [
+            "ob-17658793-photon-3-k8s-v1.17.17---vmware.1-tkg.1.d44d45a/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 129700,
+          "etag": "4fc60f052ac45dd55072621c019b2c0b",
+          "hrefs": [
+            "ob-17658793-photon-3-k8s-v1.17.17---vmware.1-tkg.1.d44d45a/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-07-20T23:01:50.512875",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:4be75ac5-197f-43ec-ae79-74a195c04892",
+      "name": "ob-18324108-photon-3-k8s-v1.19.11---vmware.1-tkg.1.9d9b236",
+      "selfHref": "ob-18324108-photon-3-k8s-v1.19.11---vmware.1-tkg.1.9d9b236/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "6b82a74a2f24fbdf5943caec523330fa",
+          "hrefs": [
+            "ob-18324108-photon-3-k8s-v1.19.11---vmware.1-tkg.1.9d9b236/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "6b82a74a2f24fbdf5943caec523330fa",
+          "hrefs": [
+            "ob-18324108-photon-3-k8s-v1.19.11---vmware.1-tkg.1.9d9b236/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1732833792,
+          "etag": "6b82a74a2f24fbdf5943caec523330fa",
+          "hrefs": [
+            "ob-18324108-photon-3-k8s-v1.19.11---vmware.1-tkg.1.9d9b236/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 148111,
+          "etag": "6b82a74a2f24fbdf5943caec523330fa",
+          "hrefs": [
+            "ob-18324108-photon-3-k8s-v1.19.11---vmware.1-tkg.1.9d9b236/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-05-16T12:01:59.806778",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:92078659-bb0d-4298-94f6-30e8203f07b6",
+      "name": "ob-18037317-photon-3-k8s-v1.20.2---vmware.1-tkg.2.3e10706",
+      "selfHref": "ob-18037317-photon-3-k8s-v1.20.2---vmware.1-tkg.2.3e10706/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "fb157f70ecb158c638531fd5a20522a7",
+          "hrefs": [
+            "ob-18037317-photon-3-k8s-v1.20.2---vmware.1-tkg.2.3e10706/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "fb157f70ecb158c638531fd5a20522a7",
+          "hrefs": [
+            "ob-18037317-photon-3-k8s-v1.20.2---vmware.1-tkg.2.3e10706/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1699888640,
+          "etag": "fb157f70ecb158c638531fd5a20522a7",
+          "hrefs": [
+            "ob-18037317-photon-3-k8s-v1.20.2---vmware.1-tkg.2.3e10706/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 154519,
+          "etag": "fb157f70ecb158c638531fd5a20522a7",
+          "hrefs": [
+            "ob-18037317-photon-3-k8s-v1.20.2---vmware.1-tkg.2.3e10706/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-12-07T01:13:14.974654",
+      "description": "",
+      "version": "3",
+      "id": "urn:uuid:4d923b0a-89cf-4ac8-b98f-1b5d37ea2986",
+      "name": "ob-22748270-tkgs-ova-photon-3-v1.26.10---vmware.1-fips.1-tkg.1",
+      "selfHref": "ob-22748270-tkgs-ova-photon-3-v1.26.10---vmware.1-fips.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "facbaf67d07e2a5a42968ad28300be12",
+          "hrefs": [
+            "ob-22748270-tkgs-ova-photon-3-v1.26.10---vmware.1-fips.1-tkg.1/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "facbaf67d07e2a5a42968ad28300be12",
+          "hrefs": [
+            "ob-22748270-tkgs-ova-photon-3-v1.26.10---vmware.1-fips.1-tkg.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3445283840,
+          "etag": "facbaf67d07e2a5a42968ad28300be12",
+          "hrefs": [
+            "ob-22748270-tkgs-ova-photon-3-v1.26.10---vmware.1-fips.1-tkg.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 150954,
+          "etag": "facbaf67d07e2a5a42968ad28300be12",
+          "hrefs": [
+            "ob-22748270-tkgs-ova-photon-3-v1.26.10---vmware.1-fips.1-tkg.1/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-04-13T17:16:12.591071",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:f6b60b6d-220f-4759-ad5d-cac58255e874",
+      "name": "ob-17861429-photon-3-k8s-v1.20.2---vmware.1-tkg.1.1d4f79a",
+      "selfHref": "ob-17861429-photon-3-k8s-v1.20.2---vmware.1-tkg.1.1d4f79a/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "9b34590ae1c5995527460e7b6a62030f",
+          "hrefs": [
+            "ob-17861429-photon-3-k8s-v1.20.2---vmware.1-tkg.1.1d4f79a/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "9b34590ae1c5995527460e7b6a62030f",
+          "hrefs": [
+            "ob-17861429-photon-3-k8s-v1.20.2---vmware.1-tkg.1.1d4f79a/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1697168384,
+          "etag": "9b34590ae1c5995527460e7b6a62030f",
+          "hrefs": [
+            "ob-17861429-photon-3-k8s-v1.20.2---vmware.1-tkg.1.1d4f79a/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 154519,
+          "etag": "9b34590ae1c5995527460e7b6a62030f",
+          "hrefs": [
+            "ob-17861429-photon-3-k8s-v1.20.2---vmware.1-tkg.1.1d4f79a/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-04-19T15:58:24.224781",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:27f42da1-8451-4ade-82e9-c43b96b23053",
+      "name": "ob-21554505-photon-3-amd64-vmi-k8s-v1.23.15---vmware.1-tkg.4",
+      "selfHref": "ob-21554505-photon-3-amd64-vmi-k8s-v1.23.15---vmware.1-tkg.4/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "ece5bf7d2593dcf1bc6bfe99646ae62d",
+          "hrefs": [
+            "ob-21554505-photon-3-amd64-vmi-k8s-v1.23.15---vmware.1-tkg.4/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 221,
+          "etag": "ece5bf7d2593dcf1bc6bfe99646ae62d",
+          "hrefs": [
+            "ob-21554505-photon-3-amd64-vmi-k8s-v1.23.15---vmware.1-tkg.4/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 2539075584,
+          "etag": "ece5bf7d2593dcf1bc6bfe99646ae62d",
+          "hrefs": [
+            "ob-21554505-photon-3-amd64-vmi-k8s-v1.23.15---vmware.1-tkg.4/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 111818,
+          "etag": "ece5bf7d2593dcf1bc6bfe99646ae62d",
+          "hrefs": [
+            "ob-21554505-photon-3-amd64-vmi-k8s-v1.23.15---vmware.1-tkg.4/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-12-07T00:03:55.874982",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:a32c477c-9c6b-4464-844c-bbb529290752",
+      "name": "ob-22757567-tkgs-ova-photon-3-v1.25.13---vmware.1-fips.1-tkg.1",
+      "selfHref": "ob-22757567-tkgs-ova-photon-3-v1.25.13---vmware.1-fips.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "42589075f3ca62f13a6cdee2da0a4979",
+          "hrefs": [
+            "ob-22757567-tkgs-ova-photon-3-v1.25.13---vmware.1-fips.1-tkg.1/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "42589075f3ca62f13a6cdee2da0a4979",
+          "hrefs": [
+            "ob-22757567-tkgs-ova-photon-3-v1.25.13---vmware.1-fips.1-tkg.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3294384128,
+          "etag": "42589075f3ca62f13a6cdee2da0a4979",
+          "hrefs": [
+            "ob-22757567-tkgs-ova-photon-3-v1.25.13---vmware.1-fips.1-tkg.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 148806,
+          "etag": "42589075f3ca62f13a6cdee2da0a4979",
+          "hrefs": [
+            "ob-22757567-tkgs-ova-photon-3-v1.25.13---vmware.1-fips.1-tkg.1/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-05-16T11:20:20.453736",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:07f6f691-b8d5-4f39-b972-46db831a2253",
+      "name": "ob-18035533-photon-3-k8s-v1.18.15---vmware.1-tkg.2.ebf6117",
+      "selfHref": "ob-18035533-photon-3-k8s-v1.18.15---vmware.1-tkg.2.ebf6117/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "9f1c50661a709265fffdbbd7b7f9857c",
+          "hrefs": [
+            "ob-18035533-photon-3-k8s-v1.18.15---vmware.1-tkg.2.ebf6117/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "9f1c50661a709265fffdbbd7b7f9857c",
+          "hrefs": [
+            "ob-18035533-photon-3-k8s-v1.18.15---vmware.1-tkg.2.ebf6117/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1681968640,
+          "etag": "9f1c50661a709265fffdbbd7b7f9857c",
+          "hrefs": [
+            "ob-18035533-photon-3-k8s-v1.18.15---vmware.1-tkg.2.ebf6117/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 129698,
+          "etag": "9f1c50661a709265fffdbbd7b7f9857c",
+          "hrefs": [
+            "ob-18035533-photon-3-k8s-v1.18.15---vmware.1-tkg.2.ebf6117/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-10-21T21:28:20.912694",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:7077e094-d61a-4a45-846a-01329128b5d4",
+      "name": "ob-18807685-tkgs-ova-ubuntu-2004-v1.20.8---vmware.1-tkg.2",
+      "selfHref": "ob-18807685-tkgs-ova-ubuntu-2004-v1.20.8---vmware.1-tkg.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 233,
+          "etag": "b30ef912098601808c216d27ecccc22a",
+          "hrefs": [
+            "ob-18807685-tkgs-ova-ubuntu-2004-v1.20.8---vmware.1-tkg.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 169575,
+          "etag": "b30ef912098601808c216d27ecccc22a",
+          "hrefs": [
+            "ob-18807685-tkgs-ova-ubuntu-2004-v1.20.8---vmware.1-tkg.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "b30ef912098601808c216d27ecccc22a",
+          "hrefs": [
+            "ob-18807685-tkgs-ova-ubuntu-2004-v1.20.8---vmware.1-tkg.2/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 5251275776,
+          "etag": "b30ef912098601808c216d27ecccc22a",
+          "hrefs": [
+            "ob-18807685-tkgs-ova-ubuntu-2004-v1.20.8---vmware.1-tkg.2/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2021-03-02T11:40:38.093423",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:16643b4c-d148-4266-922a-9c8319c1cbfd",
+      "name": "ob-17660956-photon-3-k8s-v1.19.7---vmware.1-tkg.1.fc82c41",
+      "selfHref": "ob-17660956-photon-3-k8s-v1.19.7---vmware.1-tkg.1.fc82c41/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "c8f83f6811251d9cec980914eb0d6a57",
+          "hrefs": [
+            "ob-17660956-photon-3-k8s-v1.19.7---vmware.1-tkg.1.fc82c41/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "c8f83f6811251d9cec980914eb0d6a57",
+          "hrefs": [
+            "ob-17660956-photon-3-k8s-v1.19.7---vmware.1-tkg.1.fc82c41/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 1724803072,
+          "etag": "c8f83f6811251d9cec980914eb0d6a57",
+          "hrefs": [
+            "ob-17660956-photon-3-k8s-v1.19.7---vmware.1-tkg.1.fc82c41/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 148049,
+          "etag": "c8f83f6811251d9cec980914eb0d6a57",
+          "hrefs": [
+            "ob-17660956-photon-3-k8s-v1.19.7---vmware.1-tkg.1.fc82c41/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-03-14T23:40:32.052930",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:2dfd095e-bcbc-4700-baf2-123445ee222e",
+      "name": "ob-23319040-tkgs-ova-photon-3-v1.26.12---vmware.2-fips.1-tkg.2",
+      "selfHref": "ob-23319040-tkgs-ova-photon-3-v1.26.12---vmware.2-fips.1-tkg.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "cfaf7eb7a5b58d8bf3226d0ae412766c",
+          "hrefs": [
+            "ob-23319040-tkgs-ova-photon-3-v1.26.12---vmware.2-fips.1-tkg.2/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "cfaf7eb7a5b58d8bf3226d0ae412766c",
+          "hrefs": [
+            "ob-23319040-tkgs-ova-photon-3-v1.26.12---vmware.2-fips.1-tkg.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3513167872,
+          "etag": "cfaf7eb7a5b58d8bf3226d0ae412766c",
+          "hrefs": [
+            "ob-23319040-tkgs-ova-photon-3-v1.26.12---vmware.2-fips.1-tkg.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 150954,
+          "etag": "cfaf7eb7a5b58d8bf3226d0ae412766c",
+          "hrefs": [
+            "ob-23319040-tkgs-ova-photon-3-v1.26.12---vmware.2-fips.1-tkg.2/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2020-10-01T18:51:31.493325",
+      "description": "",
+      "version": "3",
+      "id": "urn:uuid:bf9e64f7-58cb-4e8b-a0f7-d049a4410b8a",
+      "name": "ob-16924027-photon-3-k8s-v1.17.11---vmware.1-tkg.1.15f1e18",
+      "selfHref": "ob-16924027-photon-3-k8s-v1.17.11---vmware.1-tkg.1.15f1e18/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "6369afc77c691d9487a6dea5f519dab0",
+          "hrefs": [
+            "ob-16924027-photon-3-k8s-v1.17.11---vmware.1-tkg.1.15f1e18/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 133,
+          "etag": "6369afc77c691d9487a6dea5f519dab0",
+          "hrefs": [
+            "ob-16924027-photon-3-k8s-v1.17.11---vmware.1-tkg.1.15f1e18/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 2024759808,
+          "etag": "6369afc77c691d9487a6dea5f519dab0",
+          "hrefs": [
+            "ob-16924027-photon-3-k8s-v1.17.11---vmware.1-tkg.1.15f1e18/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 129415,
+          "etag": "6369afc77c691d9487a6dea5f519dab0",
+          "hrefs": [
+            "ob-16924027-photon-3-k8s-v1.17.11---vmware.1-tkg.1.15f1e18/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2023-08-23T21:10:42.270541",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:031ac411-0f6d-4dd8-9a68-fd903f598566",
+      "name": "ob-22187091-ubuntu-2004-amd64-vmi-k8s-v1.26.5---vmware.2-fips.1-tkg.1",
+      "selfHref": "ob-22187091-ubuntu-2004-amd64-vmi-k8s-v1.26.5---vmware.2-fips.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 247,
+          "etag": "aeaf6591df3dbb9502c4d5c60d64a4de",
+          "hrefs": [
+            "ob-22187091-ubuntu-2004-amd64-vmi-k8s-v1.26.5---vmware.2-fips.1-tkg.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 111594,
+          "etag": "aeaf6591df3dbb9502c4d5c60d64a4de",
+          "hrefs": [
+            "ob-22187091-ubuntu-2004-amd64-vmi-k8s-v1.26.5---vmware.2-fips.1-tkg.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "fcc10ce9792fdd3f2b0a95bb20984ca5",
+          "hrefs": [
+            "ob-22187091-ubuntu-2004-amd64-vmi-k8s-v1.26.5---vmware.2-fips.1-tkg.1/ubuntu-ova.cert"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3213857280,
+          "etag": "aeaf6591df3dbb9502c4d5c60d64a4de",
+          "hrefs": [
+            "ob-22187091-ubuntu-2004-amd64-vmi-k8s-v1.26.5---vmware.2-fips.1-tkg.1/ubuntu-ova-disk1.vmdk"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-01-31T00:52:32.070219",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:5c3a81a2-c694-4967-b061-c80c92e6273a",
+      "name": "ob-23049612-tkgs-ova-photon-3-v1.27.6---vmware.1-fips.1-tkg.1",
+      "selfHref": "ob-23049612-tkgs-ova-photon-3-v1.27.6---vmware.1-fips.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "7982ce585cfd653f1db23cfce9ebd379",
+          "hrefs": [
+            "ob-23049612-tkgs-ova-photon-3-v1.27.6---vmware.1-fips.1-tkg.1/photon-ova.cert"
+          ]
+        },
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "7982ce585cfd653f1db23cfce9ebd379",
+          "hrefs": [
+            "ob-23049612-tkgs-ova-photon-3-v1.27.6---vmware.1-fips.1-tkg.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3516481024,
+          "etag": "7982ce585cfd653f1db23cfce9ebd379",
+          "hrefs": [
+            "ob-23049612-tkgs-ova-photon-3-v1.27.6---vmware.1-fips.1-tkg.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 151687,
+          "etag": "7982ce585cfd653f1db23cfce9ebd379",
+          "hrefs": [
+            "ob-23049612-tkgs-ova-photon-3-v1.27.6---vmware.1-fips.1-tkg.1/photon-ova.ovf"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-05-07T05:46:01.892097",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:1f42dd1d-d80d-4716-adb6-9866c33a18ff",
+      "name": "ob-23661201-photon-5-amd64-vmi-k8s-v1.28.8---vmware.1-fips.1-tkg.2",
+      "selfHref": "ob-23661201-photon-5-amd64-vmi-k8s-v1.28.8---vmware.1-fips.1-tkg.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "e5ae4ad94850faeecced5ec925a2f11c",
+          "hrefs": [
+            "ob-23661201-photon-5-amd64-vmi-k8s-v1.28.8---vmware.1-fips.1-tkg.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 113670,
+          "etag": "e5ae4ad94850faeecced5ec925a2f11c",
+          "hrefs": [
+            "ob-23661201-photon-5-amd64-vmi-k8s-v1.28.8---vmware.1-fips.1-tkg.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3411279360,
+          "etag": "e5ae4ad94850faeecced5ec925a2f11c",
+          "hrefs": [
+            "ob-23661201-photon-5-amd64-vmi-k8s-v1.28.8---vmware.1-fips.1-tkg.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "a5632fb0accbbcf4095d946e65b61228",
+          "hrefs": [
+            "ob-23661201-photon-5-amd64-vmi-k8s-v1.28.8---vmware.1-fips.1-tkg.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-05-07T06:00:50.255805",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:9e5aa839-c182-4847-b7c2-9968f9815464",
+      "name": "ob-23661482-ubuntu-2204-amd64-vmi-k8s-v1.28.8---vmware.1-fips.1-tkg.2",
+      "selfHref": "ob-23661482-ubuntu-2204-amd64-vmi-k8s-v1.28.8---vmware.1-fips.1-tkg.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "7bad06091a219ac338702e4acd3c4f69",
+          "hrefs": [
+            "ob-23661482-ubuntu-2204-amd64-vmi-k8s-v1.28.8---vmware.1-fips.1-tkg.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 113686,
+          "etag": "7bad06091a219ac338702e4acd3c4f69",
+          "hrefs": [
+            "ob-23661482-ubuntu-2204-amd64-vmi-k8s-v1.28.8---vmware.1-fips.1-tkg.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4197988352,
+          "etag": "7bad06091a219ac338702e4acd3c4f69",
+          "hrefs": [
+            "ob-23661482-ubuntu-2204-amd64-vmi-k8s-v1.28.8---vmware.1-fips.1-tkg.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "bc72086e1077ffca3d43f6c16b06f4de",
+          "hrefs": [
+            "ob-23661482-ubuntu-2204-amd64-vmi-k8s-v1.28.8---vmware.1-fips.1-tkg.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-06-27T09:03:35.308671",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:2f2e076b-5a97-4461-ac12-00d509c4cfbd",
+      "name": "ob-24042440-photon-5-amd64-vmi-k8s-v1.29.4---vmware.3-fips.1-tkg.1",
+      "selfHref": "ob-24042440-photon-5-amd64-vmi-k8s-v1.29.4---vmware.3-fips.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "78577260eec82e621796f46878dbffa2",
+          "hrefs": [
+            "ob-24042440-photon-5-amd64-vmi-k8s-v1.29.4---vmware.3-fips.1-tkg.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 114142,
+          "etag": "78577260eec82e621796f46878dbffa2",
+          "hrefs": [
+            "ob-24042440-photon-5-amd64-vmi-k8s-v1.29.4---vmware.3-fips.1-tkg.1/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3725084160,
+          "etag": "78577260eec82e621796f46878dbffa2",
+          "hrefs": [
+            "ob-24042440-photon-5-amd64-vmi-k8s-v1.29.4---vmware.3-fips.1-tkg.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "45e42bd8019bccd719aeaeb96b60b12e",
+          "hrefs": [
+            "ob-24042440-photon-5-amd64-vmi-k8s-v1.29.4---vmware.3-fips.1-tkg.1/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-06-27T09:10:53.447947",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:cffa4e5f-5873-499c-a4a0-7ec88daec2bf",
+      "name": "ob-24042459-ubuntu-2204-amd64-vmi-k8s-v1.29.4---vmware.3-fips.1-tkg.1",
+      "selfHref": "ob-24042459-ubuntu-2204-amd64-vmi-k8s-v1.29.4---vmware.3-fips.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "f0058e4abd8bf6414e41a46527f4826c",
+          "hrefs": [
+            "ob-24042459-ubuntu-2204-amd64-vmi-k8s-v1.29.4---vmware.3-fips.1-tkg.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 114158,
+          "etag": "f0058e4abd8bf6414e41a46527f4826c",
+          "hrefs": [
+            "ob-24042459-ubuntu-2204-amd64-vmi-k8s-v1.29.4---vmware.3-fips.1-tkg.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 7624756224,
+          "etag": "f0058e4abd8bf6414e41a46527f4826c",
+          "hrefs": [
+            "ob-24042459-ubuntu-2204-amd64-vmi-k8s-v1.29.4---vmware.3-fips.1-tkg.1/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "5185f8686a5a47edc86777ab25663ec7",
+          "hrefs": [
+            "ob-24042459-ubuntu-2204-amd64-vmi-k8s-v1.29.4---vmware.3-fips.1-tkg.1/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-07-08T00:13:35.641875",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:c6d0be66-f705-4273-b3dd-33563d8727d8",
+      "name": "ob-24075942-photon-5-amd64-vmi-k8s-v1.30.1---vmware.1-fips-tkg.5",
+      "selfHref": "ob-24075942-photon-5-amd64-vmi-k8s-v1.30.1---vmware.1-fips-tkg.5/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "581e8ced22cfda838f798891fdda4e9f",
+          "hrefs": [
+            "ob-24075942-photon-5-amd64-vmi-k8s-v1.30.1---vmware.1-fips-tkg.5/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 100574,
+          "etag": "581e8ced22cfda838f798891fdda4e9f",
+          "hrefs": [
+            "ob-24075942-photon-5-amd64-vmi-k8s-v1.30.1---vmware.1-fips-tkg.5/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3690157568,
+          "etag": "581e8ced22cfda838f798891fdda4e9f",
+          "hrefs": [
+            "ob-24075942-photon-5-amd64-vmi-k8s-v1.30.1---vmware.1-fips-tkg.5/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "e0820d53a775cb438507b87eba97581c",
+          "hrefs": [
+            "ob-24075942-photon-5-amd64-vmi-k8s-v1.30.1---vmware.1-fips-tkg.5/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-07-08T00:21:27.244342",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:ddbb4e04-d277-4ddd-86b4-764b48ab77bd",
+      "name": "ob-24076161-ubuntu-2204-amd64-vmi-k8s-v1.30.1---vmware.1-fips-tkg.5",
+      "selfHref": "ob-24076161-ubuntu-2204-amd64-vmi-k8s-v1.30.1---vmware.1-fips-tkg.5/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "fbe72354360db9d990b9768ab9680eb7",
+          "hrefs": [
+            "ob-24076161-ubuntu-2204-amd64-vmi-k8s-v1.30.1---vmware.1-fips-tkg.5/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 100590,
+          "etag": "fbe72354360db9d990b9768ab9680eb7",
+          "hrefs": [
+            "ob-24076161-ubuntu-2204-amd64-vmi-k8s-v1.30.1---vmware.1-fips-tkg.5/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 5846452224,
+          "etag": "fbe72354360db9d990b9768ab9680eb7",
+          "hrefs": [
+            "ob-24076161-ubuntu-2204-amd64-vmi-k8s-v1.30.1---vmware.1-fips-tkg.5/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "ad68da6487edb2601b4482b7a934a63e",
+          "hrefs": [
+            "ob-24076161-ubuntu-2204-amd64-vmi-k8s-v1.30.1---vmware.1-fips-tkg.5/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-07-11T23:15:45.460956",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:e6106804-cba9-44b2-9468-c08859a7a382",
+      "name": "ob-23978386-tkgs-ova-ubuntu-2204-v1.28.7---vmware.1-fips.1-tkg.1.ubuntu",
+      "selfHref": "ob-23978386-tkgs-ova-ubuntu-2204-v1.28.7---vmware.1-fips.1-tkg.1.ubuntu/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "454f05b72aa9a7de55e8faf17ebe998a",
+          "hrefs": [
+            "ob-23978386-tkgs-ova-ubuntu-2204-v1.28.7---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 157134,
+          "etag": "454f05b72aa9a7de55e8faf17ebe998a",
+          "hrefs": [
+            "ob-23978386-tkgs-ova-ubuntu-2204-v1.28.7---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4247249920,
+          "etag": "454f05b72aa9a7de55e8faf17ebe998a",
+          "hrefs": [
+            "ob-23978386-tkgs-ova-ubuntu-2204-v1.28.7---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1909,
+          "etag": "454f05b72aa9a7de55e8faf17ebe998a",
+          "hrefs": [
+            "ob-23978386-tkgs-ova-ubuntu-2204-v1.28.7---vmware.1-fips.1-tkg.1.ubuntu/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-07-11T23:22:59.468747",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:3dd581dd-63c1-494d-91e9-fc49da3e3bfb",
+      "name": "ob-24026550-tkgs-ova-photon-5-v1.28.7---vmware.1-fips.1-tkg.1",
+      "selfHref": "ob-24026550-tkgs-ova-photon-5-v1.28.7---vmware.1-fips.1-tkg.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "d35622bfadaddfab5cc075fee08be024",
+          "hrefs": [
+            "ob-24026550-tkgs-ova-photon-5-v1.28.7---vmware.1-fips.1-tkg.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 157091,
+          "etag": "d35622bfadaddfab5cc075fee08be024",
+          "hrefs": [
+            "ob-24026550-tkgs-ova-photon-5-v1.28.7---vmware.1-fips.1-tkg.1/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 3785058816,
+          "etag": "d35622bfadaddfab5cc075fee08be024",
+          "hrefs": [
+            "ob-24026550-tkgs-ova-photon-5-v1.28.7---vmware.1-fips.1-tkg.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1909,
+          "etag": "d35622bfadaddfab5cc075fee08be024",
+          "hrefs": [
+            "ob-24026550-tkgs-ova-photon-5-v1.28.7---vmware.1-fips.1-tkg.1/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-10-04T05:39:56.753063",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:dc3c3254-9e13-4f7b-83cf-ffa6efa18a3c",
+      "name": "ob-24309091-photon-5-amd64-v1.31.1---vmware.2-fips-vkr.2",
+      "selfHref": "ob-24309091-photon-5-amd64-v1.31.1---vmware.2-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "12ff037c42d03da50baef5d429511ad4",
+          "hrefs": [
+            "ob-24309091-photon-5-amd64-v1.31.1---vmware.2-fips-vkr.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 103563,
+          "etag": "12ff037c42d03da50baef5d429511ad4",
+          "hrefs": [
+            "ob-24309091-photon-5-amd64-v1.31.1---vmware.2-fips-vkr.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5842599936,
+          "etag": "12ff037c42d03da50baef5d429511ad4",
+          "hrefs": [
+            "ob-24309091-photon-5-amd64-v1.31.1---vmware.2-fips-vkr.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "64d9bbd327bade507a0d7158b3b7ea89",
+          "hrefs": [
+            "ob-24309091-photon-5-amd64-v1.31.1---vmware.2-fips-vkr.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2024-10-04T05:52:37.051973",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:bb89cf94-afc8-4dbb-9f06-e8b8a036869c",
+      "name": "ob-24300498-ubuntu-2204-amd64-v1.31.1---vmware.2-fips-vkr.2",
+      "selfHref": "ob-24300498-ubuntu-2204-amd64-v1.31.1---vmware.2-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "a0bed02cab8659728785a5e629be219c",
+          "hrefs": [
+            "ob-24300498-ubuntu-2204-amd64-v1.31.1---vmware.2-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 103579,
+          "etag": "a0bed02cab8659728785a5e629be219c",
+          "hrefs": [
+            "ob-24300498-ubuntu-2204-amd64-v1.31.1---vmware.2-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 7258859520,
+          "etag": "a0bed02cab8659728785a5e629be219c",
+          "hrefs": [
+            "ob-24300498-ubuntu-2204-amd64-v1.31.1---vmware.2-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "0f4af4131c428cec874ef5e6055b65cc",
+          "hrefs": [
+            "ob-24300498-ubuntu-2204-amd64-v1.31.1---vmware.2-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-02-09T23:11:53.328430",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:cc1acdfb-3f4f-4e51-b380-d3f3e1ef5ebc",
+      "name": "ob-24537963-photon-5-amd64-v1.32.0---vmware.6-fips-vkr.2",
+      "selfHref": "ob-24537963-photon-5-amd64-v1.32.0---vmware.6-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "eafd2e2e410d8f986af3fdc96bb5888b",
+          "hrefs": [
+            "ob-24537963-photon-5-amd64-v1.32.0---vmware.6-fips-vkr.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 103900,
+          "etag": "eafd2e2e410d8f986af3fdc96bb5888b",
+          "hrefs": [
+            "ob-24537963-photon-5-amd64-v1.32.0---vmware.6-fips-vkr.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5546754560,
+          "etag": "eafd2e2e410d8f986af3fdc96bb5888b",
+          "hrefs": [
+            "ob-24537963-photon-5-amd64-v1.32.0---vmware.6-fips-vkr.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "8748b4362aa17206dcec9acd5e2f2c5a",
+          "hrefs": [
+            "ob-24537963-photon-5-amd64-v1.32.0---vmware.6-fips-vkr.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-02-09T23:21:20.901890",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:88b343d6-d26f-4ca8-84a0-bf3939279067",
+      "name": "ob-24537997-ubuntu-2204-amd64-v1.32.0---vmware.6-fips-vkr.2",
+      "selfHref": "ob-24537997-ubuntu-2204-amd64-v1.32.0---vmware.6-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "30d9427addca732d27f9b0ef6573362c",
+          "hrefs": [
+            "ob-24537997-ubuntu-2204-amd64-v1.32.0---vmware.6-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 103916,
+          "etag": "30d9427addca732d27f9b0ef6573362c",
+          "hrefs": [
+            "ob-24537997-ubuntu-2204-amd64-v1.32.0---vmware.6-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 7021448192,
+          "etag": "30d9427addca732d27f9b0ef6573362c",
+          "hrefs": [
+            "ob-24537997-ubuntu-2204-amd64-v1.32.0---vmware.6-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "86657a9f0064b4410de885bedc6c50cf",
+          "hrefs": [
+            "ob-24537997-ubuntu-2204-amd64-v1.32.0---vmware.6-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-02-09T23:33:50.211628",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:91fde46f-053c-43fc-8f88-56a4cfabe42f",
+      "name": "ob-24536965-photon-5-amd64-v1.31.4---vmware.1-fips-vkr.3",
+      "selfHref": "ob-24536965-photon-5-amd64-v1.31.4---vmware.1-fips-vkr.3/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "0bb846b237508d7175a28e8916abc7da",
+          "hrefs": [
+            "ob-24536965-photon-5-amd64-v1.31.4---vmware.1-fips-vkr.3/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 103574,
+          "etag": "0bb846b237508d7175a28e8916abc7da",
+          "hrefs": [
+            "ob-24536965-photon-5-amd64-v1.31.4---vmware.1-fips-vkr.3/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5984197120,
+          "etag": "0bb846b237508d7175a28e8916abc7da",
+          "hrefs": [
+            "ob-24536965-photon-5-amd64-v1.31.4---vmware.1-fips-vkr.3/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "ac23ba0da5b64b474ec3138f22d00146",
+          "hrefs": [
+            "ob-24536965-photon-5-amd64-v1.31.4---vmware.1-fips-vkr.3/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-02-09T23:57:17.140901",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:cd3ae47f-3ee4-4bd3-a4b9-0d0b8a75d3b2",
+      "name": "ob-24536966-ubuntu-2204-amd64-v1.31.4---vmware.1-fips-vkr.3",
+      "selfHref": "ob-24536966-ubuntu-2204-amd64-v1.31.4---vmware.1-fips-vkr.3/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "dbe177e653f95f74609f4f3dcc63dfa4",
+          "hrefs": [
+            "ob-24536966-ubuntu-2204-amd64-v1.31.4---vmware.1-fips-vkr.3/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 103590,
+          "etag": "dbe177e653f95f74609f4f3dcc63dfa4",
+          "hrefs": [
+            "ob-24536966-ubuntu-2204-amd64-v1.31.4---vmware.1-fips-vkr.3/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 6980660224,
+          "etag": "dbe177e653f95f74609f4f3dcc63dfa4",
+          "hrefs": [
+            "ob-24536966-ubuntu-2204-amd64-v1.31.4---vmware.1-fips-vkr.3/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "fa0b01c46bb8ac2a1d517466cd54bd70",
+          "hrefs": [
+            "ob-24536966-ubuntu-2204-amd64-v1.31.4---vmware.1-fips-vkr.3/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-02-18T23:13:07.129874",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:d3bd6cd3-6012-458e-8117-04cb814c85e0",
+      "name": "ob-24481439-photon-5-amd64-v1.30.8---vmware.1-fips-vkr.1",
+      "selfHref": "ob-24481439-photon-5-amd64-v1.30.8---vmware.1-fips-vkr.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "7f3c31143885b5058c134d041396e4ba",
+          "hrefs": [
+            "ob-24481439-photon-5-amd64-v1.30.8---vmware.1-fips-vkr.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 102751,
+          "etag": "7f3c31143885b5058c134d041396e4ba",
+          "hrefs": [
+            "ob-24481439-photon-5-amd64-v1.30.8---vmware.1-fips-vkr.1/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5509824512,
+          "etag": "7f3c31143885b5058c134d041396e4ba",
+          "hrefs": [
+            "ob-24481439-photon-5-amd64-v1.30.8---vmware.1-fips-vkr.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "6990ed3c6a4b82c78fe56158e9117864",
+          "hrefs": [
+            "ob-24481439-photon-5-amd64-v1.30.8---vmware.1-fips-vkr.1/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-02-18T23:31:52.805295",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:f6e2df38-ba24-4d60-bc61-4e9ae0ee0e8c",
+      "name": "ob-24481438-ubuntu-2204-amd64-v1.30.8---vmware.1-fips-vkr.1",
+      "selfHref": "ob-24481438-ubuntu-2204-amd64-v1.30.8---vmware.1-fips-vkr.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "14afcce3bc7779f0cab9e2b556f3168b",
+          "hrefs": [
+            "ob-24481438-ubuntu-2204-amd64-v1.30.8---vmware.1-fips-vkr.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 102767,
+          "etag": "14afcce3bc7779f0cab9e2b556f3168b",
+          "hrefs": [
+            "ob-24481438-ubuntu-2204-amd64-v1.30.8---vmware.1-fips-vkr.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 7021324288,
+          "etag": "14afcce3bc7779f0cab9e2b556f3168b",
+          "hrefs": [
+            "ob-24481438-ubuntu-2204-amd64-v1.30.8---vmware.1-fips-vkr.1/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "569f374e503636533f7a85f960482f6d",
+          "hrefs": [
+            "ob-24481438-ubuntu-2204-amd64-v1.30.8---vmware.1-fips-vkr.1/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-16T23:03:01.397832",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:5ed3a0fc-6831-4273-8048-544aeda09f27",
+      "name": "ob-24790750-photon-5-amd64-v1.33.1---vmware.1-fips-vkr.2",
+      "selfHref": "ob-24790750-photon-5-amd64-v1.33.1---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "2ee2c1dc01ebd285e4031e5752569bab",
+          "hrefs": [
+            "ob-24790750-photon-5-amd64-v1.33.1---vmware.1-fips-vkr.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 104975,
+          "etag": "2ee2c1dc01ebd285e4031e5752569bab",
+          "hrefs": [
+            "ob-24790750-photon-5-amd64-v1.33.1---vmware.1-fips-vkr.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5641692672,
+          "etag": "2ee2c1dc01ebd285e4031e5752569bab",
+          "hrefs": [
+            "ob-24790750-photon-5-amd64-v1.33.1---vmware.1-fips-vkr.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "42083722ec601f26c238db65d7c0e1b5",
+          "hrefs": [
+            "ob-24790750-photon-5-amd64-v1.33.1---vmware.1-fips-vkr.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-16T23:15:21.108935",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:59968ac8-228f-480c-95fd-04f3e99736c7",
+      "name": "ob-24791150-ubuntu-2204-amd64-v1.33.1---vmware.1-fips-vkr.2",
+      "selfHref": "ob-24791150-ubuntu-2204-amd64-v1.33.1---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "75bba8f333ca10873cd7c3faa457f543",
+          "hrefs": [
+            "ob-24791150-ubuntu-2204-amd64-v1.33.1---vmware.1-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 104991,
+          "etag": "75bba8f333ca10873cd7c3faa457f543",
+          "hrefs": [
+            "ob-24791150-ubuntu-2204-amd64-v1.33.1---vmware.1-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4339790848,
+          "etag": "75bba8f333ca10873cd7c3faa457f543",
+          "hrefs": [
+            "ob-24791150-ubuntu-2204-amd64-v1.33.1---vmware.1-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "7c58b4ccd0ba2e3398443bd0a3de4b9a",
+          "hrefs": [
+            "ob-24791150-ubuntu-2204-amd64-v1.33.1---vmware.1-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-16T23:23:32.223425",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:bc58af73-d4ec-4576-ace3-6988f5ad6693",
+      "name": "ob-24791110-ubuntu-2404-amd64-v1.33.1---vmware.1-fips-vkr.2",
+      "selfHref": "ob-24791110-ubuntu-2404-amd64-v1.33.1---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "31645e9fb472b1336665c7f8b4323179",
+          "hrefs": [
+            "ob-24791110-ubuntu-2404-amd64-v1.33.1---vmware.1-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 104991,
+          "etag": "31645e9fb472b1336665c7f8b4323179",
+          "hrefs": [
+            "ob-24791110-ubuntu-2404-amd64-v1.33.1---vmware.1-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4313558016,
+          "etag": "31645e9fb472b1336665c7f8b4323179",
+          "hrefs": [
+            "ob-24791110-ubuntu-2404-amd64-v1.33.1---vmware.1-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "a639dab9d1edc8629bbb17a3af1242c0",
+          "hrefs": [
+            "ob-24791110-ubuntu-2404-amd64-v1.33.1---vmware.1-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-19T23:09:34.699994",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:819f55d2-2cfe-4bf6-a6d3-a22d2fc56825",
+      "name": "ob-24754792-photon-5-amd64-v1.32.3---vmware.1-fips-vkr.2",
+      "selfHref": "ob-24754792-photon-5-amd64-v1.32.3---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "369956409090883f4e77ae51dd0dc444",
+          "hrefs": [
+            "ob-24754792-photon-5-amd64-v1.32.3---vmware.1-fips-vkr.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 103880,
+          "etag": "369956409090883f4e77ae51dd0dc444",
+          "hrefs": [
+            "ob-24754792-photon-5-amd64-v1.32.3---vmware.1-fips-vkr.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5632576512,
+          "etag": "369956409090883f4e77ae51dd0dc444",
+          "hrefs": [
+            "ob-24754792-photon-5-amd64-v1.32.3---vmware.1-fips-vkr.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "8983c2c11d6cd2baac78222015823113",
+          "hrefs": [
+            "ob-24754792-photon-5-amd64-v1.32.3---vmware.1-fips-vkr.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-19T23:16:24.516589",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:37fad742-d7a6-4726-9790-81476ac02969",
+      "name": "ob-24754837-ubuntu-2204-amd64-v1.32.3---vmware.1-fips-vkr.2",
+      "selfHref": "ob-24754837-ubuntu-2204-amd64-v1.32.3---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "a257bf22603c54688f80d4fdfd4d568f",
+          "hrefs": [
+            "ob-24754837-ubuntu-2204-amd64-v1.32.3---vmware.1-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 103896,
+          "etag": "a257bf22603c54688f80d4fdfd4d568f",
+          "hrefs": [
+            "ob-24754837-ubuntu-2204-amd64-v1.32.3---vmware.1-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4407525888,
+          "etag": "a257bf22603c54688f80d4fdfd4d568f",
+          "hrefs": [
+            "ob-24754837-ubuntu-2204-amd64-v1.32.3---vmware.1-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "0abc2eca1bd022d9235a64d731766d8d",
+          "hrefs": [
+            "ob-24754837-ubuntu-2204-amd64-v1.32.3---vmware.1-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-20T01:23:41.289500",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:5e6e3868-2f9a-44d0-9993-70b97cb8a99c",
+      "name": "ob-24752896-photon-5-amd64-v1.31.7---vmware.1-fips-vkr.2",
+      "selfHref": "ob-24752896-photon-5-amd64-v1.31.7---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "a1907f20a67fd532df2cc229220e01c2",
+          "hrefs": [
+            "ob-24752896-photon-5-amd64-v1.31.7---vmware.1-fips-vkr.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 103769,
+          "etag": "a1907f20a67fd532df2cc229220e01c2",
+          "hrefs": [
+            "ob-24752896-photon-5-amd64-v1.31.7---vmware.1-fips-vkr.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5943055872,
+          "etag": "a1907f20a67fd532df2cc229220e01c2",
+          "hrefs": [
+            "ob-24752896-photon-5-amd64-v1.31.7---vmware.1-fips-vkr.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "fbc038932790feeab76f437a7549da1b",
+          "hrefs": [
+            "ob-24752896-photon-5-amd64-v1.31.7---vmware.1-fips-vkr.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-20T01:35:29.944938",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:b3ee3225-287a-4832-9d5b-5fcebe829dee",
+      "name": "ob-24752897-ubuntu-2204-amd64-v1.31.7---vmware.1-fips-vkr.2",
+      "selfHref": "ob-24752897-ubuntu-2204-amd64-v1.31.7---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "2ef286060a4bd384f8c5fe72a8dddd63",
+          "hrefs": [
+            "ob-24752897-ubuntu-2204-amd64-v1.31.7---vmware.1-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 103785,
+          "etag": "2ef286060a4bd384f8c5fe72a8dddd63",
+          "hrefs": [
+            "ob-24752897-ubuntu-2204-amd64-v1.31.7---vmware.1-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4616906752,
+          "etag": "2ef286060a4bd384f8c5fe72a8dddd63",
+          "hrefs": [
+            "ob-24752897-ubuntu-2204-amd64-v1.31.7---vmware.1-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "5d5831d667a9763ad938b7770e8a5a6e",
+          "hrefs": [
+            "ob-24752897-ubuntu-2204-amd64-v1.31.7---vmware.1-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-22T22:20:59.384525",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:0dcff3a8-110d-40dd-95fb-bb8bd518d0f8",
+      "name": "ob-24749206-photon-5-amd64-v1.30.11---vmware.1-fips-vkr.2",
+      "selfHref": "ob-24749206-photon-5-amd64-v1.30.11---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "6a221f2c20889d798b94f897d3da4254",
+          "hrefs": [
+            "ob-24749206-photon-5-amd64-v1.30.11---vmware.1-fips-vkr.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 102957,
+          "etag": "6a221f2c20889d798b94f897d3da4254",
+          "hrefs": [
+            "ob-24749206-photon-5-amd64-v1.30.11---vmware.1-fips-vkr.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5432701440,
+          "etag": "6a221f2c20889d798b94f897d3da4254",
+          "hrefs": [
+            "ob-24749206-photon-5-amd64-v1.30.11---vmware.1-fips-vkr.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "2302d1644dd113d8c16973c8c77ad0b2",
+          "hrefs": [
+            "ob-24749206-photon-5-amd64-v1.30.11---vmware.1-fips-vkr.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-22T22:55:53.589262",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:f1135d5d-8df8-4ab4-b798-476f9d764fbf",
+      "name": "ob-24749249-ubuntu-2204-amd64-v1.30.11---vmware.1-fips-vkr.2",
+      "selfHref": "ob-24749249-ubuntu-2204-amd64-v1.30.11---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "9a43ca0361ad0fe3d8a18512f0b92a17",
+          "hrefs": [
+            "ob-24749249-ubuntu-2204-amd64-v1.30.11---vmware.1-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 102973,
+          "etag": "9a43ca0361ad0fe3d8a18512f0b92a17",
+          "hrefs": [
+            "ob-24749249-ubuntu-2204-amd64-v1.30.11---vmware.1-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 6215900672,
+          "etag": "9a43ca0361ad0fe3d8a18512f0b92a17",
+          "hrefs": [
+            "ob-24749249-ubuntu-2204-amd64-v1.30.11---vmware.1-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "082eb97532cb3fc27f03381b6d214341",
+          "hrefs": [
+            "ob-24749249-ubuntu-2204-amd64-v1.30.11---vmware.1-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-23T02:22:13.006517",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:20f5ae7d-1be1-4254-9b50-ab63de3de246",
+      "name": "ob-24749159-photon-5-amd64-v1.29.15---vmware.1-fips-vkr.2",
+      "selfHref": "ob-24749159-photon-5-amd64-v1.29.15---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "8bcec8b1f49b27ecfbd7890cc079ce28",
+          "hrefs": [
+            "ob-24749159-photon-5-amd64-v1.29.15---vmware.1-fips-vkr.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 103115,
+          "etag": "8bcec8b1f49b27ecfbd7890cc079ce28",
+          "hrefs": [
+            "ob-24749159-photon-5-amd64-v1.29.15---vmware.1-fips-vkr.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5529020928,
+          "etag": "8bcec8b1f49b27ecfbd7890cc079ce28",
+          "hrefs": [
+            "ob-24749159-photon-5-amd64-v1.29.15---vmware.1-fips-vkr.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "8c74b5ded4434e92959f163cb03517bc",
+          "hrefs": [
+            "ob-24749159-photon-5-amd64-v1.29.15---vmware.1-fips-vkr.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-23T02:31:11.150394",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:3f9bad0b-1a90-41d3-a27b-27ce05310864",
+      "name": "ob-24749167-ubuntu-2204-amd64-v1.29.15---vmware.1-fips-vkr.2",
+      "selfHref": "ob-24749167-ubuntu-2204-amd64-v1.29.15---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "091e3a9016dfff0a53afa94b8b51e176",
+          "hrefs": [
+            "ob-24749167-ubuntu-2204-amd64-v1.29.15---vmware.1-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 103131,
+          "etag": "091e3a9016dfff0a53afa94b8b51e176",
+          "hrefs": [
+            "ob-24749167-ubuntu-2204-amd64-v1.29.15---vmware.1-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 6223322112,
+          "etag": "091e3a9016dfff0a53afa94b8b51e176",
+          "hrefs": [
+            "ob-24749167-ubuntu-2204-amd64-v1.29.15---vmware.1-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "166bdb8776537c23aa4354114427cc2b",
+          "hrefs": [
+            "ob-24749167-ubuntu-2204-amd64-v1.29.15---vmware.1-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-23T05:01:23.951700",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:146b2e59-eb3a-45b0-add6-2a8c9d711940",
+      "name": "ob-24773189-photon-5-amd64-v1.28.15---vmware.3-fips-vkr.3",
+      "selfHref": "ob-24773189-photon-5-amd64-v1.28.15---vmware.3-fips-vkr.3/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "68d128250f88eb5cb7e79f7af2971fc2",
+          "hrefs": [
+            "ob-24773189-photon-5-amd64-v1.28.15---vmware.3-fips-vkr.3/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 103749,
+          "etag": "68d128250f88eb5cb7e79f7af2971fc2",
+          "hrefs": [
+            "ob-24773189-photon-5-amd64-v1.28.15---vmware.3-fips-vkr.3/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5321953792,
+          "etag": "68d128250f88eb5cb7e79f7af2971fc2",
+          "hrefs": [
+            "ob-24773189-photon-5-amd64-v1.28.15---vmware.3-fips-vkr.3/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "79891cca4a23c5bf602cde92e1c5ca4e",
+          "hrefs": [
+            "ob-24773189-photon-5-amd64-v1.28.15---vmware.3-fips-vkr.3/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-23T05:10:14.136762",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:a2d06d08-d105-4e75-8cfd-cc38052317d2",
+      "name": "ob-24773265-ubuntu-2204-amd64-v1.28.15---vmware.3-fips-vkr.3",
+      "selfHref": "ob-24773265-ubuntu-2204-amd64-v1.28.15---vmware.3-fips-vkr.3/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "b611d22a34508701d36e979891ffcb80",
+          "hrefs": [
+            "ob-24773265-ubuntu-2204-amd64-v1.28.15---vmware.3-fips-vkr.3/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 103765,
+          "etag": "b611d22a34508701d36e979891ffcb80",
+          "hrefs": [
+            "ob-24773265-ubuntu-2204-amd64-v1.28.15---vmware.3-fips-vkr.3/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 6105778176,
+          "etag": "b611d22a34508701d36e979891ffcb80",
+          "hrefs": [
+            "ob-24773265-ubuntu-2204-amd64-v1.28.15---vmware.3-fips-vkr.3/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "903800f3fed229fea3e66617a6101693",
+          "hrefs": [
+            "ob-24773265-ubuntu-2204-amd64-v1.28.15---vmware.3-fips-vkr.3/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-23T07:38:00.056479",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:808af3ed-f6cb-4a3a-bf44-0d7cb60b5c19",
+      "name": "ob-24713771-photon-3-amd64-v1.27.16---vmware.2-fips-vkr.2",
+      "selfHref": "ob-24713771-photon-3-amd64-v1.27.16---vmware.2-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "f954c3aec5ccdbb349866a3c95ea4ea7",
+          "hrefs": [
+            "ob-24713771-photon-3-amd64-v1.27.16---vmware.2-fips-vkr.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 117671,
+          "etag": "f954c3aec5ccdbb349866a3c95ea4ea7",
+          "hrefs": [
+            "ob-24713771-photon-3-amd64-v1.27.16---vmware.2-fips-vkr.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5185386496,
+          "etag": "f954c3aec5ccdbb349866a3c95ea4ea7",
+          "hrefs": [
+            "ob-24713771-photon-3-amd64-v1.27.16---vmware.2-fips-vkr.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "f8053a923dc8cba11c5b2b09d3bc1d16",
+          "hrefs": [
+            "ob-24713771-photon-3-amd64-v1.27.16---vmware.2-fips-vkr.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-06-23T07:46:49.916649",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:bc5ecb07-0cd3-435e-8bf8-32a01866f666",
+      "name": "ob-24713774-ubuntu-2204-amd64-v1.27.16---vmware.2-fips-vkr.2",
+      "selfHref": "ob-24713774-ubuntu-2204-amd64-v1.27.16---vmware.2-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "b4a8bef9d358dd0e58f24356f8055754",
+          "hrefs": [
+            "ob-24713774-ubuntu-2204-amd64-v1.27.16---vmware.2-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 117687,
+          "etag": "b4a8bef9d358dd0e58f24356f8055754",
+          "hrefs": [
+            "ob-24713774-ubuntu-2204-amd64-v1.27.16---vmware.2-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 6000230912,
+          "etag": "b4a8bef9d358dd0e58f24356f8055754",
+          "hrefs": [
+            "ob-24713774-ubuntu-2204-amd64-v1.27.16---vmware.2-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "9bf957e4ac6f49dbc71a0facee7ed509",
+          "hrefs": [
+            "ob-24713774-ubuntu-2204-amd64-v1.27.16---vmware.2-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-09-24T02:08:49.462366",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:63c73549-b244-4d12-aa99-501a0adddef8",
+      "name": "ob-24949272-photon-5-amd64-v1.33.3---vmware.1-fips-vkr.1",
+      "selfHref": "ob-24949272-photon-5-amd64-v1.33.3---vmware.1-fips-vkr.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "9fac78ff2fb89ed3b1d56111f89369af",
+          "hrefs": [
+            "ob-24949272-photon-5-amd64-v1.33.3---vmware.1-fips-vkr.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 104947,
+          "etag": "9fac78ff2fb89ed3b1d56111f89369af",
+          "hrefs": [
+            "ob-24949272-photon-5-amd64-v1.33.3---vmware.1-fips-vkr.1/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5520337920,
+          "etag": "9fac78ff2fb89ed3b1d56111f89369af",
+          "hrefs": [
+            "ob-24949272-photon-5-amd64-v1.33.3---vmware.1-fips-vkr.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "055171d72abf3aa3b82091422263e938",
+          "hrefs": [
+            "ob-24949272-photon-5-amd64-v1.33.3---vmware.1-fips-vkr.1/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-09-24T02:46:49.048247",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:d78f6cc6-4f26-4176-8017-610960553ee1",
+      "name": "ob-24949282-ubuntu-2204-amd64-v1.33.3---vmware.1-fips-vkr.1",
+      "selfHref": "ob-24949282-ubuntu-2204-amd64-v1.33.3---vmware.1-fips-vkr.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "8830a8bf2ae1a5623c32a5229aeb6b26",
+          "hrefs": [
+            "ob-24949282-ubuntu-2204-amd64-v1.33.3---vmware.1-fips-vkr.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 104963,
+          "etag": "8830a8bf2ae1a5623c32a5229aeb6b26",
+          "hrefs": [
+            "ob-24949282-ubuntu-2204-amd64-v1.33.3---vmware.1-fips-vkr.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4235535360,
+          "etag": "8830a8bf2ae1a5623c32a5229aeb6b26",
+          "hrefs": [
+            "ob-24949282-ubuntu-2204-amd64-v1.33.3---vmware.1-fips-vkr.1/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "0eb67f8724f91f2595c776d14381f1ae",
+          "hrefs": [
+            "ob-24949282-ubuntu-2204-amd64-v1.33.3---vmware.1-fips-vkr.1/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-09-24T02:53:42.636909",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:60c0cbdf-370c-4f8c-b0f9-eb355cf6d286",
+      "name": "ob-24949569-ubuntu-2404-amd64-v1.33.3---vmware.1-fips-vkr.1",
+      "selfHref": "ob-24949569-ubuntu-2404-amd64-v1.33.3---vmware.1-fips-vkr.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "4d56ac7c4fa974cc1cdd1462d77fd603",
+          "hrefs": [
+            "ob-24949569-ubuntu-2404-amd64-v1.33.3---vmware.1-fips-vkr.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 104963,
+          "etag": "4d56ac7c4fa974cc1cdd1462d77fd603",
+          "hrefs": [
+            "ob-24949569-ubuntu-2404-amd64-v1.33.3---vmware.1-fips-vkr.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4378497024,
+          "etag": "4d56ac7c4fa974cc1cdd1462d77fd603",
+          "hrefs": [
+            "ob-24949569-ubuntu-2404-amd64-v1.33.3---vmware.1-fips-vkr.1/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "cf4cfc80278dbc1f49c69a916310f82a",
+          "hrefs": [
+            "ob-24949569-ubuntu-2404-amd64-v1.33.3---vmware.1-fips-vkr.1/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-09-24T08:44:33.246724",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:435a041d-d868-4f77-a9fc-19039d738bf3",
+      "name": "ob-24945258-photon-5-amd64-v1.32.7---vmware.3-fips-vkr.1",
+      "selfHref": "ob-24945258-photon-5-amd64-v1.32.7---vmware.3-fips-vkr.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "ee1c75e07c11325c80267c621eb6b7ec",
+          "hrefs": [
+            "ob-24945258-photon-5-amd64-v1.32.7---vmware.3-fips-vkr.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 104078,
+          "etag": "ee1c75e07c11325c80267c621eb6b7ec",
+          "hrefs": [
+            "ob-24945258-photon-5-amd64-v1.32.7---vmware.3-fips-vkr.1/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5717611520,
+          "etag": "ee1c75e07c11325c80267c621eb6b7ec",
+          "hrefs": [
+            "ob-24945258-photon-5-amd64-v1.32.7---vmware.3-fips-vkr.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "44cc4d0d136eae7f6cb284c05ff8078d",
+          "hrefs": [
+            "ob-24945258-photon-5-amd64-v1.32.7---vmware.3-fips-vkr.1/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-09-24T09:00:33.092578",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:d2bd59f9-5253-4cf2-981b-34466a08f863",
+      "name": "ob-24948176-ubuntu-2204-amd64-v1.32.7---vmware.3-fips-vkr.1",
+      "selfHref": "ob-24948176-ubuntu-2204-amd64-v1.32.7---vmware.3-fips-vkr.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "065dc98f2d55144e56009475193e915f",
+          "hrefs": [
+            "ob-24948176-ubuntu-2204-amd64-v1.32.7---vmware.3-fips-vkr.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 104094,
+          "etag": "065dc98f2d55144e56009475193e915f",
+          "hrefs": [
+            "ob-24948176-ubuntu-2204-amd64-v1.32.7---vmware.3-fips-vkr.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4343220736,
+          "etag": "065dc98f2d55144e56009475193e915f",
+          "hrefs": [
+            "ob-24948176-ubuntu-2204-amd64-v1.32.7---vmware.3-fips-vkr.1/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "1bf83bde19966988639a35c8d22cd3a2",
+          "hrefs": [
+            "ob-24948176-ubuntu-2204-amd64-v1.32.7---vmware.3-fips-vkr.1/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-09-24T23:02:33.165793",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:ab8a7a14-f5c4-4391-9b89-e0f29fc1b679",
+      "name": "ob-24941856-photon-5-amd64-v1.31.11---vmware.3-fips-vkr.1",
+      "selfHref": "ob-24941856-photon-5-amd64-v1.31.11---vmware.3-fips-vkr.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "423341b24a44029b8c47fb66a82f5a8c",
+          "hrefs": [
+            "ob-24941856-photon-5-amd64-v1.31.11---vmware.3-fips-vkr.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 103836,
+          "etag": "423341b24a44029b8c47fb66a82f5a8c",
+          "hrefs": [
+            "ob-24941856-photon-5-amd64-v1.31.11---vmware.3-fips-vkr.1/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5062586368,
+          "etag": "423341b24a44029b8c47fb66a82f5a8c",
+          "hrefs": [
+            "ob-24941856-photon-5-amd64-v1.31.11---vmware.3-fips-vkr.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "892a96ce804453192da1f3baf13044bd",
+          "hrefs": [
+            "ob-24941856-photon-5-amd64-v1.31.11---vmware.3-fips-vkr.1/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-09-24T23:09:48.950659",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:3c5e4f4a-d94a-4bef-85d0-8132506a07cd",
+      "name": "ob-24942110-ubuntu-2204-amd64-v1.31.11---vmware.3-fips-vkr.1",
+      "selfHref": "ob-24942110-ubuntu-2204-amd64-v1.31.11---vmware.3-fips-vkr.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "cfd5f2db31b8909e9155f49ddb2fdfc2",
+          "hrefs": [
+            "ob-24942110-ubuntu-2204-amd64-v1.31.11---vmware.3-fips-vkr.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 103852,
+          "etag": "cfd5f2db31b8909e9155f49ddb2fdfc2",
+          "hrefs": [
+            "ob-24942110-ubuntu-2204-amd64-v1.31.11---vmware.3-fips-vkr.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4413435904,
+          "etag": "cfd5f2db31b8909e9155f49ddb2fdfc2",
+          "hrefs": [
+            "ob-24942110-ubuntu-2204-amd64-v1.31.11---vmware.3-fips-vkr.1/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "579513125102cba6d0c01b3a3f0b3753",
+          "hrefs": [
+            "ob-24942110-ubuntu-2204-amd64-v1.31.11---vmware.3-fips-vkr.1/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-09-25T01:50:59.952601",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:808d0d85-9c0c-4fad-9e1b-dd02a7d860e1",
+      "name": "ob-24964872-photon-5-amd64-v1.30.14---vmware.1-fips-vkr.3",
+      "selfHref": "ob-24964872-photon-5-amd64-v1.30.14---vmware.1-fips-vkr.3/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "9de7aac4db54392d3ce73f6e6b6e4a90",
+          "hrefs": [
+            "ob-24964872-photon-5-amd64-v1.30.14---vmware.1-fips-vkr.3/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 102957,
+          "etag": "9de7aac4db54392d3ce73f6e6b6e4a90",
+          "hrefs": [
+            "ob-24964872-photon-5-amd64-v1.30.14---vmware.1-fips-vkr.3/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5458463744,
+          "etag": "9de7aac4db54392d3ce73f6e6b6e4a90",
+          "hrefs": [
+            "ob-24964872-photon-5-amd64-v1.30.14---vmware.1-fips-vkr.3/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "7a4d3f19c17ec052ba27067ffb5fe03a",
+          "hrefs": [
+            "ob-24964872-photon-5-amd64-v1.30.14---vmware.1-fips-vkr.3/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-09-25T01:57:44.641217",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:d70028d8-8d8a-41cb-aaff-030432e3c191",
+      "name": "ob-24964897-ubuntu-2204-amd64-v1.30.14---vmware.1-fips-vkr.3",
+      "selfHref": "ob-24964897-ubuntu-2204-amd64-v1.30.14---vmware.1-fips-vkr.3/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "a712150b5e2f8c26423482f301e53cf0",
+          "hrefs": [
+            "ob-24964897-ubuntu-2204-amd64-v1.30.14---vmware.1-fips-vkr.3/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 102973,
+          "etag": "a712150b5e2f8c26423482f301e53cf0",
+          "hrefs": [
+            "ob-24964897-ubuntu-2204-amd64-v1.30.14---vmware.1-fips-vkr.3/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 6138600960,
+          "etag": "a712150b5e2f8c26423482f301e53cf0",
+          "hrefs": [
+            "ob-24964897-ubuntu-2204-amd64-v1.30.14---vmware.1-fips-vkr.3/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "4f5bcd16a7a1a184352487faefe68b97",
+          "hrefs": [
+            "ob-24964897-ubuntu-2204-amd64-v1.30.14---vmware.1-fips-vkr.3/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-10-26T23:34:44.785865",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:a9336739-0b2f-4190-89ed-203d32f6ed57",
+      "name": "ob-25018011-photon-5-amd64-v1.34.1---vmware.1-vkr.4",
+      "selfHref": "ob-25018011-photon-5-amd64-v1.34.1---vmware.1-vkr.4/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "3ae28b5bfd3e36457383c53dba29dc02",
+          "hrefs": [
+            "ob-25018011-photon-5-amd64-v1.34.1---vmware.1-vkr.4/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 107281,
+          "etag": "3ae28b5bfd3e36457383c53dba29dc02",
+          "hrefs": [
+            "ob-25018011-photon-5-amd64-v1.34.1---vmware.1-vkr.4/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 6101844480,
+          "etag": "3ae28b5bfd3e36457383c53dba29dc02",
+          "hrefs": [
+            "ob-25018011-photon-5-amd64-v1.34.1---vmware.1-vkr.4/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "f2aeec58ed47ca65551fec1effc14a8f",
+          "hrefs": [
+            "ob-25018011-photon-5-amd64-v1.34.1---vmware.1-vkr.4/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-10-26T23:48:14.013151",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:b5193950-2087-45bf-a704-aa89fc5c9f91",
+      "name": "ob-25018035-ubuntu-2204-amd64-v1.34.1---vmware.1-vkr.4",
+      "selfHref": "ob-25018035-ubuntu-2204-amd64-v1.34.1---vmware.1-vkr.4/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "2dbe600e9ff0f40e9752616cf08edd62",
+          "hrefs": [
+            "ob-25018035-ubuntu-2204-amd64-v1.34.1---vmware.1-vkr.4/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 107297,
+          "etag": "2dbe600e9ff0f40e9752616cf08edd62",
+          "hrefs": [
+            "ob-25018035-ubuntu-2204-amd64-v1.34.1---vmware.1-vkr.4/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3905132032,
+          "etag": "2dbe600e9ff0f40e9752616cf08edd62",
+          "hrefs": [
+            "ob-25018035-ubuntu-2204-amd64-v1.34.1---vmware.1-vkr.4/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "f1599e7f995abda9336577ebd02d3e6f",
+          "hrefs": [
+            "ob-25018035-ubuntu-2204-amd64-v1.34.1---vmware.1-vkr.4/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2025-10-26T23:56:54.747172",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:bb77646e-1b54-4778-b269-3bb5367bdd36",
+      "name": "ob-25018012-ubuntu-2404-amd64-v1.34.1---vmware.1-vkr.4",
+      "selfHref": "ob-25018012-ubuntu-2404-amd64-v1.34.1---vmware.1-vkr.4/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "07ba2b04f431e803767abee98adb7e1b",
+          "hrefs": [
+            "ob-25018012-ubuntu-2404-amd64-v1.34.1---vmware.1-vkr.4/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 107297,
+          "etag": "07ba2b04f431e803767abee98adb7e1b",
+          "hrefs": [
+            "ob-25018012-ubuntu-2404-amd64-v1.34.1---vmware.1-vkr.4/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4034487296,
+          "etag": "07ba2b04f431e803767abee98adb7e1b",
+          "hrefs": [
+            "ob-25018012-ubuntu-2404-amd64-v1.34.1---vmware.1-vkr.4/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "747034ff34fcc3606634f7b78d7012f4",
+          "hrefs": [
+            "ob-25018012-ubuntu-2404-amd64-v1.34.1---vmware.1-vkr.4/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-01-27T22:41:38.345355",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:3454c318-ca52-4998-9fbe-8e965795c47f",
+      "name": "ob-25164274-photon-5-amd64-v1.34.2---vmware.2-vkr.2",
+      "selfHref": "ob-25164274-photon-5-amd64-v1.34.2---vmware.2-vkr.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "8985acd3c9de23e3b85bc4311ed66da9",
+          "hrefs": [
+            "ob-25164274-photon-5-amd64-v1.34.2---vmware.2-vkr.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 107293,
+          "etag": "8985acd3c9de23e3b85bc4311ed66da9",
+          "hrefs": [
+            "ob-25164274-photon-5-amd64-v1.34.2---vmware.2-vkr.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5718863360,
+          "etag": "8985acd3c9de23e3b85bc4311ed66da9",
+          "hrefs": [
+            "ob-25164274-photon-5-amd64-v1.34.2---vmware.2-vkr.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "8985acd3c9de23e3b85bc4311ed66da9",
+          "hrefs": [
+            "ob-25164274-photon-5-amd64-v1.34.2---vmware.2-vkr.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-01-27T22:50:38.027433",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:74274033-f584-4bda-abc7-a9cf9d2d623c",
+      "name": "ob-25164406-ubuntu-2204-amd64-v1.34.2---vmware.2-vkr.2",
+      "selfHref": "ob-25164406-ubuntu-2204-amd64-v1.34.2---vmware.2-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "1c4b5d02efa9180f865033dc1de9c920",
+          "hrefs": [
+            "ob-25164406-ubuntu-2204-amd64-v1.34.2---vmware.2-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 107309,
+          "etag": "1c4b5d02efa9180f865033dc1de9c920",
+          "hrefs": [
+            "ob-25164406-ubuntu-2204-amd64-v1.34.2---vmware.2-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4275376128,
+          "etag": "1c4b5d02efa9180f865033dc1de9c920",
+          "hrefs": [
+            "ob-25164406-ubuntu-2204-amd64-v1.34.2---vmware.2-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "1c4b5d02efa9180f865033dc1de9c920",
+          "hrefs": [
+            "ob-25164406-ubuntu-2204-amd64-v1.34.2---vmware.2-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-01-27T23:09:38.238688",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:25c8fe1b-37c1-479c-b507-3e726057afb0",
+      "name": "ob-25164375-ubuntu-2404-amd64-v1.34.2---vmware.2-vkr.2",
+      "selfHref": "ob-25164375-ubuntu-2404-amd64-v1.34.2---vmware.2-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "411a36246500d91d966c84dec71ace80",
+          "hrefs": [
+            "ob-25164375-ubuntu-2404-amd64-v1.34.2---vmware.2-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 107309,
+          "etag": "411a36246500d91d966c84dec71ace80",
+          "hrefs": [
+            "ob-25164375-ubuntu-2404-amd64-v1.34.2---vmware.2-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4078327296,
+          "etag": "411a36246500d91d966c84dec71ace80",
+          "hrefs": [
+            "ob-25164375-ubuntu-2404-amd64-v1.34.2---vmware.2-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "411a36246500d91d966c84dec71ace80",
+          "hrefs": [
+            "ob-25164375-ubuntu-2404-amd64-v1.34.2---vmware.2-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-01-28T22:19:32.458176",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:59a6030e-c53a-4d79-a9ab-830957b805d5",
+      "name": "ob-25162288-photon-5-amd64-v1.33.6---vmware.1-fips-vkr.2",
+      "selfHref": "ob-25162288-photon-5-amd64-v1.33.6---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "3d6012e0790a1113802d3b56fec236b6",
+          "hrefs": [
+            "ob-25162288-photon-5-amd64-v1.33.6---vmware.1-fips-vkr.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 105203,
+          "etag": "3d6012e0790a1113802d3b56fec236b6",
+          "hrefs": [
+            "ob-25162288-photon-5-amd64-v1.33.6---vmware.1-fips-vkr.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5712077824,
+          "etag": "3d6012e0790a1113802d3b56fec236b6",
+          "hrefs": [
+            "ob-25162288-photon-5-amd64-v1.33.6---vmware.1-fips-vkr.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "3d6012e0790a1113802d3b56fec236b6",
+          "hrefs": [
+            "ob-25162288-photon-5-amd64-v1.33.6---vmware.1-fips-vkr.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-01-28T22:30:50.583197",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:1091061f-8f0d-43b1-8bdb-4f8dfc5f477b",
+      "name": "ob-25162294-ubuntu-2204-amd64-v1.33.6---vmware.1-fips-vkr.2",
+      "selfHref": "ob-25162294-ubuntu-2204-amd64-v1.33.6---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "c454cf354a77ba3afc968d5008b0cc65",
+          "hrefs": [
+            "ob-25162294-ubuntu-2204-amd64-v1.33.6---vmware.1-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 105219,
+          "etag": "c454cf354a77ba3afc968d5008b0cc65",
+          "hrefs": [
+            "ob-25162294-ubuntu-2204-amd64-v1.33.6---vmware.1-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3863107584,
+          "etag": "c454cf354a77ba3afc968d5008b0cc65",
+          "hrefs": [
+            "ob-25162294-ubuntu-2204-amd64-v1.33.6---vmware.1-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "c454cf354a77ba3afc968d5008b0cc65",
+          "hrefs": [
+            "ob-25162294-ubuntu-2204-amd64-v1.33.6---vmware.1-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-01-28T22:44:43.483694",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:bc003df6-35c6-4d4a-bfcb-367b229f4150",
+      "name": "ob-25162291-ubuntu-2404-amd64-v1.33.6---vmware.1-fips-vkr.2",
+      "selfHref": "ob-25162291-ubuntu-2404-amd64-v1.33.6---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "d77ab2ada70ebd952ba283188b46ff39",
+          "hrefs": [
+            "ob-25162291-ubuntu-2404-amd64-v1.33.6---vmware.1-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 105219,
+          "etag": "d77ab2ada70ebd952ba283188b46ff39",
+          "hrefs": [
+            "ob-25162291-ubuntu-2404-amd64-v1.33.6---vmware.1-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3923441152,
+          "etag": "d77ab2ada70ebd952ba283188b46ff39",
+          "hrefs": [
+            "ob-25162291-ubuntu-2404-amd64-v1.33.6---vmware.1-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "d77ab2ada70ebd952ba283188b46ff39",
+          "hrefs": [
+            "ob-25162291-ubuntu-2404-amd64-v1.33.6---vmware.1-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-01-28T23:07:23.041605",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:a3b67750-dc1c-41bc-8993-4701d7f68a1d",
+      "name": "ob-25156129-photon-5-amd64-v1.32.10---vmware.1-fips-vkr.2",
+      "selfHref": "ob-25156129-photon-5-amd64-v1.32.10---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "cf5bd3e4ab6e47796e60a27360c29934",
+          "hrefs": [
+            "ob-25156129-photon-5-amd64-v1.32.10---vmware.1-fips-vkr.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 104119,
+          "etag": "cf5bd3e4ab6e47796e60a27360c29934",
+          "hrefs": [
+            "ob-25156129-photon-5-amd64-v1.32.10---vmware.1-fips-vkr.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5483680768,
+          "etag": "cf5bd3e4ab6e47796e60a27360c29934",
+          "hrefs": [
+            "ob-25156129-photon-5-amd64-v1.32.10---vmware.1-fips-vkr.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "cf5bd3e4ab6e47796e60a27360c29934",
+          "hrefs": [
+            "ob-25156129-photon-5-amd64-v1.32.10---vmware.1-fips-vkr.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-01-28T23:14:15.861211",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:a85d8e23-563a-4a04-af6d-900745c8ee39",
+      "name": "ob-25157145-ubuntu-2204-amd64-v1.32.10---vmware.1-fips-vkr.2",
+      "selfHref": "ob-25157145-ubuntu-2204-amd64-v1.32.10---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "7d89d9c9f380d9341aa9a87213350e12",
+          "hrefs": [
+            "ob-25157145-ubuntu-2204-amd64-v1.32.10---vmware.1-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 104135,
+          "etag": "7d89d9c9f380d9341aa9a87213350e12",
+          "hrefs": [
+            "ob-25157145-ubuntu-2204-amd64-v1.32.10---vmware.1-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4315532800,
+          "etag": "7d89d9c9f380d9341aa9a87213350e12",
+          "hrefs": [
+            "ob-25157145-ubuntu-2204-amd64-v1.32.10---vmware.1-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "7d89d9c9f380d9341aa9a87213350e12",
+          "hrefs": [
+            "ob-25157145-ubuntu-2204-amd64-v1.32.10---vmware.1-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-01-29T21:49:31.340123",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:f2470313-7f03-47d6-989f-d36790f257e7",
+      "name": "ob-25155952-photon-5-amd64-v1.31.14---vmware.1-fips-vkr.2",
+      "selfHref": "ob-25155952-photon-5-amd64-v1.31.14---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "81c7215d44defebb246444ddc0438101",
+          "hrefs": [
+            "ob-25155952-photon-5-amd64-v1.31.14---vmware.1-fips-vkr.2/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 103870,
+          "etag": "81c7215d44defebb246444ddc0438101",
+          "hrefs": [
+            "ob-25155952-photon-5-amd64-v1.31.14---vmware.1-fips-vkr.2/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5193537536,
+          "etag": "81c7215d44defebb246444ddc0438101",
+          "hrefs": [
+            "ob-25155952-photon-5-amd64-v1.31.14---vmware.1-fips-vkr.2/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "81c7215d44defebb246444ddc0438101",
+          "hrefs": [
+            "ob-25155952-photon-5-amd64-v1.31.14---vmware.1-fips-vkr.2/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-01-29T23:08:58.279055",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:f38eeb26-34d4-4d08-805b-58e921fe32be",
+      "name": "ob-25155953-ubuntu-2204-amd64-v1.31.14---vmware.1-fips-vkr.2",
+      "selfHref": "ob-25155953-ubuntu-2204-amd64-v1.31.14---vmware.1-fips-vkr.2/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "f59fd9aca98ee91c52c358ed307de84d",
+          "hrefs": [
+            "ob-25155953-ubuntu-2204-amd64-v1.31.14---vmware.1-fips-vkr.2/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 103886,
+          "etag": "f59fd9aca98ee91c52c358ed307de84d",
+          "hrefs": [
+            "ob-25155953-ubuntu-2204-amd64-v1.31.14---vmware.1-fips-vkr.2/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4454489600,
+          "etag": "f59fd9aca98ee91c52c358ed307de84d",
+          "hrefs": [
+            "ob-25155953-ubuntu-2204-amd64-v1.31.14---vmware.1-fips-vkr.2/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "f59fd9aca98ee91c52c358ed307de84d",
+          "hrefs": [
+            "ob-25155953-ubuntu-2204-amd64-v1.31.14---vmware.1-fips-vkr.2/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-02-11T01:31:03.100756",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:089578fd-1471-41eb-9fd5-9e4be32e5446",
+      "name": "ob-25217800-photon-5-amd64-v1.35.0---vmware.2-vkr.4",
+      "selfHref": "ob-25217800-photon-5-amd64-v1.35.0---vmware.2-vkr.4/item.json",
+      "files": [
+        {
+          "name": "photon-5-amd64-v1.35.0---vmware.2-vkr.4-disk1.vmdk",
+          "size": 3084698624,
+          "etag": "62eef9d8a102ea3c9d926ac3c0075ede",
+          "hrefs": [
+            "ob-25217800-photon-5-amd64-v1.35.0---vmware.2-vkr.4/photon-5-amd64-v1.35.0---vmware.2-vkr.4-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-5-amd64-v1.35.0---vmware.2-vkr.4.ovf",
+          "size": 183062,
+          "etag": "62eef9d8a102ea3c9d926ac3c0075ede",
+          "hrefs": [
+            "ob-25217800-photon-5-amd64-v1.35.0---vmware.2-vkr.4/photon-5-amd64-v1.35.0---vmware.2-vkr.4.ovf"
+          ]
+        },
+        {
+          "name": "photon-5-amd64-v1.35.0---vmware.2-vkr.4.mf",
+          "size": 243,
+          "etag": "62eef9d8a102ea3c9d926ac3c0075ede",
+          "hrefs": [
+            "ob-25217800-photon-5-amd64-v1.35.0---vmware.2-vkr.4/photon-5-amd64-v1.35.0---vmware.2-vkr.4.mf"
+          ]
+        },
+        {
+          "name": "photon-5-amd64-v1.35.0---vmware.2-vkr.4.cert",
+          "size": 1940,
+          "etag": "62eef9d8a102ea3c9d926ac3c0075ede",
+          "hrefs": [
+            "ob-25217800-photon-5-amd64-v1.35.0---vmware.2-vkr.4/photon-5-amd64-v1.35.0---vmware.2-vkr.4.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-02-11T01:37:49.633886",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:0277f361-2ab0-45df-9ee7-affded7fefc6",
+      "name": "ob-25217801-ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4",
+      "selfHref": "ob-25217801-ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4/item.json",
+      "files": [
+        {
+          "name": "ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4-disk1.vmdk",
+          "size": 3708878848,
+          "etag": "9c7222b52937e42ee16ebf08d4b4f1fa",
+          "hrefs": [
+            "ob-25217801-ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4/ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4.ovf",
+          "size": 183076,
+          "etag": "9c7222b52937e42ee16ebf08d4b4f1fa",
+          "hrefs": [
+            "ob-25217801-ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4/ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4.mf",
+          "size": 249,
+          "etag": "9c7222b52937e42ee16ebf08d4b4f1fa",
+          "hrefs": [
+            "ob-25217801-ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4/ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4.cert",
+          "size": 1943,
+          "etag": "9c7222b52937e42ee16ebf08d4b4f1fa",
+          "hrefs": [
+            "ob-25217801-ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4/ubuntu-2204-amd64-v1.35.0---vmware.2-vkr.4.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-02-11T01:44:48.022422",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:2b11ad94-e0f8-47ef-970f-9c19118301c6",
+      "name": "ob-25217799-ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4",
+      "selfHref": "ob-25217799-ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4/item.json",
+      "files": [
+        {
+          "name": "ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4-disk1.vmdk",
+          "size": 3843075072,
+          "etag": "6ec7e73122017c8b784b71f805d1b942",
+          "hrefs": [
+            "ob-25217799-ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4/ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4.ovf",
+          "size": 183076,
+          "etag": "6ec7e73122017c8b784b71f805d1b942",
+          "hrefs": [
+            "ob-25217799-ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4/ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4.mf",
+          "size": 249,
+          "etag": "6ec7e73122017c8b784b71f805d1b942",
+          "hrefs": [
+            "ob-25217799-ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4/ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4.cert",
+          "size": 1943,
+          "etag": "6ec7e73122017c8b784b71f805d1b942",
+          "hrefs": [
+            "ob-25217799-ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4/ubuntu-2404-amd64-v1.35.0---vmware.2-vkr.4.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-04-12T23:13:14.681807",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:e1a89b16-9e1c-43aa-9192-20775e794bc0",
+      "name": "ob-25338025-photon-5-amd64-v1.35.2---vmware.1-vkr.3",
+      "selfHref": "ob-25338025-photon-5-amd64-v1.35.2---vmware.1-vkr.3/item.json",
+      "files": [
+        {
+          "name": "photon-5-amd64-v1.35.2---vmware.1-vkr.3-disk1.vmdk",
+          "size": 2830776832,
+          "etag": "aa698a651b3ff6f86d97f0bf583566ae",
+          "hrefs": [
+            "ob-25338025-photon-5-amd64-v1.35.2---vmware.1-vkr.3/photon-5-amd64-v1.35.2---vmware.1-vkr.3-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-5-amd64-v1.35.2---vmware.1-vkr.3.ovf",
+          "size": 183401,
+          "etag": "aa698a651b3ff6f86d97f0bf583566ae",
+          "hrefs": [
+            "ob-25338025-photon-5-amd64-v1.35.2---vmware.1-vkr.3/photon-5-amd64-v1.35.2---vmware.1-vkr.3.ovf"
+          ]
+        },
+        {
+          "name": "photon-5-amd64-v1.35.2---vmware.1-vkr.3.mf",
+          "size": 243,
+          "etag": "aa698a651b3ff6f86d97f0bf583566ae",
+          "hrefs": [
+            "ob-25338025-photon-5-amd64-v1.35.2---vmware.1-vkr.3/photon-5-amd64-v1.35.2---vmware.1-vkr.3.mf"
+          ]
+        },
+        {
+          "name": "photon-5-amd64-v1.35.2---vmware.1-vkr.3.cert",
+          "size": 1940,
+          "etag": "aa698a651b3ff6f86d97f0bf583566ae",
+          "hrefs": [
+            "ob-25338025-photon-5-amd64-v1.35.2---vmware.1-vkr.3/photon-5-amd64-v1.35.2---vmware.1-vkr.3.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-04-12T23:18:26.491245",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:b2017a86-16ab-4ad6-870f-1c850e4ab88c",
+      "name": "ob-25338026-ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3",
+      "selfHref": "ob-25338026-ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3/item.json",
+      "files": [
+        {
+          "name": "ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3-disk1.vmdk",
+          "size": 3717205504,
+          "etag": "36c5978bd75d9f5b12e4298be6e8c28b",
+          "hrefs": [
+            "ob-25338026-ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3/ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3.ovf",
+          "size": 183415,
+          "etag": "36c5978bd75d9f5b12e4298be6e8c28b",
+          "hrefs": [
+            "ob-25338026-ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3/ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3.mf",
+          "size": 249,
+          "etag": "36c5978bd75d9f5b12e4298be6e8c28b",
+          "hrefs": [
+            "ob-25338026-ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3/ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3.cert",
+          "size": 1943,
+          "etag": "36c5978bd75d9f5b12e4298be6e8c28b",
+          "hrefs": [
+            "ob-25338026-ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3/ubuntu-2204-amd64-v1.35.2---vmware.1-vkr.3.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-04-12T23:24:31.549160",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:3aea75db-b7a2-47fc-a80f-4a05b3d02f3f",
+      "name": "ob-25338024-ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3",
+      "selfHref": "ob-25338024-ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3/item.json",
+      "files": [
+        {
+          "name": "ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3-disk1.vmdk",
+          "size": 3865977856,
+          "etag": "fe3ccd3df6802f4235661931f8d34370",
+          "hrefs": [
+            "ob-25338024-ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3/ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3.ovf",
+          "size": 183415,
+          "etag": "fe3ccd3df6802f4235661931f8d34370",
+          "hrefs": [
+            "ob-25338024-ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3/ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3.mf",
+          "size": 249,
+          "etag": "fe3ccd3df6802f4235661931f8d34370",
+          "hrefs": [
+            "ob-25338024-ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3/ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3.cert",
+          "size": 1943,
+          "etag": "fe3ccd3df6802f4235661931f8d34370",
+          "hrefs": [
+            "ob-25338024-ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3/ubuntu-2404-amd64-v1.35.2---vmware.1-vkr.3.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-05-27T23:06:43.189170",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:22e20698-f5f9-414f-821b-1fc64a96e4d6",
+      "name": "ob-25439943-photon-5-amd64-v1.35.5---vmware.1-vkr.1",
+      "selfHref": "ob-25439943-photon-5-amd64-v1.35.5---vmware.1-vkr.1/item.json",
+      "files": [
+        {
+          "name": "photon-5-amd64-v1.35.5---vmware.1-vkr.1-disk1.vmdk",
+          "size": 2854074368,
+          "etag": "c3a894da6db0839413821dfed301f750",
+          "hrefs": [
+            "ob-25439943-photon-5-amd64-v1.35.5---vmware.1-vkr.1/photon-5-amd64-v1.35.5---vmware.1-vkr.1-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-5-amd64-v1.35.5---vmware.1-vkr.1.ovf",
+          "size": 183750,
+          "etag": "c3a894da6db0839413821dfed301f750",
+          "hrefs": [
+            "ob-25439943-photon-5-amd64-v1.35.5---vmware.1-vkr.1/photon-5-amd64-v1.35.5---vmware.1-vkr.1.ovf"
+          ]
+        },
+        {
+          "name": "photon-5-amd64-v1.35.5---vmware.1-vkr.1.mf",
+          "size": 243,
+          "etag": "c3a894da6db0839413821dfed301f750",
+          "hrefs": [
+            "ob-25439943-photon-5-amd64-v1.35.5---vmware.1-vkr.1/photon-5-amd64-v1.35.5---vmware.1-vkr.1.mf"
+          ]
+        },
+        {
+          "name": "photon-5-amd64-v1.35.5---vmware.1-vkr.1.cert",
+          "size": 1940,
+          "etag": "c3a894da6db0839413821dfed301f750",
+          "hrefs": [
+            "ob-25439943-photon-5-amd64-v1.35.5---vmware.1-vkr.1/photon-5-amd64-v1.35.5---vmware.1-vkr.1.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-05-27T23:15:39.854966",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:33fb918b-fc57-44d2-89fd-9ca5fb17742e",
+      "name": "ob-25439944-ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1",
+      "selfHref": "ob-25439944-ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1-disk1.vmdk",
+          "size": 3701425152,
+          "etag": "91ba1fdf528afd97ba5e043a2cc930a4",
+          "hrefs": [
+            "ob-25439944-ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1/ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1.ovf",
+          "size": 183764,
+          "etag": "91ba1fdf528afd97ba5e043a2cc930a4",
+          "hrefs": [
+            "ob-25439944-ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1/ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1.mf",
+          "size": 249,
+          "etag": "91ba1fdf528afd97ba5e043a2cc930a4",
+          "hrefs": [
+            "ob-25439944-ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1/ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1.cert",
+          "size": 1943,
+          "etag": "91ba1fdf528afd97ba5e043a2cc930a4",
+          "hrefs": [
+            "ob-25439944-ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1/ubuntu-2204-amd64-v1.35.5---vmware.1-vkr.1.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-05-27T23:22:52.046457",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:50fe0f23-74db-46bf-8a9f-f7cd1af6faa7",
+      "name": "ob-25439942-ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1",
+      "selfHref": "ob-25439942-ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1-disk1.vmdk",
+          "size": 3929034240,
+          "etag": "19f915bea52c55fe126d92a709849322",
+          "hrefs": [
+            "ob-25439942-ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1/ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1.ovf",
+          "size": 183764,
+          "etag": "19f915bea52c55fe126d92a709849322",
+          "hrefs": [
+            "ob-25439942-ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1/ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1.mf",
+          "size": 249,
+          "etag": "19f915bea52c55fe126d92a709849322",
+          "hrefs": [
+            "ob-25439942-ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1/ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1.cert",
+          "size": 1943,
+          "etag": "19f915bea52c55fe126d92a709849322",
+          "hrefs": [
+            "ob-25439942-ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1/ubuntu-2404-amd64-v1.35.5---vmware.1-vkr.1.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-05-27T23:30:47.108115",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:bfc12fab-002f-41b8-8cea-e25809042948",
+      "name": "ob-25441350-photon-5-amd64-v1.34.8---vmware.1-vkr.1",
+      "selfHref": "ob-25441350-photon-5-amd64-v1.34.8---vmware.1-vkr.1/item.json",
+      "files": [
+        {
+          "name": "photon-ova.mf",
+          "size": 185,
+          "etag": "ae2e48ad8b66e210eda88e8bd30f29eb",
+          "hrefs": [
+            "ob-25441350-photon-5-amd64-v1.34.8---vmware.1-vkr.1/photon-ova.mf"
+          ]
+        },
+        {
+          "name": "photon-ova.ovf",
+          "size": 107308,
+          "etag": "ae2e48ad8b66e210eda88e8bd30f29eb",
+          "hrefs": [
+            "ob-25441350-photon-5-amd64-v1.34.8---vmware.1-vkr.1/photon-ova.ovf"
+          ]
+        },
+        {
+          "name": "photon-ova-disk1.vmdk",
+          "size": 5870032896,
+          "etag": "ae2e48ad8b66e210eda88e8bd30f29eb",
+          "hrefs": [
+            "ob-25441350-photon-5-amd64-v1.34.8---vmware.1-vkr.1/photon-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-ova.cert",
+          "size": 1911,
+          "etag": "ae2e48ad8b66e210eda88e8bd30f29eb",
+          "hrefs": [
+            "ob-25441350-photon-5-amd64-v1.34.8---vmware.1-vkr.1/photon-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-05-27T23:38:15.170404",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:56c12c35-28c2-4ece-b734-8b5ddcf97a5b",
+      "name": "ob-25441349-ubuntu-2204-amd64-v1.34.8---vmware.1-vkr.1",
+      "selfHref": "ob-25441349-ubuntu-2204-amd64-v1.34.8---vmware.1-vkr.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "062283d2c9a3221f2691865c55871674",
+          "hrefs": [
+            "ob-25441349-ubuntu-2204-amd64-v1.34.8---vmware.1-vkr.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 107324,
+          "etag": "062283d2c9a3221f2691865c55871674",
+          "hrefs": [
+            "ob-25441349-ubuntu-2204-amd64-v1.34.8---vmware.1-vkr.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 3930021888,
+          "etag": "062283d2c9a3221f2691865c55871674",
+          "hrefs": [
+            "ob-25441349-ubuntu-2204-amd64-v1.34.8---vmware.1-vkr.1/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "062283d2c9a3221f2691865c55871674",
+          "hrefs": [
+            "ob-25441349-ubuntu-2204-amd64-v1.34.8---vmware.1-vkr.1/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-05-27T23:45:15.374713",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:5fad9617-5542-4aa6-8709-ed74938cad03",
+      "name": "ob-25441354-ubuntu-2404-amd64-v1.34.8---vmware.1-vkr.1",
+      "selfHref": "ob-25441354-ubuntu-2404-amd64-v1.34.8---vmware.1-vkr.1/item.json",
+      "files": [
+        {
+          "name": "ubuntu-ova.mf",
+          "size": 185,
+          "etag": "5bcb3efb212092abb0ed4cdbeeab4eaa",
+          "hrefs": [
+            "ob-25441354-ubuntu-2404-amd64-v1.34.8---vmware.1-vkr.1/ubuntu-ova.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.ovf",
+          "size": 107324,
+          "etag": "5bcb3efb212092abb0ed4cdbeeab4eaa",
+          "hrefs": [
+            "ob-25441354-ubuntu-2404-amd64-v1.34.8---vmware.1-vkr.1/ubuntu-ova.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-ova-disk1.vmdk",
+          "size": 4158081536,
+          "etag": "5bcb3efb212092abb0ed4cdbeeab4eaa",
+          "hrefs": [
+            "ob-25441354-ubuntu-2404-amd64-v1.34.8---vmware.1-vkr.1/ubuntu-ova-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-ova.cert",
+          "size": 1911,
+          "etag": "5bcb3efb212092abb0ed4cdbeeab4eaa",
+          "hrefs": [
+            "ob-25441354-ubuntu-2404-amd64-v1.34.8---vmware.1-vkr.1/ubuntu-ova.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-06-18T21:13:55.539242",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:2a564a67-43ce-4033-aa78-da9ba4850b12",
+      "name": "ob-25508717-photon-5-amd64-v1.36.1---vmware.4-vkr.5",
+      "selfHref": "ob-25508717-photon-5-amd64-v1.36.1---vmware.4-vkr.5/item.json",
+      "files": [
+        {
+          "name": "photon-5-amd64-v1.36.1---vmware.4-vkr.5-disk1.vmdk",
+          "size": 3598803968,
+          "etag": "09bea0d64a3fd1e1d6f32ff5fcc995e4",
+          "hrefs": [
+            "ob-25508717-photon-5-amd64-v1.36.1---vmware.4-vkr.5/photon-5-amd64-v1.36.1---vmware.4-vkr.5-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "photon-5-amd64-v1.36.1---vmware.4-vkr.5.ovf",
+          "size": 184082,
+          "etag": "09bea0d64a3fd1e1d6f32ff5fcc995e4",
+          "hrefs": [
+            "ob-25508717-photon-5-amd64-v1.36.1---vmware.4-vkr.5/photon-5-amd64-v1.36.1---vmware.4-vkr.5.ovf"
+          ]
+        },
+        {
+          "name": "photon-5-amd64-v1.36.1---vmware.4-vkr.5.mf",
+          "size": 243,
+          "etag": "09bea0d64a3fd1e1d6f32ff5fcc995e4",
+          "hrefs": [
+            "ob-25508717-photon-5-amd64-v1.36.1---vmware.4-vkr.5/photon-5-amd64-v1.36.1---vmware.4-vkr.5.mf"
+          ]
+        },
+        {
+          "name": "photon-5-amd64-v1.36.1---vmware.4-vkr.5.cert",
+          "size": 1940,
+          "etag": "09bea0d64a3fd1e1d6f32ff5fcc995e4",
+          "hrefs": [
+            "ob-25508717-photon-5-amd64-v1.36.1---vmware.4-vkr.5/photon-5-amd64-v1.36.1---vmware.4-vkr.5.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-06-18T21:29:19.118379",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:94c2aadc-e38e-43f5-ace7-0439ff011254",
+      "name": "ob-25508716-ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5",
+      "selfHref": "ob-25508716-ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5/item.json",
+      "files": [
+        {
+          "name": "ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5-disk1.vmdk",
+          "size": 4880912384,
+          "etag": "56d3184cf85a8623a50a87ff8962b42c",
+          "hrefs": [
+            "ob-25508716-ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5/ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5.ovf",
+          "size": 184096,
+          "etag": "56d3184cf85a8623a50a87ff8962b42c",
+          "hrefs": [
+            "ob-25508716-ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5/ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5.mf",
+          "size": 249,
+          "etag": "56d3184cf85a8623a50a87ff8962b42c",
+          "hrefs": [
+            "ob-25508716-ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5/ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5.cert",
+          "size": 1943,
+          "etag": "56d3184cf85a8623a50a87ff8962b42c",
+          "hrefs": [
+            "ob-25508716-ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5/ubuntu-2404-amd64-v1.36.1---vmware.4-vkr.5.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    },
+    {
+      "created": "2026-06-18T21:44:09.498766",
+      "description": "",
+      "version": "2",
+      "id": "urn:uuid:aa698a6e-1ffb-4198-b76b-7ac1e725effe",
+      "name": "ob-25508718-ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5",
+      "selfHref": "ob-25508718-ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5/item.json",
+      "files": [
+        {
+          "name": "ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5-disk1.vmdk",
+          "size": 4316893696,
+          "etag": "3599251f153f7132b0bcf269f2e75b5f",
+          "hrefs": [
+            "ob-25508718-ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5/ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5-disk1.vmdk"
+          ]
+        },
+        {
+          "name": "ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5.ovf",
+          "size": 184096,
+          "etag": "3599251f153f7132b0bcf269f2e75b5f",
+          "hrefs": [
+            "ob-25508718-ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5/ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5.ovf"
+          ]
+        },
+        {
+          "name": "ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5.mf",
+          "size": 249,
+          "etag": "3599251f153f7132b0bcf269f2e75b5f",
+          "hrefs": [
+            "ob-25508718-ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5/ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5.mf"
+          ]
+        },
+        {
+          "name": "ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5.cert",
+          "size": 1943,
+          "etag": "3599251f153f7132b0bcf269f2e75b5f",
+          "hrefs": [
+            "ob-25508718-ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5/ubuntu-2204-amd64-v1.36.1---vmware.4-vkr.5.cert"
+          ]
+        }
+      ],
+      "type": "vcsp.ovf",
+      "properties": {}
+    }
+  ]
+}

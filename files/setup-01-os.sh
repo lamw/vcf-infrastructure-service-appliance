@@ -31,4 +31,5 @@ mkdir -p \
   /opt/vis/data/time \
   /opt/vis/data/dhcp \
   /opt/vis/data/kms \
+  /opt/vis/data/content-library/{lib,cache} \
   /opt/vis/state

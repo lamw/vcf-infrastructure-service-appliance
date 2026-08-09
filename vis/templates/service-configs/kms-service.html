@@ -1,0 +1,97 @@
+<div class="detail-grid dns-config-grid">
+  <div class="detail-box {% if needs_required_config %}requires-configuration{% endif %}" id="kms-config">
+    <strong>Key Management Service Configuration</strong>
+    {% if needs_required_config %}
+    {{ required_config_notice("Save the KMIP port configuration before enabling Key Management Service.") }}
+    {% endif %}
+    {% if request.args.get("kms_config_status") %}
+    <div class="inline-success-notice dismissible-notice" role="status">
+      <div>
+        <strong>Configuration saved</strong>
+        <span>{{ request.args.get("kms_config_status") }}</span>
+      </div>
+      <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+    </div>
+    {% endif %}
+    {% if request.args.get("kms_config_error") %}
+    <div class="inline-error-notice dismissible-notice" role="alert">
+      <div>
+        <strong>Configuration error</strong>
+        <span>{{ request.args.get("kms_config_error") }}</span>
+      </div>
+      <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+    </div>
+    {% endif %}
+
+    <form class="service-config-form kms-config-form" method="post" action="{{ url_for('kms_service_config') }}">
+      <label class="field-label">TLS</label>
+      <label class="toggle-row"><input id="kmsTlsEnabled" name="tls_enabled" type="checkbox" checked disabled /> Expose
+        using shared VIS certificate</label>
+
+      <label class="field-label" for="kmsPort">KMIP Port</label>
+      <input class="text-input" id="kmsPort" name="port" type="number" min="1" max="65535"
+        value="{{ service.settings.port or 5696 }}" required />
+
+      <div></div>
+      <button class="btn primary" type="submit">Save Key Management Configuration</button>
+    </form>
+  </div>
+
+  <div class="detail-box">
+    <strong>VCF Client Configuration</strong>
+    <p class="subtle">Use these values when adding VIS as a KMIP key provider.</p>
+    <div class="client-config-list">
+      <label class="client-copy-field" for="kmsClientHost">
+        <span>Key Management Service FQDN</span>
+        <input class="text-input" id="kmsClientHost" type="text" readonly value="{{ config.VIS_APPLIANCE_FQDN }}" />
+        <button class="btn icon-btn" type="button" data-copy-target="kmsClientHost"
+          title="Copy Key Management Service FQDN" aria-label="Copy Key Management Service FQDN">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </label>
+      <label class="client-copy-field" for="kmsClientIp">
+        <span>Key Management Service IP</span>
+        <input class="text-input" id="kmsClientIp" type="text" readonly value="{{ config.VIS_APPLIANCE_IP }}"
+          placeholder="Appliance IP" />
+        <button class="btn icon-btn" type="button" data-copy-target="kmsClientIp" title="Copy Key Management Service IP"
+          aria-label="Copy Key Management Service IP">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </label>
+      <label class="client-copy-field" for="kmsClientPort">
+        <span>KMIP Port</span>
+        <input class="text-input" id="kmsClientPort" type="text" readonly value="{{ service.settings.port or 5696 }}" />
+        <button class="btn icon-btn" type="button" data-copy-target="kmsClientPort" title="Copy KMIP port"
+          aria-label="Copy KMIP port">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </label>
+      <label class="client-copy-field" for="kmsClientCa">
+        <span>Trusted Root CA</span>
+        <input class="text-input" id="kmsClientCa" type="text" readonly
+          value="{{ service.settings.tls_ca_path or '/opt/vis/config/tls/rootCA.pem' }}" />
+        <a class="btn icon-btn" href="{{ url_for('certificates_download_root_ca') }}" title="Download Root CA"
+          aria-label="Download Root CA">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v12" />
+            <path d="m7 10 5 5 5-5" />
+            <path d="M5 21h14" />
+          </svg>
+        </a>
+      </label>
+    </div>
+    <div class="stacked-config">
+      <strong>PyKMIP Server Configuration</strong>
+      <pre class="config-preview">{{ rendered_config }}</pre>
+    </div>
+  </div>
+</div>

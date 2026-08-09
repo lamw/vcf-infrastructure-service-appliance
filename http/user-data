@@ -66,6 +66,13 @@ autoinstall:
           path: /dev/sdf
         wipe: superblock-recursive
         preserve: false
+      - id: disk-content-library
+        type: disk
+        ptable: gpt
+        match:
+          path: /dev/sdg
+        wipe: superblock-recursive
+        preserve: false
       - id: disk0-bios-grub
         type: partition
         device: disk0
@@ -113,6 +120,12 @@ autoinstall:
       - id: part-identity
         type: partition
         device: disk-identity
+        size: -1
+        number: 1
+        preserve: false
+      - id: part-content-library
+        type: partition
+        device: disk-content-library
         size: -1
         number: 1
         preserve: false
@@ -185,6 +198,11 @@ autoinstall:
         volume: part-identity
         fstype: ext4
         preserve: false
+      - id: fmt-vis-content-library
+        type: format
+        volume: part-content-library
+        fstype: ext4
+        preserve: false
       - id: mount-root
         type: mount
         device: fmt-root
@@ -221,6 +239,10 @@ autoinstall:
         type: mount
         device: fmt-vis-identity
         path: /opt/vis/data/identity
+      - id: mount-vis-content-library
+        type: mount
+        device: fmt-vis-content-library
+        path: /opt/vis/data/content-library
   late-commands:
     - curtin in-target --target=/target -- systemctl enable ssh
     - curtin in-target --target=/target -- usermod -aG sudo visadmin

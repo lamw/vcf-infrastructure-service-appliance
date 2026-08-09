@@ -1,0 +1,348 @@
+<div class="detail-grid depot-config-grid">
+  <div class="detail-box {% if needs_required_config %}requires-configuration{% endif %}" id="depot-client-config">
+    <strong>Software Depot Client Configuration</strong>
+    {% if needs_required_config %}
+    {{ required_config_notice("Save depot client settings before enabling Software Depot.") }}
+    {% endif %}
+    {% if request.args.get("client_status") %}
+    <div class="inline-success-notice dismissible-notice" role="status">
+      <div>
+        <strong>Configuration saved</strong>
+        <span>{{ request.args.get("client_status") }}</span>
+      </div>
+      <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+    </div>
+    {% endif %}
+    {% if request.args.get("client_error") %}
+    <div class="inline-error-notice dismissible-notice" role="alert">
+      <div>
+        <strong>Configuration error</strong>
+        <span>{{ request.args.get("client_error") }}</span>
+      </div>
+      <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+    </div>
+    {% endif %}
+    <form class="credential-form compact depot-config-form" method="post" action="{{ url_for('depot_config') }}">
+      <input type="hidden" name="form_context" value="client_config" />
+      <label class="field-label" for="depotTlsEnabled">TLS</label>
+      <label class="toggle-row"><input id="depotTlsEnabled" name="tls_enabled" type="checkbox" {% if
+          service.settings.protocol=="https" or service.settings.tls_enabled %}checked{% endif %} /> Expose using shared
+        VIS certificate</label>
+
+      <label class="field-label" for="depotBasicAuth">Basic Auth</label>
+      <label class="toggle-row"><input id="depotBasicAuth" name="basic_auth_enabled" type="checkbox" {% if
+          service.settings.basic_auth_enabled %}checked{% endif %} /> Enabled</label>
+
+      <label class="field-label" for="depotAuthUser">Username</label>
+      <div class="copy-row">
+        <input class="text-input" id="depotAuthUser" name="auth_user" type="text"
+          value="{{ service.settings.auth_user or '' }}" placeholder="Optional if Basic Auth is selected"
+          autocomplete="username" />
+        <button class="btn icon-btn" type="button" data-copy-target="depotAuthUser" title="Copy username"
+          aria-label="Copy username">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </div>
+
+      <label class="field-label" for="depotAuthPassword">Password</label>
+      <div class="secret-row">
+        <input class="text-input secret-input" id="depotAuthPassword" name="auth_password" type="password"
+          value="{{ service.settings.auth_password or '' }}" placeholder="Optional if Basic Auth is selected"
+          autocomplete="new-password" />
+        <button class="btn icon-btn" type="button" data-secret-toggle="depotAuthPassword" title="Show password"
+          aria-label="Show password">
+          <svg class="eye-icon eye-show" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg class="eye-icon eye-hide" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2 12s3.5-6 10-6 10 6 10 6a18.4 18.4 0 0 1-3.2 3.7" />
+            <path d="M14.1 14.1A3 3 0 0 1 9.9 9.9" />
+            <path d="M3 3l18 18" />
+          </svg>
+        </button>
+        <button class="btn icon-btn" type="button" data-copy-target="depotAuthPassword" title="Copy password"
+          aria-label="Copy password">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </div>
+
+      <div></div>
+      <button class="btn primary" type="submit">Save Configuration</button>
+    </form>
+
+    <div class="stacked-config">
+      <strong>Software Depot Server Configuration</strong>
+      <pre class="config-preview">{{ rendered_config }}</pre>
+    </div>
+  </div>
+
+  <div class="depot-right-stack">
+    <div class="detail-box vcfdt-install-box" id="vcfdt-install">
+      <div class="vcfdt-install-header">
+        <div>
+          <strong>VCF Download Tool</strong>
+          <p class="subtle">Install VCFDT to enable Activation Code and automated binary downloads.</p>
+        </div>
+        <span class="status-chip {{ 'good' if vcfdt_available else 'warn' }}">{{ "Installed" if vcfdt_available else
+          "Not Installed" }}</span>
+      </div>
+      {% if request.args.get("vcfdt_status") %}
+      <div class="inline-success-notice dismissible-notice" role="status">
+        <div>
+          <strong>VCFDT installed</strong>
+          <span>{{ request.args.get("vcfdt_status") }}</span>
+        </div>
+        <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+      </div>
+      {% endif %}
+      {% if request.args.get("vcfdt_error") %}
+      <div class="inline-error-notice dismissible-notice" role="alert">
+        <div>
+          <strong>VCFDT install failed</strong>
+          <span>{{ request.args.get("vcfdt_error") }}</span>
+        </div>
+        <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+      </div>
+      {% endif %}
+      {% if vcfdt_available %}
+      <div class="credential-form compact vcfdt-installed-grid">
+        <label class="field-label">Install Path</label>
+        <code class="inline-path">/usr/local/bin/vcf-download-tool</code>
+        <label class="field-label">VCFDT System ID</label>
+        <div class="copy-row">
+          <input class="text-input" id="vcfdtInstallSystemId" type="text"
+            value="{{ vcfdt_system_id or service.settings.vcfdt_system_id or '' }}" readonly />
+          <button class="btn icon-btn" type="button" data-copy-target="vcfdtInstallSystemId"
+            title="Copy VCFDT System ID" aria-label="Copy VCFDT System ID">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      {% endif %}
+      <form class="vcfdt-upload-form" method="post" action="{{ url_for('depot_vcfdt_install') }}"
+        enctype="multipart/form-data" data-vcfdt-upload-form>
+        <label class="vcfdt-drop-zone" for="vcfdtArchive" data-vcfdt-drop-zone>
+          <span class="vcfdt-drop-icon" aria-hidden="true">⇪</span>
+          <span>
+            <strong>{{ "Replace VCF Download Tool" if vcfdt_available else "Drop vcf-download-tool-*.tar.gz here"
+              }}</strong>
+            <span class="subtle">VIS installs VCFDT and generates the System ID.</span>
+            <span class="vcfdt-selected-file" data-vcfdt-selected-file>No file selected</span>
+          </span>
+          <input id="vcfdtArchive" name="vcfdt_archive" type="file" accept=".gz,.tgz,application/gzip"
+            data-vcfdt-file-input />
+        </label>
+        <div class="vcfdt-progress" data-vcfdt-progress hidden>
+          <div><span data-vcfdt-progress-status>Uploading</span><span data-vcfdt-progress-percent>0%</span></div>
+          <div class="upload-progress"><span data-vcfdt-progress-bar></span></div>
+        </div>
+        <button class="btn primary" type="submit"
+          data-default-label="{{ 'Reinstall VCFDT' if vcfdt_available else 'Install VCFDT' }}">{{ "Reinstall VCFDT" if
+          vcfdt_available else "Install VCFDT" }}</button>
+      </form>
+    </div>
+
+    <div class="detail-box" id="download-config">
+      <strong>Software Download Configuration</strong>
+      <p class="subtle">Choose how depot content will be staged.</p>
+      {% if not vcfdt_available %}
+      <div class="inline-warning-notice" role="status">
+        <div>
+          <strong>VCF Download Tool not installed</strong>
+          <span>Manually Uploaded is the only supported mode until VCFDT is installed on the appliance.</span>
+        </div>
+      </div>
+      {% endif %}
+      {% if request.args.get("download_config_status") %}
+      <div class="inline-success-notice dismissible-notice" role="status">
+        <div>
+          <strong>Download settings validated</strong>
+          <span>{{ request.args.get("download_config_status") }}</span>
+        </div>
+        <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+      </div>
+      {% endif %}
+      {% if request.args.get("download_config_error") %}
+      <div class="inline-error-notice dismissible-notice" role="alert">
+        <div>
+          <strong>Download validation failed</strong>
+          <span>{{ request.args.get("download_config_error") }}</span>
+        </div>
+        <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+      </div>
+      {% endif %}
+      <form class="credential-form compact download-config-form" method="post" action="{{ url_for('depot_config') }}"
+        data-depot-download-form>
+        <input type="hidden" name="form_context" value="download_config" />
+        {% if service.settings.protocol == "https" or service.settings.tls_enabled %}
+        <input type="hidden" name="tls_enabled" value="on" />
+        {% endif %}
+        {% if service.settings.basic_auth_enabled %}
+        <input type="hidden" name="basic_auth_enabled" value="on" />
+        {% endif %}
+        <input type="hidden" name="auth_user" value="{{ service.settings.auth_user or '' }}" />
+        <input type="hidden" name="auth_password" value="{{ service.settings.auth_password or '' }}" />
+
+        <label class="field-label">Download Mode</label>
+        <div class="segmented-choice vertical-choice">
+          <label><input type="radio" name="download_mode" value="manual" {% if not vcfdt_available or
+              service.settings.download_mode !="activation_code" %}checked{% endif %} /> Manually Uploaded</label>
+          <label><input type="radio" name="download_mode" value="activation_code" {% if vcfdt_available and
+              service.settings.download_mode=="activation_code" %}checked{% endif %} {% if not vcfdt_available
+              %}disabled{% endif %} /> Automatic using Broadcom Activation Code</label>
+        </div>
+
+        <label class="field-label" data-vcfdt-system-id-label>VCFDT System ID</label>
+        <div class="copy-row" data-vcfdt-system-id-row>
+          <input class="text-input" id="vcfdtSystemId" type="text"
+            value="{{ vcfdt_system_id or service.settings.vcfdt_system_id or '' }}" readonly />
+          <button class="btn icon-btn" type="button" data-copy-target="vcfdtSystemId" title="Copy VCFDT System ID"
+            aria-label="Copy VCFDT System ID">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+
+        <label class="field-label" data-download-credential-label for="depotDownloadCredential">Activation Code</label>
+        <div class="secret-row" data-download-credential-row>
+          <input class="text-input secret-input" id="depotDownloadCredential" name="download_credential" type="password"
+            value="{{ service.settings.activation_code if service.settings.download_mode == 'activation_code' else '' }}"
+            autocomplete="off" {% if service.settings.download_mode !="activation_code" %}disabled{% endif %} />
+          <button class="btn icon-btn" type="button" data-secret-toggle="depotDownloadCredential"
+            title="Show credential" aria-label="Show credential">
+            <svg class="eye-icon eye-show" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <svg class="eye-icon eye-hide" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.5-6 10-6 10 6 10 6a18.4 18.4 0 0 1-3.2 3.7" />
+              <path d="M14.1 14.1A3 3 0 0 1 9.9 9.9" />
+              <path d="M3 3l18 18" />
+            </svg>
+          </button>
+          <button class="btn icon-btn" type="button" data-copy-target="depotDownloadCredential" title="Copy credential"
+            aria-label="Copy credential">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+
+        {% if service.settings.download_credential_path %}
+        <label class="field-label">Credential File</label>
+        <code class="inline-path">{{ service.settings.download_credential_path }}</code>
+        {% endif %}
+
+        <div></div>
+        <button class="btn primary" type="submit" data-default-label="Save Download Configuration">Save Download
+          Configuration</button>
+      </form>
+
+      <div class="download-job-panel" id="binary-download">
+        <div class="compact-heading">
+          <strong>VCF Software Download</strong>
+          <p class="subtle">Download VCF or VVF binaries into the Software Depot. Only a single download instance can
+            run at a time.</p>
+        </div>
+        {% if request.args.get("binary_download_status") %}
+        <div class="inline-success-notice dismissible-notice" role="status">
+          <div>
+            <strong>Download started</strong>
+            <span>{{ request.args.get("binary_download_status") }}</span>
+          </div>
+          <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+        </div>
+        {% endif %}
+        {% if request.args.get("binary_download_warn") %}
+        <div class="inline-warning-notice dismissible-notice" role="status">
+          <div>
+            <strong>Download cancelled</strong>
+            <span>{{ request.args.get("binary_download_warn") }}</span>
+          </div>
+          <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+        </div>
+        {% endif %}
+        {% if request.args.get("binary_download_error") %}
+        <div class="inline-error-notice dismissible-notice" role="alert">
+          <div>
+            <strong>Download failed</strong>
+            <span>{{ request.args.get("binary_download_error") }}</span>
+          </div>
+          <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+        </div>
+        {% endif %}
+        {% set job_running = depot_download_job.status == "running" %}
+        {% if vcfdt_available and service.settings.download_mode == "activation_code" and
+        service.settings.download_credential_path %}
+        <form id="depotBinaryDownloadForm" class="credential-form compact binary-download-form" method="post"
+          action="{{ url_for('depot_download_start') }}" data-binary-download-form>
+          <label class="field-label" for="depotDownloadSku">Product</label>
+          <select class="text-input" id="depotDownloadSku" name="sku" required {% if job_running %}disabled{% endif %}>
+            <option value="VCF">VCF</option>
+            <option value="VVF">VVF</option>
+          </select>
+
+          <label class="field-label" for="depotDownloadVersion">Version</label>
+          <input class="text-input" id="depotDownloadVersion" name="vcf_version" type="text"
+            pattern="^\d+\.\d+\.\d+(\.\d+)?$" placeholder="9.1.0" required {% if job_running %}disabled{% endif %} />
+
+          <label class="field-label">Type</label>
+          <div class="segmented-choice">
+            <label><input type="checkbox" name="download_type" value="INSTALL" checked {% if job_running %}disabled{%
+                endif %} /> Install</label>
+            <label><input type="checkbox" name="download_type" value="UPGRADE" {% if job_running %}disabled{% endif
+                %} /> Upgrade</label>
+            <label><input type="checkbox" name="download_type" value="ESX_PATCHES" {% if job_running %}disabled{% endif
+                %} /> ESX Patches</label>
+          </div>
+
+          <div></div>
+          <div class="binary-download-actions {% if job_running %}has-cancel{% endif %}">
+            <button class="btn primary" type="submit" {% if job_running %}disabled{% endif %}>{{ "Download Running" if
+              job_running else "Download" }}</button>
+            {% if job_running %}
+            <button class="btn danger" type="submit" form="depotBinaryDownloadCancelForm">Cancel Download</button>
+            {% endif %}
+          </div>
+        </form>
+        {% if job_running %}
+        <form id="depotBinaryDownloadCancelForm" class="download-cancel-form" method="post"
+          action="{{ url_for('depot_download_cancel') }}" data-binary-download-cancel-form></form>
+        {% endif %}
+        {% elif vcfdt_available %}
+        <p class="validation-item warn">Save and validate an Activation Code before downloading binaries.</p>
+        {% else %}
+        <p class="validation-item warn">VCF Download Tool must be installed before automatic downloads are available.
+        </p>
+        {% endif %}
+
+        <div class="job-status {{ depot_download_job.status or 'idle' }}">
+          <span class="dot"></span>
+          <div>
+            <strong>{{ (depot_download_job.status or "idle")|replace("_", " ")|title }}</strong>
+            <span>{{ depot_download_job.message or "No Software Depot download has been started." }}</span>
+            {% if depot_download_job.sku %}
+            <span>{{ depot_download_job.sku }} {{ depot_download_job.vcf_version }} · {{ depot_download_job.types|join(", ") }}</span>
+            {% endif %}
+            {% if depot_download_job.log_path %}
+            <code>{{ depot_download_job.log_path }}</code>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,68 @@
+<div class="detail-grid dns-config-grid">
+  <div
+    class="detail-box {% if needs_required_config and not service.settings.domain %}requires-configuration{% endif %}"
+    id="dns-config">
+    <strong>DNS Configuration</strong>
+    {% if needs_required_config and not service.settings.domain %}
+    {{ required_config_notice("Set the DNS domain before adding DNS entries and enabling DNS Server.") }}
+    {% endif %}
+    {% if request.args.get("dns_config_status") %}
+    <p class="notice good">{{ request.args.get("dns_config_status") }}</p>
+    {% endif %}
+    {% if request.args.get("dns_config_error") %}
+    <p class="notice bad">{{ request.args.get("dns_config_error") }}</p>
+    {% endif %}
+    <div class="config-subheading">DNS Domain Configuration</div>
+    <form class="dns-entry-form" method="post" action="{{ url_for('dns_config') }}">
+      <label class="field-label" for="dnsDomain">DNS Domain</label>
+      <input class="text-input" id="dnsDomain" name="domain" type="text" value="{{ service.settings.domain or '' }}"
+        placeholder="williamlam.local" required />
+
+      <label class="field-label" for="dnsDefaultTtl">Default TTL</label>
+      <input class="text-input" id="dnsDefaultTtl" name="default_ttl" type="number" min="60" max="86400"
+        value="{{ service.settings.default_ttl or 3600 }}" required />
+
+      <div></div>
+      <button class="btn primary" type="submit">Save DNS Configuration</button>
+    </form>
+
+    <div class="stacked-config">
+      <strong>DNS Server Configuration</strong>
+      <pre class="config-preview">{{ rendered_config }}</pre>
+    </div>
+  </div>
+
+  <div class="detail-box {% if needs_required_config and service.settings.domain %}requires-configuration{% endif %}"
+    id="dns-entry-create">
+    <strong>Add DNS Entry</strong>
+    {% if needs_required_config and service.settings.domain %}
+    {{ required_config_notice("Add at least one DNS entry before enabling DNS Server.") }}
+    {% endif %}
+    <p class="subtle">
+      {% if service.settings.domain %}
+      Enter the short hostname only. VIS appends .{{ service.settings.domain }} and creates matching forward and reverse
+      lookups.
+      {% else %}
+      Configure a DNS domain before adding entries.
+      {% endif %}
+    </p>
+    <div class="dns-entry-form" data-dns-add-form>
+      <label class="field-label" for="dnsEntryName">Short Hostname</label>
+      <input class="text-input" id="dnsEntryName" name="name" type="text" placeholder="vcf01" {% if not
+        service.settings.domain %}disabled{% endif %} required />
+
+      <label class="field-label" for="dnsEntryAddress">Address</label>
+      <input class="text-input" id="dnsEntryAddress" name="address" type="text" placeholder="172.30.0.60" {% if not
+        service.settings.domain %}disabled{% endif %} required />
+
+      <label class="field-label" for="dnsEntryTtl">TTL</label>
+      <input class="text-input" id="dnsEntryTtl" name="ttl" type="number" min="60" max="86400"
+        value="{{ service.settings.default_ttl or 3600 }}" {% if not service.settings.domain %}disabled{% endif %}
+        required />
+
+      <div></div>
+      <button class="btn primary" type="button" data-dns-add {% if not service.settings.domain %}disabled{% endif %}>Add
+        Entry</button>
+    </div>
+  </div>
+</div>

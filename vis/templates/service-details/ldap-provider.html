@@ -1,0 +1,166 @@
+<section class="panel" id="ldap-users">
+  <div class="panel-header">
+    <div>
+      <h2>LDAP Users</h2>
+      <p class="subtle">Manage OpenLDAP users synced by the LDAP Provider backend when the service is enabled.</p>
+    </div>
+  </div>
+
+  {% if request.args.get("ldap_user_status") %}
+    <p class="notice good">{{ request.args.get("ldap_user_status") }}</p>
+  {% endif %}
+  {% if request.args.get("ldap_user_error") %}
+    <p class="notice bad">{{ request.args.get("ldap_user_error") }}</p>
+  {% endif %}
+
+  <form class="directory-create-form" method="post" action="{{ url_for('ldap_provider_user_create') }}">
+    <label>
+      <span>Username</span>
+      <input class="text-input" name="uid" type="text" placeholder="Enter username" required />
+    </label>
+    <label>
+      <span>Display Name</span>
+      <input class="text-input" name="display_name" type="text" placeholder="Enter display name" required />
+    </label>
+    <label>
+      <span>Email</span>
+      <input class="text-input" name="email" type="email" placeholder="Enter email address" />
+    </label>
+    <label>
+      <span>Password</span>
+      <input class="text-input" name="password" type="password" placeholder="Enter password" required />
+    </label>
+    <fieldset class="directory-fieldset directory-create-fieldset">
+      <legend>Assigned Groups</legend>
+      <div class="directory-checkbox-list">
+        {% for group in directory_groups %}
+          <label><input type="checkbox" name="groups" value="{{ group.id }}" /> <span>{{ group.name }}</span></label>
+        {% else %}
+          <span class="subtle">No groups available</span>
+        {% endfor %}
+      </div>
+    </fieldset>
+    <button class="btn primary" type="submit">Add User</button>
+  </form>
+
+  <div class="directory-card-list">
+    {% for user in directory_users %}
+      {% set user_groups = [] %}
+      {% for group in directory_groups if user.id in group.members or group.id in user.groups %}
+        {% set _ = user_groups.append(group.name) %}
+      {% endfor %}
+      <article class="directory-card">
+        <div class="directory-card-summary">
+          <div>
+            <strong>{{ user.uid }}</strong>
+            {% if user.display_name and user.display_name|lower != user.uid|lower %}
+              <span>{{ user.display_name }}</span>
+            {% endif %}
+          </div>
+          <span class="pill {% if user.disabled %}warn{% else %}good{% endif %}">{{ "Disabled" if user.disabled else "Enabled" }}</span>
+          <span class="subtle">{{ user.email or "Email not set" }}</span>
+          <span class="subtle">{{ user_groups|join(", ") if user_groups else "No groups assigned" }}</span>
+        </div>
+        <form class="directory-edit-form" method="post" action="{{ url_for('ldap_provider_user_update', user_id=user.id) }}">
+          <input name="uid" type="hidden" value="{{ user.uid }}" />
+          <label>
+            <span>Display Name</span>
+            <input class="text-input" name="display_name" type="text" value="{{ user.display_name }}" required />
+          </label>
+          <label>
+            <span>Email</span>
+            <input class="text-input" name="email" type="email" value="{{ user.email }}" placeholder="Enter email address" />
+          </label>
+          <label>
+            <span>New Password</span>
+            <input class="text-input" name="password" type="password" placeholder="Leave unchanged" />
+          </label>
+          <label class="compact-toggle directory-disabled-toggle"><span>Disable User</span><input name="disabled" type="checkbox" {% if user.disabled %}checked{% endif %} /></label>
+          <fieldset class="directory-fieldset directory-compact-fieldset">
+            <legend>Assigned Groups</legend>
+            <div class="directory-checkbox-list">
+              {% for group in directory_groups %}
+                <label><input type="checkbox" name="groups" value="{{ group.id }}" {% if group.id in user.groups or user.id in group.members %}checked{% endif %} /> <span>{{ group.name }}</span></label>
+              {% else %}
+                <span class="subtle">No groups available</span>
+              {% endfor %}
+            </div>
+          </fieldset>
+          <button class="btn" type="submit">Save Changes</button>
+        </form>
+        <form class="directory-delete-form" method="post" action="{{ url_for('ldap_provider_user_delete', user_id=user.id) }}" data-confirm-directory-delete="{{ user.uid }}">
+          <button class="btn danger" type="submit">Delete User</button>
+        </form>
+      </article>
+    {% else %}
+      <p class="subtle">No LDAP users have been added yet.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="panel" id="ldap-groups">
+  <div class="panel-header">
+    <div>
+      <h2>LDAP Groups</h2>
+      <p class="subtle">Create LDAP groups and manage group membership.</p>
+    </div>
+  </div>
+
+  {% if request.args.get("ldap_group_status") %}
+    <p class="notice good">{{ request.args.get("ldap_group_status") }}</p>
+  {% endif %}
+  {% if request.args.get("ldap_group_error") %}
+    <p class="notice bad">{{ request.args.get("ldap_group_error") }}</p>
+  {% endif %}
+
+  <form class="directory-create-form directory-group-create-form" method="post" action="{{ url_for('ldap_provider_group_create') }}">
+    <label>
+      <span>Group Name</span>
+      <input class="text-input" name="name" type="text" placeholder="Enter group name" required />
+    </label>
+    <label>
+      <span>Description</span>
+      <input class="text-input" name="description" type="text" placeholder="Enter description" />
+    </label>
+    <button class="btn primary" type="submit">Add Group</button>
+  </form>
+
+  <div class="directory-card-list directory-group-list">
+    {% for group in directory_groups %}
+      {% set member_names = [] %}
+      {% for user in directory_users if user.id in group.members or group.id in user.groups %}
+        {% set _ = member_names.append(user.uid) %}
+      {% endfor %}
+      <article class="directory-card directory-group-card">
+        <div class="directory-card-summary">
+          <div>
+            <strong>{{ group.name }}</strong>
+            <span>{{ group.description or "Description not set" }}</span>
+          </div>
+          <span class="subtle">{{ member_names|length }} member{{ "" if member_names|length == 1 else "s" }}</span>
+          <span class="subtle">{{ member_names|join(", ") if member_names else "No members assigned" }}</span>
+        </div>
+        <form class="directory-edit-form directory-members-form" method="post" action="{{ url_for('ldap_provider_group_members', group_id=group.id) }}">
+          <fieldset class="directory-fieldset directory-compact-fieldset">
+            <legend>Members</legend>
+            <div class="directory-checkbox-list">
+              {% for user in directory_users %}
+                <label><input type="checkbox" name="members" value="{{ user.id }}" {% if user.id in group.members or group.id in user.groups %}checked{% endif %} /> <span>{{ user.uid }}</span></label>
+              {% else %}
+                <span class="subtle">No users available</span>
+              {% endfor %}
+            </div>
+          </fieldset>
+          <button class="btn" type="submit">Save Members</button>
+        </form>
+        {% if group.name not in ["vcf-admins", "vcf-users"] %}
+          <form class="directory-delete-form" method="post" action="{{ url_for('ldap_provider_group_delete', group_id=group.id) }}" data-confirm-directory-delete="{{ group.name }}">
+            <button class="btn danger" type="submit">Delete Group</button>
+          </form>
+        {% endif %}
+      </article>
+    {% else %}
+      <p class="subtle">No LDAP groups have been added yet.</p>
+    {% endfor %}
+  </div>
+</section>

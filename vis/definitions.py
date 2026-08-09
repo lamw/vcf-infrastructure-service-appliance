@@ -2,7 +2,6 @@ import os
 
 from .models import ServiceDefinition, ValidationResult
 
-
 APPLIANCE_FQDN = os.environ.get("VIS_APPLIANCE_FQDN", "vis.williamlam.local")
 APPLIANCE_DOMAIN = ".".join(APPLIANCE_FQDN.split(".")[1:]) or "local"
 DEFAULT_IDENTITY_GROUPS = [
@@ -19,7 +18,7 @@ INITIAL_SERVICES = [
         enabled=False,
         configured=False,
         health_status="needs_configuration",
-        endpoint="http://{}:8081/".format(APPLIANCE_FQDN),
+        endpoint=f"http://{APPLIANCE_FQDN}:8081/",
         filesystem_root="/opt/vis/data/depot",
         settings={
             "protocol": "http",
@@ -51,7 +50,7 @@ INITIAL_SERVICES = [
         enabled=False,
         configured=False,
         health_status="needs_configuration",
-        endpoint="sftp://{}/backup".format(APPLIANCE_FQDN),
+        endpoint=f"sftp://{APPLIANCE_FQDN}/backup",
         filesystem_root="/opt/vis/data/sftp/backup",
         settings={
             "protocol": "sftp",
@@ -71,7 +70,7 @@ INITIAL_SERVICES = [
         enabled=False,
         configured=False,
         health_status="needs_configuration",
-        endpoint="http://{}:9080/".format(APPLIANCE_FQDN),
+        endpoint=f"http://{APPLIANCE_FQDN}:9080/",
         filesystem_root="/opt/vis/data/registry",
         settings={
             "protocol": "http",
@@ -97,7 +96,7 @@ INITIAL_SERVICES = [
         enabled=False,
         configured=False,
         health_status="needs_configuration",
-        endpoint="ldap://{}:389".format(APPLIANCE_FQDN),
+        endpoint=f"ldap://{APPLIANCE_FQDN}:389",
         filesystem_root="/opt/vis/data/identity/directory",
         settings={
             "protocol": "ldap",
@@ -128,7 +127,7 @@ INITIAL_SERVICES = [
         enabled=False,
         configured=False,
         health_status="needs_configuration",
-        endpoint="http://{}:9081/".format(APPLIANCE_FQDN),
+        endpoint=f"http://{APPLIANCE_FQDN}:9081/",
         filesystem_root="/opt/vis/data/identity/oidc",
         settings={
             "protocol": "http",
@@ -162,7 +161,7 @@ INITIAL_SERVICES = [
         enabled=False,
         configured=False,
         health_status="needs_configuration",
-        endpoint="dns://{}:53".format(APPLIANCE_FQDN),
+        endpoint=f"dns://{APPLIANCE_FQDN}:53",
         filesystem_root="/opt/vis/data/dns",
         settings={
             "protocol": "dns",
@@ -183,7 +182,7 @@ INITIAL_SERVICES = [
         enabled=False,
         configured=False,
         health_status="needs_configuration",
-        endpoint="ntp://{}".format(APPLIANCE_FQDN),
+        endpoint=f"ntp://{APPLIANCE_FQDN}",
         filesystem_root="/opt/vis/data/time",
         settings={
             "protocol": "ntp",
@@ -212,7 +211,7 @@ INITIAL_SERVICES = [
         enabled=False,
         configured=False,
         health_status="needs_configuration",
-        endpoint="dhcp://{}".format(APPLIANCE_FQDN),
+        endpoint=f"dhcp://{APPLIANCE_FQDN}",
         filesystem_root="/opt/vis/data/dhcp",
         settings={
             "protocol": "dhcp",
@@ -241,7 +240,7 @@ INITIAL_SERVICES = [
         enabled=False,
         configured=False,
         health_status="needs_configuration",
-        endpoint="kmip://{}:5696".format(APPLIANCE_FQDN),
+        endpoint=f"kmip://{APPLIANCE_FQDN}:5696",
         filesystem_root="/opt/vis/data/kms",
         settings={
             "protocol": "kmip",
@@ -260,5 +259,40 @@ INITIAL_SERVICES = [
         },
         last_validation_result=ValidationResult(False, "Key Management Service is not configured yet", ""),
         quick_actions=["Configure"],
+    ),
+    ServiceDefinition(
+        id="content-library",
+        name="vSphere Content Library",
+        description="vSphere Content Library for Supervisors",
+        enabled=False,
+        configured=False,
+        health_status="needs_configuration",
+        endpoint=f"http://{APPLIANCE_FQDN}:9091/",
+        filesystem_root="/opt/vis/data/content-library",
+        settings={
+            "protocol": "http",
+            "port": 9091,
+            "path": "/",
+            "basic_auth_enabled": False,
+            "auth_user": "",
+            "auth_password": "",
+            "source_library_url": "https://wp-content.broadcom.com/v2/latest/lib.json",
+            "tls_enabled": False,
+            "tls_mode": "shared",
+            "tls_ca_path": "/opt/vis/config/tls/rootCA.pem",
+            "tls_cert_path": "/opt/vis/config/tls/server.crt",
+            "tls_key_path": "/opt/vis/config/tls/server.key",
+            "tls_full_pem_path": "/opt/vis/config/tls/vis-full.pem",
+            "auto_source_sync_enabled": True,
+            "parallel_source_sync": True,
+            "last_sync_time": "",
+            "last_sync_duration": 0,
+            "last_sync_error": "",
+            "total_sync_count": 0,
+            "next_sync_time": "",
+            "mean_sync_duration": 0,
+        },
+        last_validation_result=ValidationResult(False, "Content Library is not configured yet", ""),
+        quick_actions=["Files", "Configure", "Restart"],
     ),
 ]

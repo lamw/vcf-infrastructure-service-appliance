@@ -1,0 +1,100 @@
+{% if file_browser %}
+{% set mkdir_endpoint = "depot_mkdir" if service.id == "web-depot" else "sftp_mkdir" %}
+{% set delete_endpoint = "depot_delete" if service.id == "web-depot" else "sftp_delete" %}
+<section class="panel" id="repository-files" data-repository-files data-service-id="{{ service.id }}" data-files-url="{{ url_for('repository_files_api', service_id=service.id) }}" data-delete-url="{{ url_for(delete_endpoint) }}" data-detail-url="{{ url_for('service_detail', service_id=service.id) }}" data-confirm-delete-enabled="{{ 'true' if service.id == 'web-depot' else 'false' }}">
+  <div class="panel-header">
+    <div>
+      <h2>Repository Files</h2>
+      <p class="subtle">{{ "View or manage folders within Software Depot" if service.id == "web-depot" else "View or manage folders within SFTP Server" }}</p>
+    </div>
+    {% if not file_browser.readonly %}
+    <form class="inline-form" method="post" action="{{ url_for(mkdir_endpoint) }}">
+      <input type="hidden" name="path" value="{{ file_browser.current }}" data-repo-mkdir-path />
+      <input class="text-input" name="name" type="text" placeholder="Folder name" required />
+      <button class="btn primary" type="submit">New Folder</button>
+    </form>
+    {% endif %}
+  </div>
+
+  {% if file_error %}
+    <p class="notice bad">{{ file_error }}</p>
+  {% endif %}
+
+  {% if service.id == "web-depot" %}
+    <div class="upload-zone" data-upload-zone data-upload-url="{{ url_for('repository_upload', service_id=service.id) }}" data-chunk-upload-url="{{ url_for('repository_upload_chunk', service_id=service.id) }}" data-current-path="{{ file_browser.current }}">
+      <div>
+        <strong>Upload Files</strong>
+        <p class="subtle">Drop files or folders into the current location.</p>
+      </div>
+      <div class="upload-actions">
+        <label class="btn">
+          Select Files
+          <input class="visually-hidden" data-file-picker type="file" multiple />
+        </label>
+        <label class="btn">
+          Select Folder
+          <input class="visually-hidden" data-folder-picker type="file" multiple webkitdirectory directory />
+        </label>
+      </div>
+    </div>
+    <div class="upload-queue" data-upload-queue aria-live="polite"></div>
+  {% endif %}
+
+  <div class="repo-path">
+    <span class="endpoint" data-repo-current-path>/{{ file_browser.current }}</span>
+  </div>
+  <div class="repo-actions">
+    <a class="btn {% if file_browser.parent is none %}hidden{% endif %}" href="{{ url_for('service_detail', service_id=service.id, path=file_browser.parent or '') }}" data-repo-previous data-repo-nav data-repo-path="{{ file_browser.parent or '' }}">Previous Level</a>
+    <a class="btn" href="{{ url_for('service_detail', service_id=service.id, path=file_browser.current) }}" data-repo-refresh data-repo-nav data-repo-path="{{ file_browser.current }}">Refresh</a>
+  </div>
+
+  <div class="repo-browser-grid">
+    <aside class="repo-tree" data-repo-tree aria-label="Folder tree"></aside>
+
+    <table class="record-table repo-record-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Size</th>
+          <th>Created</th>
+          <th>Last Updated</th>
+          {% if not file_browser.readonly %}
+          <th></th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody data-repo-entries>
+        {% for entry in file_browser.entries %}
+          <tr>
+            <td>
+              {% if entry.kind == "Directory" %}
+                <a href="{{ url_for('service_detail', service_id=service.id, path=entry.path) }}" data-repo-nav data-repo-path="{{ entry.path }}">{{ entry.name }}</a>
+              {% else %}
+                {{ entry.name }}
+              {% endif %}
+            </td>
+            <td>{{ entry.kind }}</td>
+            <td>{{ entry.size }} bytes</td>
+            <td>{{ entry.created_display }}</td>
+            <td>{{ entry.modified_display }}</td>
+            {% if not file_browser.readonly %}
+            <td>
+              <form class="inline-form" method="post" action="{{ url_for(delete_endpoint) }}" {% if service.id == "web-depot" %}data-confirm-delete="{{ entry.name }}"{% endif %}>
+                <input type="hidden" name="path" value="{{ file_browser.current }}" />
+                <input type="hidden" name="target" value="{{ entry.path }}" />
+                <button class="btn danger" type="submit">Delete</button>
+              </form>
+            </td>
+            {% endif %}
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="{{ '5' if file_browser.readonly else '6' }}" class="subtle">No files or folders in this directory.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}

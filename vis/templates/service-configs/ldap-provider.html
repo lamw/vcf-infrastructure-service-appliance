@@ -1,0 +1,402 @@
+{% set ldap_protocol = service.settings.protocol or "ldap" %}
+{% set ldap_port = service.settings.port or (636 if ldap_protocol == "ldaps" else 389) %}
+{% set ldap_controller = ldap_protocol ~ "://" ~ config.VIS_APPLIANCE_FQDN %}
+<div class="detail-grid directory-config-grid ldap-directory-config-grid">
+  <div class="directory-left-stack">
+    <div class="detail-box {% if needs_required_config %}requires-configuration{% endif %}" id="ldap-config">
+      <strong>LDAP Provider Configuration</strong>
+      {% if needs_required_config %}
+      {{ required_config_notice("Set the directory base and bind account before enabling LDAP Provider.") }}
+      {% endif %}
+      {% if request.args.get("ldap_config_status") %}
+      <p class="notice good">{{ request.args.get("ldap_config_status") }}</p>
+      {% endif %}
+      {% if request.args.get("ldap_config_error") %}
+      <p class="notice bad">{{ request.args.get("ldap_config_error") }}</p>
+      {% endif %}
+      <form class="credential-form compact directory-config-form" method="post"
+        action="{{ url_for('ldap_provider_config') }}">
+        <label class="field-label">Protocol</label>
+        <div class="segmented-choice">
+          <label><input type="radio" name="protocol" value="ldap" {% if service.settings.protocol !="ldaps" %}checked{%
+              endif %} /> LDAP</label>
+          <label><input type="radio" name="protocol" value="ldaps" {% if service.settings.protocol=="ldaps" %}checked{%
+              endif %} /> LDAPS using shared VIS certificate</label>
+        </div>
+
+        <label class="field-label" for="directoryBaseDn">Base DN</label>
+        <input class="text-input" id="directoryBaseDn" name="base_dn" type="text"
+          value="{{ service.settings.base_dn or '' }}" placeholder="dc=williamlam,dc=local" required />
+
+        <label class="field-label" for="directoryBindDn">Bind DN</label>
+        <input class="text-input" id="directoryBindDn" name="bind_dn" type="text"
+          value="{{ service.settings.bind_dn or '' }}" placeholder="cn=admin,dc=williamlam,dc=local" />
+
+        <label class="field-label" for="directoryAdminUser">Admin User</label>
+        <div class="copy-row">
+          <input class="text-input" id="directoryAdminUser" name="admin_user" type="text"
+            value="{{ service.settings.admin_user or '' }}" autocomplete="username" required />
+          <button class="btn icon-btn" type="button" data-copy-target="directoryAdminUser" title="Copy username"
+            aria-label="Copy username">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+
+        <label class="field-label" for="directoryAdminPassword">Admin Password</label>
+        <div class="secret-row">
+          <input class="text-input secret-input" id="directoryAdminPassword" name="admin_password" type="password"
+            value="{{ service.settings.admin_password or '' }}" autocomplete="new-password" />
+          <button class="btn icon-btn" type="button" data-secret-toggle="directoryAdminPassword" title="Show password"
+            aria-label="Show password">
+            <svg class="eye-icon eye-show" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <svg class="eye-icon eye-hide" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.5-6 10-6 10 6 10 6a18.4 18.4 0 0 1-3.2 3.7" />
+              <path d="M14.1 14.1A3 3 0 0 1 9.9 9.9" />
+              <path d="M3 3l18 18" />
+            </svg>
+          </button>
+          <button class="btn icon-btn" type="button" data-copy-target="directoryAdminPassword" title="Copy password"
+            aria-label="Copy password">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+
+        <div></div>
+        <button class="btn primary" type="submit">Save LDAP Configuration</button>
+      </form>
+    </div>
+
+    <div class="detail-box directory-server-config-box">
+      <strong>OpenLDAP Server Configuration</strong>
+      <pre class="config-preview">{{ rendered_config }}</pre>
+    </div>
+  </div>
+
+  <div class="detail-box directory-sso-box">
+    <strong>VCF SSO Directory Values</strong>
+    <p class="subtle">The following values can be used with VCF SSO Configuration for OpenLDAP.</p>
+    <div class="directory-sso-grid">
+      <label>
+        <span>Primary Domain Controller</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoController" type="text" readonly value="{{ ldap_controller }}" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoController"
+            title="Copy primary domain controller" aria-label="Copy primary domain controller">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>Port</span>
+        <div class="copy-row compact-copy-row">
+          <input class="text-input" id="ldapSsoPort" type="text" readonly value="{{ ldap_port }}" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoPort" title="Copy LDAP port"
+            aria-label="Copy LDAP port">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>User Search Attribute</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoSearchAttribute" type="text" readonly value="mail" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoSearchAttribute"
+            title="Copy user search attribute" aria-label="Copy user search attribute">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>Group Search Attribute</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoGroupSearchAttribute" type="text" readonly value="cn" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoGroupSearchAttribute"
+            title="Copy group search attribute" aria-label="Copy group search attribute">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>Base DN</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoBaseDn" type="text" readonly value="{{ service.settings.base_dn or '' }}"
+            placeholder="Configure Base DN first" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoBaseDn" title="Copy Base DN"
+            aria-label="Copy Base DN">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>Bind User Name</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoBindDn" type="text" readonly value="{{ service.settings.bind_dn or '' }}"
+            placeholder="Configure Bind DN first" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoBindDn" title="Copy bind user name"
+            aria-label="Copy bind user name">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label class="directory-sso-wide">
+        <span>Bind User Password</span>
+        <div class="secret-row">
+          <input class="text-input secret-input" id="ldapSsoBindPassword" type="password" readonly
+            value="{{ service.settings.admin_password or '' }}" placeholder="Configure password first" />
+          <button class="btn icon-btn" type="button" data-secret-toggle="ldapSsoBindPassword" title="Show password"
+            aria-label="Show password">
+            <svg class="eye-icon eye-show" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <svg class="eye-icon eye-hide" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.5-6 10-6 10 6 10 6a18.4 18.4 0 0 1-3.2 3.7" />
+              <path d="M14.1 14.1A3 3 0 0 1 9.9 9.9" />
+              <path d="M3 3l18 18" />
+            </svg>
+          </button>
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoBindPassword" title="Copy bind password"
+            aria-label="Copy bind password">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+
+      <div class="directory-sso-section">LDAP Configuration Filters</div>
+      <label>
+        <span>Groups Filter</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoGroupsFilter" type="text" readonly value="(objectClass=groupOfNames)" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoGroupsFilter" title="Copy groups filter"
+            aria-label="Copy groups filter">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>Bind User Filter</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoBindUserFilter" type="text" readonly
+            value="(cn={{ service.settings.admin_user or 'admin' }})" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoBindUserFilter"
+            title="Copy bind user filter" aria-label="Copy bind user filter">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>Users Filter</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoUsersFilter" type="text" readonly value="(objectClass=inetOrgPerson)" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoUsersFilter" title="Copy users filter"
+            aria-label="Copy users filter">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>Object UUID</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoObjectUuid" type="text" readonly value="entryUUID" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoObjectUuid"
+            title="Copy object UUID attribute" aria-label="Copy object UUID attribute">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>Membership</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoMembership" type="text" readonly value="memberOf" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoMembership"
+            title="Copy membership attribute" aria-label="Copy membership attribute">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+
+      <div class="directory-sso-section">Attribute Mappings</div>
+      <label>
+        <span>userName</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoMapUserName" type="text" readonly value="mail" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoMapUserName" title="Copy userName mapping"
+            aria-label="Copy userName mapping">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>firstName</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoMapFirstName" type="text" readonly value="cn" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoMapFirstName"
+            title="Copy firstName mapping" aria-label="Copy firstName mapping">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>lastName</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoMapLastName" type="text" readonly value="sn" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoMapLastName" title="Copy lastName mapping"
+            aria-label="Copy lastName mapping">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>active</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoMapActive" type="text" readonly value=""
+            placeholder="Leave blank if optional" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoMapActive" title="Copy active mapping"
+            aria-label="Copy active mapping">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>distinguishedName</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoMapDn" type="text" readonly value="entryDN" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoMapDn"
+            title="Copy distinguishedName mapping" aria-label="Copy distinguishedName mapping">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>employeeID</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoMapEmployeeId" type="text" readonly value="" placeholder="Leave blank" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoMapEmployeeId"
+            title="Copy employeeID mapping" aria-label="Copy employeeID mapping">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>email</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoMapEmail" type="text" readonly value="mail" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoMapEmail" title="Copy email mapping"
+            aria-label="Copy email mapping">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>userPrincipalName</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoMapUpn" type="text" readonly value="mail" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoMapUpn"
+            title="Copy userPrincipalName mapping" aria-label="Copy userPrincipalName mapping">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+
+      <div class="directory-sso-section">Provisioning Base DNs</div>
+      <label>
+        <span>Base Group DN</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoGroupBaseDn" type="text" readonly
+            value="ou=groups,{{ service.settings.base_dn or '' }}" placeholder="Configure Base DN first" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoGroupBaseDn" title="Copy base group DN"
+            aria-label="Copy base group DN">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+      <label>
+        <span>Base User DN</span>
+        <div class="copy-row">
+          <input class="text-input" id="ldapSsoUserBaseDn" type="text" readonly
+            value="ou=users,{{ service.settings.base_dn or '' }}" placeholder="Configure Base DN first" />
+          <button class="btn icon-btn" type="button" data-copy-target="ldapSsoUserBaseDn" title="Copy base user DN"
+            aria-label="Copy base user DN">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+      </label>
+    </div>
+  </div>
+
+</div>

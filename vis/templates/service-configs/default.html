@@ -1,0 +1,115 @@
+<div class="detail-grid {% if service.id == 'sftp-backup' %}sftp-config-grid{% endif %}">
+  <div class="detail-box">
+    <strong>{{ "SFTP Client Configuration" if service.id == "sftp-backup" else "Client Configuration" }}</strong>
+    <table class="record-table">
+      <tbody>
+        {% for key, value in service.settings.items() if key not in ["password", "chroot"] %}
+        <tr>
+          <th>{{ key|replace("_", " ")|title }}</th>
+          <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+        {% if service.id == "sftp-backup" %}
+        <tr>
+          <th>Password</th>
+          <td>
+            <div class="secret-row table-secret">
+              <input class="text-input secret-input" id="sftpPasswordCurrent" type="password" readonly
+                value="{{ service.settings.password or '' }}" placeholder="Not stored yet" />
+              <button class="btn icon-btn" type="button" data-secret-toggle="sftpPasswordCurrent" title="Show password"
+                aria-label="Show password">
+                <svg class="eye-icon eye-show" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                <svg class="eye-icon eye-hide" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2 12s3.5-6 10-6 10 6 10 6a18.4 18.4 0 0 1-3.2 3.7" />
+                  <path d="M14.1 14.1A3 3 0 0 1 9.9 9.9" />
+                  <path d="M3 3l18 18" />
+                </svg>
+              </button>
+              <button class="btn icon-btn" type="button" data-copy-target="sftpPasswordCurrent" title="Copy password"
+                aria-label="Copy password">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="9" y="9" width="11" height="11" rx="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+    {% if service.id == "sftp-backup" %}
+    <div class="stacked-config">
+      <strong>SFTP Server Configuration</strong>
+      <pre class="config-preview">{{ rendered_config }}</pre>
+    </div>
+    {% endif %}
+  </div>
+  {% if service.id != "sftp-backup" %}
+  <div class="detail-box">
+    <strong>Server Configuration</strong>
+    <pre class="config-preview">{{ rendered_config }}</pre>
+  </div>
+  {% endif %}
+  {% if service.id == "sftp-backup" %}
+  <div class="detail-box {% if needs_required_config %}requires-configuration{% endif %}" id="sftp-credentials">
+    <strong>SFTP Credentials</strong>
+    {% if needs_required_config %}
+    {{ required_config_notice("Set the SFTP username and password before enabling SFTP Backup.") }}
+    {% endif %}
+    {% if request.args.get("password_error") %}
+    <p class="notice bad">{{ request.args.get("password_error") }}</p>
+    {% endif %}
+    {% if request.args.get("password_status") %}
+    <p class="notice good">{{ request.args.get("password_status") }}</p>
+    {% endif %}
+
+    <form class="credential-form compact" method="post" action="{{ url_for('sftp_password') }}">
+      <label class="field-label" for="sftpUser">Username</label>
+      <div class="copy-row">
+        <input class="text-input" id="sftpUser" name="username" type="text" value="{{ service.settings.user or '' }}"
+          autocomplete="username" required />
+        <button class="btn icon-btn" type="button" data-copy-target="sftpUser" title="Copy username"
+          aria-label="Copy username">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </div>
+
+      <label class="field-label" for="sftpPasswordNew">New Password</label>
+      <div class="copy-row">
+        <input class="text-input" id="sftpPasswordNew" name="password" type="password" autocomplete="new-password"
+          placeholder="{{ 'Leave unchanged' if service.settings.password else '' }}" />
+        <button class="btn icon-btn" type="button" data-copy-target="sftpPasswordNew" title="Copy password"
+          aria-label="Copy password">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </div>
+
+      <label class="field-label" for="sftpPasswordConfirm">Confirm Password</label>
+      <div class="copy-row">
+        <input class="text-input" id="sftpPasswordConfirm" name="confirm_password" type="password"
+          autocomplete="new-password" placeholder="{{ 'Leave unchanged' if service.settings.password else '' }}" />
+        <button class="btn icon-btn" type="button" data-copy-target="sftpPasswordConfirm" title="Copy password"
+          aria-label="Copy password">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </div>
+
+      <div></div>
+      <button class="btn primary" type="submit">Save Credentials</button>
+    </form>
+  </div>
+  {% endif %}
+</div>

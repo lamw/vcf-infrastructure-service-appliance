@@ -1,0 +1,288 @@
+<section class="panel" id="oidc-clients">
+  <div class="panel-header">
+    <div>
+      <h2>VCF SSO OIDC Clients</h2>
+      <p class="subtle">Create Keycloak OIDC clients and copy the values into VCF SSO configuration.</p>
+    </div>
+  </div>
+
+  {% if request.args.get("oidc_client_status") %}
+    <div class="inline-success-notice dismissible-notice" role="status">
+      <div>
+        <strong>OIDC client updated</strong>
+        <span>{{ request.args.get("oidc_client_status") }}</span>
+      </div>
+      <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+    </div>
+  {% endif %}
+  {% if request.args.get("oidc_client_error") %}
+    <div class="inline-error-notice dismissible-notice" role="alert">
+      <div>
+        <strong>OIDC client error</strong>
+        <span>{{ request.args.get("oidc_client_error") }}</span>
+      </div>
+      <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+    </div>
+  {% endif %}
+
+  <div class="detail-box oidc-discovery-box">
+    <strong>OIDC Discovery Endpoint</strong>
+    <div class="copy-row wide-copy-row">
+      <input class="text-input" id="oidcDiscoveryEndpoint" type="text" value="{{ oidc_discovery_endpoint }}" readonly />
+      <button class="btn icon-btn" type="button" data-copy-target="oidcDiscoveryEndpoint" title="Copy OIDC discovery endpoint" aria-label="Copy OIDC discovery endpoint">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <form class="oidc-client-create-form" method="post" action="{{ url_for('oidc_provider_client_create') }}">
+    <label class="field-label" for="oidcNewClientId">Client ID</label>
+    <input class="text-input" id="oidcNewClientId" name="client_id" type="text" placeholder="Enter your Client ID" required />
+    <label class="field-label" for="oidcNewRedirectUrl">Redirect URL</label>
+    <input class="text-input" id="oidcNewRedirectUrl" name="redirect_url" type="url" placeholder="Enter your Redirect URL" required />
+    <div></div>
+    <button class="btn primary" type="submit">Create OIDC Client</button>
+  </form>
+
+  <table class="record-table oidc-client-table">
+    <thead>
+      <tr>
+        <th>Client ID</th>
+        <th>Client Secret</th>
+        <th>Redirect URL</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for client in oidc_clients %}
+        <tr>
+          <td>
+            <div class="copy-row">
+              <input class="text-input" id="oidcClientId{{ client.id }}" form="oidcClientForm{{ client.id }}" name="client_id" type="text" value="{{ client.client_id }}" required />
+              <button class="btn icon-btn" type="button" data-copy-target="oidcClientId{{ client.id }}" title="Copy client ID" aria-label="Copy client ID">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+          </td>
+          <td>
+            <div class="secret-row table-secret">
+              <input class="text-input secret-input" id="oidcClientSecret{{ client.id }}" type="password" value="{{ client.client_secret }}" readonly placeholder="Generated after save" />
+              <button class="btn icon-btn" type="button" data-secret-toggle="oidcClientSecret{{ client.id }}" title="Show client secret" aria-label="Show client secret">
+                <svg class="eye-icon eye-show" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-icon eye-hide" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6a18.4 18.4 0 0 1-3.2 3.7"/><path d="M14.1 14.1A3 3 0 0 1 9.9 9.9"/><path d="M3 3l18 18"/></svg>
+              </button>
+              <button class="btn icon-btn" type="button" data-copy-target="oidcClientSecret{{ client.id }}" title="Copy client secret" aria-label="Copy client secret">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+          </td>
+          <td>
+            <input class="text-input" form="oidcClientForm{{ client.id }}" name="redirect_url" type="url" value="{{ client.redirect_url }}" required />
+          </td>
+          <td>
+            <div class="row-actions">
+              <form id="oidcClientForm{{ client.id }}" class="inline-form" method="post" action="{{ url_for('oidc_provider_client_update', client_id=client.id) }}">
+                <button class="btn" type="submit">Save</button>
+              </form>
+              <form class="inline-form" method="post" action="{{ url_for('oidc_provider_client_delete', client_id=client.id) }}" data-confirm-oidc-client-delete="{{ client.client_id }}">
+                <button class="btn danger" type="submit">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="4" class="subtle">No OIDC clients have been created yet.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="panel" id="oidc-users">
+  <div class="panel-header">
+    <div>
+      <h2>OIDC Users</h2>
+      <p class="subtle">New users are created in the {{ service.settings.realm or "VCF" }} realm and added to {{ service.settings.default_group or "vcf-admins" }}.</p>
+    </div>
+  </div>
+
+  {% if request.args.get("oidc_user_status") %}
+    <div class="inline-success-notice dismissible-notice" role="status">
+      <div>
+        <strong>OIDC user updated</strong>
+        <span>{{ request.args.get("oidc_user_status") }}</span>
+      </div>
+      <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+    </div>
+  {% endif %}
+  {% if request.args.get("oidc_user_error") %}
+    <div class="inline-error-notice dismissible-notice" role="alert">
+      <div>
+        <strong>OIDC user error</strong>
+        <span>{{ request.args.get("oidc_user_error") }}</span>
+      </div>
+      <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+    </div>
+  {% endif %}
+
+  <form class="directory-create-form oidc-user-create-form" method="post" action="{{ url_for('oidc_provider_user_create') }}">
+    <label>
+      <span>Username</span>
+      <input class="text-input" name="username" type="text" placeholder="Enter username" required />
+    </label>
+    <label>
+      <span>First Name</span>
+      <input class="text-input" name="first_name" type="text" placeholder="Enter first name" />
+    </label>
+    <label>
+      <span>Last Name</span>
+      <input class="text-input" name="last_name" type="text" placeholder="Enter last name" />
+    </label>
+    <label>
+      <span>Email</span>
+      <input class="text-input" name="email" type="email" placeholder="Enter email address" />
+    </label>
+    <label>
+      <span>Password</span>
+      <input class="text-input" name="password" type="password" placeholder="Enter password" required />
+    </label>
+    <fieldset class="directory-fieldset directory-create-fieldset">
+      <legend>Assigned Groups</legend>
+      <div class="directory-checkbox-list">
+        {% for group in oidc_groups %}
+          <label><input type="checkbox" name="groups" value="{{ group.id }}" {% if group.name == (service.settings.default_group or "vcf-admins") %}checked{% endif %} /> <span>{{ group.name }}</span></label>
+        {% else %}
+          <span class="subtle">No groups available</span>
+        {% endfor %}
+      </div>
+    </fieldset>
+    <button class="btn primary" type="submit">Add User</button>
+  </form>
+
+  <div class="directory-card-list">
+    {% for user in oidc_users %}
+      {% set oidc_user_groups = [] %}
+      {% for group in oidc_groups if group.id in user.groups or user.id in group.members %}
+        {% set _ = oidc_user_groups.append(group.name) %}
+      {% endfor %}
+      {% set full_name = (user.first_name ~ " " ~ user.last_name)|trim %}
+      <article class="directory-card">
+        <div class="directory-card-summary">
+          <div>
+            <strong>{{ user.username }}</strong>
+            {% if full_name and full_name|lower != user.username|lower %}
+              <span>{{ full_name }}</span>
+            {% endif %}
+          </div>
+          <span class="pill {% if user.disabled %}warn{% else %}good{% endif %}">{{ "Disabled" if user.disabled else "Enabled" }}</span>
+          <span class="subtle">{{ user.email or "Email not set" }}</span>
+          <span class="subtle">{{ oidc_user_groups|join(", ") if oidc_user_groups else "No groups assigned" }}</span>
+        </div>
+        <form class="directory-edit-form oidc-user-edit-form" method="post" action="{{ url_for('oidc_provider_user_update', user_id=user.id) }}">
+          <input name="username" type="hidden" value="{{ user.username }}" />
+          <label>
+            <span>First Name</span>
+            <input class="text-input" name="first_name" type="text" value="{{ user.first_name }}" placeholder="Enter first name" />
+          </label>
+          <label>
+            <span>Last Name</span>
+            <input class="text-input" name="last_name" type="text" value="{{ user.last_name }}" placeholder="Enter last name" />
+          </label>
+          <label>
+            <span>Email</span>
+            <input class="text-input" name="email" type="email" value="{{ user.email }}" placeholder="Enter email address" />
+          </label>
+          <label>
+            <span>New Password</span>
+            <input class="text-input" name="password" type="password" placeholder="Leave unchanged" />
+          </label>
+          <label class="compact-toggle directory-disabled-toggle"><span>Disable User</span><input name="disabled" type="checkbox" {% if user.disabled %}checked{% endif %} /></label>
+          <fieldset class="directory-fieldset directory-compact-fieldset">
+            <legend>Assigned Groups</legend>
+            <div class="directory-checkbox-list">
+              {% for group in oidc_groups %}
+                <label><input type="checkbox" name="groups" value="{{ group.id }}" {% if group.id in user.groups or user.id in group.members %}checked{% endif %} /> <span>{{ group.name }}</span></label>
+              {% else %}
+                <span class="subtle">No groups available</span>
+              {% endfor %}
+            </div>
+          </fieldset>
+          <button class="btn" type="submit">Save Changes</button>
+        </form>
+        <form class="directory-delete-form" method="post" action="{{ url_for('oidc_provider_user_delete', user_id=user.id) }}" data-confirm-directory-delete="{{ user.username }}">
+          <button class="btn danger" type="submit">Delete User</button>
+        </form>
+      </article>
+    {% else %}
+      <p class="subtle">No OIDC users have been added yet.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="panel" id="oidc-groups">
+  <div class="panel-header">
+    <div>
+      <h2>OIDC Groups</h2>
+      <p class="subtle">Create Keycloak groups and manage OIDC user membership.</p>
+    </div>
+  </div>
+
+  {% if request.args.get("oidc_group_status") %}
+    <p class="notice good">{{ request.args.get("oidc_group_status") }}</p>
+  {% endif %}
+  {% if request.args.get("oidc_group_error") %}
+    <p class="notice bad">{{ request.args.get("oidc_group_error") }}</p>
+  {% endif %}
+
+  <form class="directory-create-form directory-group-create-form" method="post" action="{{ url_for('oidc_provider_group_create') }}">
+    <label>
+      <span>Group Name</span>
+      <input class="text-input" name="name" type="text" placeholder="Enter group name" required />
+    </label>
+    <label>
+      <span>Description</span>
+      <input class="text-input" name="description" type="text" placeholder="Enter description" />
+    </label>
+    <button class="btn primary" type="submit">Add Group</button>
+  </form>
+
+  <div class="directory-card-list directory-group-list">
+    {% for group in oidc_groups %}
+      {% set member_names = [] %}
+      {% for user in oidc_users if user.id in group.members or group.id in user.groups %}
+        {% set _ = member_names.append(user.username) %}
+      {% endfor %}
+      <article class="directory-card directory-group-card">
+        <div class="directory-card-summary">
+          <div>
+            <strong>{{ group.name }}</strong>
+            <span>{{ group.description or "Description not set" }}</span>
+          </div>
+          <span class="subtle">{{ member_names|length }} member{{ "" if member_names|length == 1 else "s" }}</span>
+          <span class="subtle">{{ member_names|join(", ") if member_names else "No members assigned" }}</span>
+        </div>
+        <form class="directory-edit-form directory-members-form" method="post" action="{{ url_for('oidc_provider_group_members', group_id=group.id) }}">
+          <fieldset class="directory-fieldset directory-compact-fieldset">
+            <legend>Members</legend>
+            <div class="directory-checkbox-list">
+              {% for user in oidc_users %}
+                <label><input type="checkbox" name="members" value="{{ user.id }}" {% if user.id in group.members or group.id in user.groups %}checked{% endif %} /> <span>{{ user.username }}</span></label>
+              {% else %}
+                <span class="subtle">No users available</span>
+              {% endfor %}
+            </div>
+          </fieldset>
+          <button class="btn" type="submit">Save Members</button>
+        </form>
+        {% if group.name not in ["vcf-admins", "vcf-users"] %}
+          <form class="directory-delete-form" method="post" action="{{ url_for('oidc_provider_group_delete', group_id=group.id) }}" data-confirm-directory-delete="{{ group.name }}">
+            <button class="btn danger" type="submit">Delete Group</button>
+          </form>
+        {% endif %}
+      </article>
+    {% else %}
+      <p class="subtle">No OIDC groups have been added yet.</p>
+    {% endfor %}
+  </div>
+</section>

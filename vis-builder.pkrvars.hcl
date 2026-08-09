@@ -1,0 +1,6 @@
+builder_host           = "esx02.lab.joshghiloni.me"
+builder_host_username  = "administrator@vsphere.local"
+builder_host_password  = "VMware1!VMware1!"
+builder_host_datastore = "usb-vmfs-datastore-1"
+builder_host_portgroup = "packer-net"
+builder_vcenter_server = "vcenter9.lab.joshghiloni.me"

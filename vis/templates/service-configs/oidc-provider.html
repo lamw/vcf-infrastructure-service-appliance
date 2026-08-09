@@ -1,0 +1,80 @@
+<div class="detail-grid directory-config-grid">
+  <div class="detail-box {% if needs_required_config %}requires-configuration{% endif %}" id="oidc-config">
+    <strong>OIDC Provider Configuration</strong>
+    <p class="subtle">VIS creates a Keycloak realm named VCF with vcf-admins and vcf-users groups by default.</p>
+    {% if needs_required_config %}
+    {{ required_config_notice("Set the Keycloak administrator password before enabling OIDC Provider.") }}
+    {% endif %}
+    {% if request.args.get("oidc_config_status") %}
+    <p class="notice good">{{ request.args.get("oidc_config_status") }}</p>
+    {% endif %}
+    {% if request.args.get("oidc_config_error") %}
+    <p class="notice bad">{{ request.args.get("oidc_config_error") }}</p>
+    {% endif %}
+    <form class="credential-form compact directory-config-form" method="post"
+      action="{{ url_for('oidc_provider_config') }}">
+      <label class="field-label" for="oidcTlsEnabled">TLS</label>
+      <label class="toggle-row"><input id="oidcTlsEnabled" name="tls_enabled" type="checkbox" {% if
+          service.settings.protocol=="https" or service.settings.tls_enabled %}checked{% endif %} /> Expose using shared
+        VIS certificate</label>
+
+      <label class="field-label" for="oidcRealm">Realm</label>
+      <input class="text-input" id="oidcRealm" name="realm" type="text" value="{{ service.settings.realm or 'VCF' }}"
+        required />
+
+      <label class="field-label" for="oidcDefaultGroup">Default Group</label>
+      <input class="text-input" id="oidcDefaultGroup" name="default_group" type="text"
+        value="{{ service.settings.default_group or 'vcf-admins' }}" required />
+
+      <label class="field-label" for="oidcAdminUser">Admin User</label>
+      <div class="copy-row">
+        <input class="text-input" id="oidcAdminUser" name="admin_user" type="text"
+          value="{{ service.settings.admin_user or 'admin' }}" autocomplete="username" required />
+        <button class="btn icon-btn" type="button" data-copy-target="oidcAdminUser" title="Copy admin user"
+          aria-label="Copy admin user">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </div>
+
+      <label class="field-label" for="oidcAdminPassword">Admin Password</label>
+      <div class="secret-row">
+        <input class="text-input secret-input" id="oidcAdminPassword" name="admin_password" type="password"
+          value="{{ service.settings.admin_password or '' }}" autocomplete="new-password" required />
+        <button class="btn icon-btn" type="button" data-secret-toggle="oidcAdminPassword" title="Show password"
+          aria-label="Show password">
+          <svg class="eye-icon eye-show" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg class="eye-icon eye-hide" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2 12s3.5-6 10-6 10 6 10 6a18.4 18.4 0 0 1-3.2 3.7" />
+            <path d="M14.1 14.1A3 3 0 0 1 9.9 9.9" />
+            <path d="M3 3l18 18" />
+          </svg>
+        </button>
+        <button class="btn icon-btn" type="button" data-copy-target="oidcAdminPassword" title="Copy admin password"
+          aria-label="Copy admin password">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </div>
+
+      <label class="field-label" for="oidcImage">Keycloak Image</label>
+      <input class="text-input" id="oidcImage" name="image" type="text"
+        value="{{ service.settings.image or 'quay.io/keycloak/keycloak:26.3' }}" />
+
+      <div></div>
+      <button class="btn primary" type="submit">Save OIDC Configuration</button>
+    </form>
+  </div>
+
+  <div class="detail-box">
+    <strong>Keycloak Server Configuration</strong>
+    <pre class="config-preview">{{ rendered_config }}</pre>
+  </div>
+</div>

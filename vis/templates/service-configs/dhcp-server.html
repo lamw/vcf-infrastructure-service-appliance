@@ -1,0 +1,72 @@
+<div class="detail-grid dns-config-grid">
+  <div class="detail-box {% if needs_required_config %}requires-configuration{% endif %}" id="dhcp-config">
+    <strong>DHCP Server Configuration</strong>
+    {% if needs_required_config %}
+    {{ required_config_notice("Set the subnet and address pool before enabling DHCP Server.") }}
+    {% endif %}
+    {% if request.args.get("dhcp_config_status") %}
+    <div class="inline-success-notice dismissible-notice" role="status">
+      <div>
+        <strong>Configuration saved</strong>
+        <span>{{ request.args.get("dhcp_config_status") }}</span>
+      </div>
+      <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+    </div>
+    {% endif %}
+    {% if request.args.get("dhcp_config_error") %}
+    <div class="inline-error-notice dismissible-notice" role="alert">
+      <div>
+        <strong>Configuration error</strong>
+        <span>{{ request.args.get("dhcp_config_error") }}</span>
+      </div>
+      <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+    </div>
+    {% endif %}
+
+    <form class="service-config-form" method="post" action="{{ url_for('dhcp_server_config') }}">
+      <label class="field-label" for="dhcpSubnet">Subnet CIDR</label>
+      <input class="text-input" id="dhcpSubnet" name="subnet_cidr" type="text"
+        value="{{ service.settings.subnet_cidr or '' }}" placeholder="172.30.0.0/24" required />
+
+      <label class="field-label" for="dhcpPoolStart">Pool Start</label>
+      <input class="text-input" id="dhcpPoolStart" name="pool_start" type="text"
+        value="{{ service.settings.pool_start or '' }}" placeholder="172.30.0.100" required />
+
+      <label class="field-label" for="dhcpPoolEnd">Pool End</label>
+      <input class="text-input" id="dhcpPoolEnd" name="pool_end" type="text"
+        value="{{ service.settings.pool_end or '' }}" placeholder="172.30.0.199" required />
+
+      <label class="field-label" for="dhcpGateway">Gateway</label>
+      <input class="text-input" id="dhcpGateway" name="gateway" type="text" value="{{ service.settings.gateway or '' }}"
+        placeholder="172.30.0.1" />
+
+      <label class="field-label" for="dhcpDnsServers">DNS Servers</label>
+      <textarea class="text-input" id="dhcpDnsServers" name="dns_servers" rows="3"
+        placeholder="172.30.0.9&#10;192.168.30.29">{{ service.settings.dns_servers|join('\n') if
+        service.settings.dns_servers else '' }}</textarea>
+
+      <label class="field-label" for="dhcpDomain">Domain Name</label>
+      <input class="text-input" id="dhcpDomain" name="domain" type="text" value="{{ service.settings.domain or '' }}"
+        placeholder="vcf.lab" />
+
+      <label class="field-label" for="dhcpDefaultLease">Default Lease Seconds</label>
+      <input class="text-input" id="dhcpDefaultLease" name="default_lease_time" type="number" min="60" max="604800"
+        value="{{ service.settings.default_lease_time or 3600 }}" required />
+
+      <label class="field-label" for="dhcpMaxLease">Max Lease Seconds</label>
+      <input class="text-input" id="dhcpMaxLease" name="max_lease_time" type="number" min="60" max="604800"
+        value="{{ service.settings.max_lease_time or 7200 }}" required />
+
+      <label class="field-label" for="dhcpAuthoritative">Authoritative</label>
+      <label class="toggle-row"><input id="dhcpAuthoritative" name="authoritative" type="checkbox" {% if
+          service.settings.authoritative %}checked{% endif %} /> Answer as the authoritative DHCP server for this
+        subnet</label>
+
+      <label class="field-label" for="dhcpReservations">Reservations</label>
+      <textarea class="text-input" id="dhcpReservations" name="reservations" rows="4"
+        placeholder="00:50:56:aa:bb:cc,172.30.0.60,vcf01">{% for reservation in service.settings.reservations or [] %}{{
+        reservation.mac }},{{ reservation.ip }}{% if reservation.hostname %},{{ reservation.hostname }}{% endif %}{% if
+        not loop.last %}</textarea>
+    </form>
+  </div>
+</div>

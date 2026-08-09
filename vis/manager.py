@@ -2061,6 +2061,198 @@ WantedBy=multi-user.target
             return request.urlopen(target, timeout=timeout, context=ssl._create_unverified_context())
         return request.urlopen(target, timeout=timeout)
 
+class ContentLibraryServiceAdapter(ServiceAdapter):
+    def validate(self) -> ValidationResult:
+        missing = []
+        if not os.path.isdir(self.service.filesystem_root):
+            missing.append(self.service.filesystem_root)
+        if self._protocol() == "https":
+            self._apply_shared_tls_settings()
+            for key in ("tls_cert_path", "tls_key_path"):
+                if not os.path.isfile(str(self.service.settings.get(key, ""))):
+                    missing.append(str(self.service.settings.get(key, key)))
+        if missing:
+            return ValidationResult(False, "Missing: {}".format(", ".join(missing)), utc_now())
+        return ValidationResult(True, "Content Library configuration is valid", utc_now())
+
+    def enable(self) -> ServiceDefinition:
+        self.service.enabled = True
+        self._write_unit()
+        subprocess.run(["systemctl", "daemon-reload"], check=False)
+        subprocess.run(["systemctl", "enable", "--now", "vis-content-library-server.service"], check=False)
+        if self._auto_sync_enabled():
+            subprocess.run(["systemctl", "enable", "--now", "vis-content-library-sync.timer"], check=False)
+            
+        return self.health_check()
+
+    def disable(self) -> ServiceDefinition:
+        subprocess.run(["systemctl", "disable", "--now", "vis-content-library-server.service"], check=False)
+        subprocess.run(["systemctl", "disable", "--now", "vis-content-library-sync.timer"], check=False)
+        self.service.enabled = False
+        self.service.health_status = "disabled"
+        self.service.last_health_check_time = utc_now()
+        return self.service
+
+    def restart(self) -> ServiceDefinition:
+        self._write_unit()
+        subprocess.run(["systemctl", "daemon-reload"], check=False)
+        if self.service.enabled:
+            subprocess.run(["systemctl", "restart", "vis-content-library-server.service"], check=False)
+            if self._auto_sync_enabled():
+                subprocess.run(["systemctl", "restart", "vis-content-library-sync.timer"], check=False)
+        return self.health_check()
+
+    def health_check(self) -> ServiceDefinition:
+        validation = self.validate()
+        self.service.last_validation_result = validation
+        self.service.last_health_check_time = utc_now()
+        self.service.configured = validation.ok
+        active = self._service_active()
+        if not self.service.enabled:
+            self.service.health_status = "disabled"
+        elif validation.ok and active:
+            self.service.health_status = "healthy"
+        elif validation.ok:
+            self.service.health_status = "stopped"
+        else:
+            self.service.health_status = "needs_configuration"
+        return self.service
+
+    def render_config(self) -> str:
+        lines = [
+            "# vSphere Content Library Service",
+            "protocol = {}".format(self._protocol()),
+            "port = {}".format(self._port()),
+            "root = {}".format(self.service.filesystem_root),
+            "basic_auth_enabled = {}".format(self._basic_auth_enabled()),
+            "source_url = {}".format(self.service.settings.get("source_url", "https://wp-content.broadcom.com/v2/latest/lib.json")),
+            "auto_source_sync_enabled = {}".format(self._auto_sync_enabled()),
+            "parallel_source_sync = {}".format(self._parallel_sync_enabled())
+        ]
+
+        if self._basic_auth_enabled():
+            lines.append("auth_user = {}".format(self.service.settings.get("auth_user", "")))
+        if self._protocol() == "https":
+            self._apply_shared_tls_settings()
+            lines.extend(
+                [
+                    "tls_mode = {}".format(self.service.settings.get("tls_mode", "shared")),
+                    "tls_cert = {}".format(self.service.settings.get("tls_cert_path", "")),
+                    "tls_key = {}".format(self.service.settings.get("tls_key_path", "")),
+                    "tls_full_pem = {}".format(self.service.settings.get("tls_full_pem_path", "")),
+                ]
+            )
+
+        return "\n".join(lines) + "\n"
+
+    def _write_unit(self) -> None:
+        os.makedirs("/opt/vis/config/depot", exist_ok=True)
+        os.makedirs(self.service.filesystem_root, exist_ok=True)
+        self._write_server_unit()
+        self._write_sync_unit()
+
+    def _write_server_unit(self) -> None:
+        if self._protocol() == "https":
+            self._apply_shared_tls_settings()
+        auth_user = str(self.service.settings.get("auth_user", "")) if self._basic_auth_enabled() else ""
+        auth_password = str(self.service.settings.get("auth_password", "")) if self._basic_auth_enabled() else ""
+        unit = f"""[Unit]
+Description=vSphere Content Library Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/vis/app
+Environment=PYTHONPATH=/opt/vis/app
+Environment=VIS_CONTENT_LIB_ROOT={self.service.filesystem_root}
+Environment=VIS_CONTENT_LIB_PROTOCOL={self._protocol()}
+Environment=VIS_CONTENT_LIB_PORT={self._port()}
+Environment=VIS_CONTENT_LIB_AUTH_USER={auth_user}
+Environment=VIS_CONTENT_LIB_AUTH_PASSWORD={auth_password}
+Environment=VIS_CONTENT_LIB_TLS_CERT={self.service.settings.get("tls_cert_path", "")}
+Environment=VIS_CONTENT_LIB_TLS_KEY={self.service.settings.get("tls_key_path", "")}
+ExecStart=/opt/vis/app/venv/bin/python -m vis.content_library_server
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
+"""
+        with open("/etc/systemd/system/vis-content-library-server.service", "w") as handle:
+            handle.write(unit)
+
+    def _write_sync_unit(self):
+        timer = """[Unit]
+Description=vSphere Content Library Synchronization Timer
+
+[Timer]
+Unit=vis-content-library-sync.service
+OnCalendar=Sun *-*-* 08:06:00
+
+[Install]
+WantedBy=timers.target
+"""
+
+        unit = f"""[Unit]
+Description=vSphere Content Library Service
+Requires=vis-content-library-sync.timer
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/vis/app
+Environment=PYTHONPATH=/opt/vis/app
+Environment=VIS_CONTENT_LIB_ROOT={self.service.filesystem_root}
+Environment=VIS_CONTENT_LIB_SOURCE_URL={self.service.settings.get("source_url", "")}
+Environment=VIS_CONTENT_LIB_PARALLEL_SOURCE_SYNC={self._parallel_sync_enabled()}
+ExecStart=/opt/vis/app/venv/bin/python -m vis.content_library_sync
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
+"""
+        with open("/etc/systemd/system/vis-content-library-sync.service", "w") as handle:
+            handle.write(unit)
+
+        with open("/etc/systemd/system/vis-content-library-sync.timer", "w") as handle:
+             handle.write(timer)
+
+
+    def _service_active(self) -> bool:
+        server_result = subprocess.run(["systemctl", "is-active", "--quiet", "vis-content-library-server.service"], check=False)
+        sync_result = subprocess.run(["systemctl", "is-active", "--quiet", "vis-content-library-sync.service"], check=False)
+        return server_result.returncode == 0 and (not self._auto_sync_enabled() or (sync_result.returncode == 0))
+
+    def _protocol(self) -> str:
+        return str(self.service.settings.get("protocol", "http")).lower()
+
+    def _port(self) -> int:
+        return int(self.service.settings.get("port", 8443 if self._protocol() == "https" else 8081))
+
+    def _basic_auth_enabled(self) -> bool:
+        return bool(self.service.settings.get("basic_auth_enabled", False))
+
+    def _auto_sync_enabled(self) -> bool:
+        return bool(self.service.settings.get("auto_source_sync_enabled", True))
+
+    def _parallel_sync_enabled(self) -> bool:
+        return bool(self.service.settings.get("parallel_source_sync", True))
+
+    def _apply_shared_tls_settings(self) -> None:
+        self.service.settings.update(
+            {
+                "tls_enabled": True,
+                "tls_mode": "shared",
+                "tls_ca_path": "/opt/vis/config/tls/rootCA.pem",
+                "tls_cert_path": "/opt/vis/config/tls/server.crt",
+                "tls_key_path": "/opt/vis/config/tls/server.key",
+                "tls_full_pem_path": "/opt/vis/config/tls/vis-full.pem",
+            }
+        )
+
 
 class ServiceManager:
     def __init__(self, store: ServiceStore, health_followup_attempts: int = 30, health_followup_interval: int = 10):

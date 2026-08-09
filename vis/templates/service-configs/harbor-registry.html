@@ -1,0 +1,46 @@
+<div class="detail-grid sftp-config-grid">
+  <div class="detail-box {% if needs_required_config %}requires-configuration{% endif %}" id="harbor-config">
+    <strong>Container Registry Client Configuration</strong>
+    {% if needs_required_config %}
+      {{ required_config_notice("Set registry TLS mode and administrator credentials before enabling Container Registry.") }}
+    {% endif %}
+    {% if request.args.get("config_status") %}
+      <p class="notice good">{{ request.args.get("config_status") }}</p>
+    {% endif %}
+    {% if request.args.get("config_error") %}
+      <p class="notice bad">{{ request.args.get("config_error") }}</p>
+    {% endif %}
+    <form class="credential-form compact depot-config-form" method="post" action="{{ url_for('harbor_config') }}">
+      <label class="field-label" for="harborTlsEnabled">TLS</label>
+      <label class="toggle-row"><input id="harborTlsEnabled" name="tls_enabled" type="checkbox" {% if service.settings.protocol == "https" or service.settings.tls_enabled %}checked{% endif %} /> Expose using shared VIS certificate</label>
+
+      <label class="field-label" for="harborAdminUser">Username</label>
+      <div class="copy-row">
+        <input class="text-input" id="harborAdminUser" name="admin_user" type="text" value="{{ service.settings.admin_user or '' }}" autocomplete="username" />
+        <button class="btn icon-btn" type="button" data-copy-target="harborAdminUser" title="Copy username" aria-label="Copy username">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+
+      <label class="field-label" for="harborAdminPassword">Password</label>
+      <div class="secret-row">
+        <input class="text-input secret-input" id="harborAdminPassword" name="admin_password" type="password" value="{{ service.settings.admin_password or '' }}" autocomplete="new-password" />
+        <button class="btn icon-btn" type="button" data-secret-toggle="harborAdminPassword" title="Show password" aria-label="Show password">
+          <svg class="eye-icon eye-show" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="eye-icon eye-hide" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6a18.4 18.4 0 0 1-3.2 3.7"/><path d="M14.1 14.1A3 3 0 0 1 9.9 9.9"/><path d="M3 3l18 18"/></svg>
+        </button>
+        <button class="btn icon-btn" type="button" data-copy-target="harborAdminPassword" title="Copy password" aria-label="Copy password">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+
+      <div></div>
+      <button class="btn primary" type="submit">Save Configuration</button>
+    </form>
+  </div>
+
+  <div class="detail-box">
+    <strong>Harbor Server Configuration</strong>
+    <pre class="config-preview">{{ rendered_config }}</pre>
+  </div>
+</div>

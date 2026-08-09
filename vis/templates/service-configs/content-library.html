@@ -1,0 +1,100 @@
+<div class="detail-grid content-library-config-grid">
+  <div class="detail-box {% if needs_required_config %}requires-configuration{% endif %}" id="content-library-config">
+    <strong>Content Library Configuration</strong>
+    {% if needs_required_config %}
+    {{ required_config_notice("Save settings before enabling Content Library.") }}
+    {% endif %}
+    {% if request.args.get("content_library_status") %}
+    <div class="inline-success-notice dismissible-notice" role="status">
+      <div>
+        <strong>Configuration saved</strong>
+        <span>{{ request.args.get("content_library_status") }}</span>
+      </div>
+      <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+    </div>
+    {% endif %}
+    {% if request.args.get("content_library_error") %}
+    <div class="inline-error-notice dismissible-notice" role="alert">
+      <div>
+        <strong>Configuration error</strong>
+        <span>{{ request.args.get("content_library_error") }}</span>
+      </div>
+      <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
+    </div>
+    {% endif %}
+    <form class="credential-form compact content-library-config-form" method="post" action="{{ url_for('content_library_config') }}">
+      <input type="hidden" name="form_context" value="content_library_config" />
+      <label class="field-label" for="contentLibraryTlsEnabled">TLS</label>
+      <label class="toggle-row"><input id="contentLibraryTlsEnabled" name="tls_enabled" type="checkbox" {% if
+          service.settings.protocol=="https" or service.settings.tls_enabled %}checked{% endif %} /> Expose using shared
+        VIS certificate</label>
+
+      <label class="field-label" for="contentLibraryBasicAuth">Basic Auth</label>
+      <label class="toggle-row"><input id="contentLibraryBasicAuth" name="basic_auth_enabled" type="checkbox" {% if
+          service.settings.basic_auth_enabled %}checked{% endif %} /> Enabled</label>
+
+      <label class="field-label" for="contentLibraryAuthUser">Username</label>
+      <div class="copy-row">
+        <input class="text-input" id="contentLibraryAuthUser" name="auth_user" type="text"
+          value="{{ service.settings.auth_user or '' }}" placeholder="Optional if Basic Auth is selected"
+          autocomplete="username" />
+        <button class="btn icon-btn" type="button" data-copy-target="contentLibraryAuthUser" title="Copy username"
+          aria-label="Copy username">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </div>
+
+      <label class="field-label" for="contentLibraryAuthPassword">Password</label>
+      <div class="secret-row">
+        <input class="text-input secret-input" id="contentLibraryAuthPassword" name="auth_password" type="password"
+          value="{{ service.settings.auth_password or '' }}" placeholder="Optional if Basic Auth is selected"
+          autocomplete="new-password" />
+        <button class="btn icon-btn" type="button" data-secret-toggle="contentLibraryAuthPassword" title="Show password"
+          aria-label="Show password">
+          <svg class="eye-icon eye-show" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg class="eye-icon eye-hide" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2 12s3.5-6 10-6 10 6 10 6a18.4 18.4 0 0 1-3.2 3.7" />
+            <path d="M14.1 14.1A3 3 0 0 1 9.9 9.9" />
+            <path d="M3 3l18 18" />
+          </svg>
+        </button>
+        <button class="btn icon-btn" type="button" data-copy-target="contentLibraryAuthPassword" title="Copy password"
+          aria-label="Copy password">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </div>
+
+      <label class="field-label" for="contentLibrarySourceURL">Source Content Library URL</label>
+      <div class="copy-row">
+        <input class="text-input" id="contentLibrarySourceURL" name="source_url" type="text"
+          value="{{ service.settings.source_url or 'https://wp-content.broadcom.com/v2/latest/lib.json' }}" placeholder="Required"
+          autocomplete="url" />
+      </div>
+
+      <label class="field-label" for="contentLibraryAutoSync">Automatically Sync with Source</label>
+      <label class="toggle-row"><input id="contentLibraryAutoSync" name="auto_source_sync_enabled" type="checkbox" {% if
+          service.settings.auto_source_sync_enabled %}checked{% endif %} /> Enabled</label>
+      
+      <label class="field-label" for="contentLibraryParallelSync">Sync in Parallel</label>
+      <label class="toggle-row"><input id="contentLibraryParallelSync" name="parallel_source_sync" type="checkbox" {% if
+          service.settings.parallel_source_sync %}checked{% endif %} /> Enabled</label>
+
+      <div></div>
+      <button class="btn primary" type="submit">Save Configuration</button>
+    </form>
+
+    <div class="stacked-config">
+      <strong>Content Library Server Configuration</strong>
+      <pre class="config-preview">{{ rendered_config }}</pre>
+    </div>
+  </div>
+</div>

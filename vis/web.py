@@ -1,3 +1,5 @@
+from typing import Any
+import pathlib
 import errno
 import ipaddress
 import json
@@ -12,7 +14,20 @@ import tempfile
 import uuid
 from pathlib import Path
 from urllib.parse import urlparse
-from flask import Flask, Response, abort, current_app, jsonify, redirect, render_template, request, send_file, session, url_for
+
+from flask import (
+    Flask,
+    Response,
+    abort,
+    current_app,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    send_file,
+    session,
+    url_for,
+)
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
@@ -20,7 +35,7 @@ from werkzeug.utils import secure_filename
 from .definitions import DEFAULT_IDENTITY_GROUPS
 from .file_manager import RepositoryFileManager
 from .manager import ServiceManager
-from .models import ValidationResult, utc_now
+from .models import ValidationResult, utc_now, ServiceDefinition
 from .store import ServiceStore
 
 
@@ -384,7 +399,7 @@ def create_app(config=None):
         adapter = manager.adapter_for(service_id)
         file_browser = None
         file_error = request.args.get("file_error", "")
-        if service_id in ("sftp-backup", "web-depot"):
+        if service_id in ("sftp-backup", "web-depot", "content-library"):
             try:
                 file_browser = _file_manager(service).list_dir(request.args.get("path", ""))
             except (FileNotFoundError, NotADirectoryError, ValueError) as err:
@@ -756,7 +771,7 @@ def create_app(config=None):
             abort(404)
         if app.config["VIS_LOCAL_ADAPTERS_ENABLED"]:
             try:
-                manager.adapter_for(service.id).delete_oidc_client(existing)
+                manager.adapter_for(service.id).delete_oidc_client(existing) #ty: ignore[unresolved-attribute]
             except OSError as err:
                 return redirect(url_for("service_detail", service_id=service.id, oidc_client_error=str(err), _anchor="oidc-clients"))
         _save_oidc_clients(service, store, [client for client in clients if client.get("id") != client_id])
@@ -1027,6 +1042,20 @@ def create_app(config=None):
         except (FileNotFoundError, ValueError, OSError) as err:
             return redirect(url_for("service_detail", service_id="web-depot", path=current, file_error=str(err), _anchor="repository-files"))
 
+    @app.route("/services/content-library/config", methods=["POST"])
+    def content_library_config():
+        service = manager.get_service("content-library")
+        settings, error = _content_library_settings_from_form(app)
+
+        if error:
+            return redirect(url_for("service_detail", service_id=service.id, content_library_error=error, _anchor="content-library-config"))
+
+        service.settings.update(settings)
+        service.configured = True
+        store.save_service(service)
+        refresh_service_backend(service.id)
+        return redirect(url_for("service_detail", service_id=service.id, content_library_status="Content Library Service configuration updated", _anchor="content-library-config"))
+
     @app.route("/services/sftp-backup/files/mkdir", methods=["POST"])
     def sftp_mkdir():
         service = manager.get_service("sftp-backup")
@@ -1051,7 +1080,7 @@ def create_app(config=None):
 
     @app.route("/api/services/<service_id>/files")
     def repository_files_api(service_id):
-        if service_id not in ("web-depot", "sftp-backup"):
+        if service_id not in ("web-depot", "sftp-backup", "content-library"):
             abort(404)
         try:
             service = manager.get_service(service_id)
@@ -1212,11 +1241,17 @@ def create_app(config=None):
 def _sftp_file_manager(service):
     return RepositoryFileManager(service.filesystem_root, owner=str(service.settings.get("user", "")))
 
+def _content_library_file_manager(service):
+    return RepositoryFileManager(str(Path(service.filesystem_root, "lib")), readonly=True)
 
 def _file_manager(service):
-    if service.id == "sftp-backup":
-        return _sftp_file_manager(service)
-    return RepositoryFileManager(service.filesystem_root)
+    match service.id:
+        case "sftp-backup":
+            return _sftp_file_manager(service)
+        case "content-library":
+            return _content_library_file_manager(service)
+        case _:
+            return RepositoryFileManager(service.filesystem_root)
 
 
 def _prepare_upload_temp_dir(service):
@@ -1508,6 +1543,78 @@ def _kms_settings_from_form():
         "tls_enabled": True,
         "tls_mode": "shared",
     }, None
+
+def _shared_web_service_settings_from_form(app: Flask, /, service_id: str, anchor: str = "", default_https_port: int = 8443, default_http_port: int = 8080, allow_privileged: bool = False) -> dict[str, object]:
+    tls_enabled = request.form.get("tls_enabled") == "on"
+    
+    protocol = "https" if tls_enabled else "http"
+    default_port = str(default_https_port) if tls_enabled else str(default_http_port)
+    
+    try:
+        port = _port_from_form(default_port=default_port, allow_privileged=allow_privileged)
+    except ValueError as err:
+        return redirect(url_for("service_detail", service_id=service_id, client_error=str(err), _anchor=anchor))
+
+    shared_settings = {
+        "protocol": protocol,
+        "port": port,
+        "tls_enabled": tls_enabled,
+        "tls_mode": "shared",
+        "path": "/",
+        "basic_auth_enabled": request.form.get("basic_auth_enabled") == "on",
+        "auth_user": request.form.get("auth_user", "").strip()
+    }
+    
+    if tls_enabled:
+        try:
+            _ensure_shared_tls(app)
+            paths = _shared_tls_paths()
+            shared_settings.update(
+                {
+                    "tls_mode": "shared",
+                    "tls_ca_path": str(paths["ca_pem"]),
+                    "tls_cert_path": str(paths["server_crt"]),
+                    "tls_key_path": str(paths["server_key"]),
+                    "tls_full_pem_path": str(paths["full_pem"]),
+                }
+            )
+        except OSError as err:
+            return redirect(url_for("service_detail", service_id=service_id, client_error=str(err), _anchor=anchor))
+   
+    password = request.form.get("auth_password", "")
+    if password:
+        shared_settings["auth_password"] = password
+
+    return shared_settings
+
+def _port_from_form(field_name: str = "port",default_port: str = "8000", allow_privileged: bool = False) -> int:
+    try:
+        port_str = request.form.get(field_name, default_port)
+        port = int(port_str)
+        low_port = 1 if allow_privileged else 1025
+        if not (low_port <= port <= 65535):
+            raise ValueError(f"{port} must be between {low_port} and 65535")
+
+        return port
+    except TypeError:
+        raise ValueError(port_str)
+    except ValueError as e:
+        raise e
+
+
+def _content_library_settings_from_form(app: Flask):
+    try:
+        settings = _shared_web_service_settings_from_form(app, service_id="content-library", default_https_port="9943", default_http_port="9091", anchor="content-library-config")
+    except:
+        return None, "Content Library config is invalid"
+    else:
+        settings.update({
+            "source_library_url": request.form.get("source_library_url"),
+            "auto_source_sync_enabled": request.form.get("auto_source_sync_enabled") == "on",
+            "parallel_source_sync": request.form.get("parallel_source_sync") == "on",
+        })
+
+    return settings, None
 
 
 def _ip_from_form(name, label):
@@ -2860,6 +2967,7 @@ def _log_targets(manager):
         "time-server": ["chrony.service", "vis-ptp4l.service"],
         "dhcp-server": ["vis-dhcp.service"],
         "kms-service": ["vis-kms.service"],
+        "content-library": ["vis-content-library.service", "vis-content-library-sync.service"]
     }
     for service in manager.list_services():
         targets[service.id] = {
@@ -2953,6 +3061,7 @@ def _system_health(manager):
         ("harbor-registry", "Disk 4", "Container Registry", _storage_mount(services, "harbor-registry"), 60, "#a98df2"),
         ("unbound-dns", "Disk 5", "DNS Server", _storage_mount(services, "unbound-dns"), 2, "#f0b84f"),
         ("identity-providers", "Disk 6", "Identity Providers", "/opt/vis/data/identity", 2, "#5ad1c8"),
+        ("content-library", "Disk 7", "Content Library", _storage_mount(services, "content-library"), 600, "#01a78f")
     ]
     return {
         "cpu": _cpu_health(),
