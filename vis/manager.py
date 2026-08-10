@@ -2380,7 +2380,7 @@ Type=simple
 WorkingDirectory=/opt/vis/app
 Environment=PYTHONPATH=/opt/vis/app
 Environment=VIS_CONTENT_LIB_ROOT={self.service.filesystem_root}
-Environment=VIS_CONTENT_LIB_SOURCE_URL={self.service.settings.get("source_url", "")}
+Environment=VIS_CONTENT_LIB_SOURCE_URL={self.service.settings.get("source_url", "https://wp-content.broadcom.com/v2/latest/lib.json")}
 Environment=VIS_CONTENT_LIB_PARALLEL_SOURCE_SYNC={self._parallel_sync_enabled()}
 ExecStart=/opt/vis/app/venv/bin/python -m vis.content_library_sync
 Restart=on-failure
