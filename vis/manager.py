@@ -1,6 +1,5 @@
-from abc import ABC, abstractmethod
-import json
 import ipaddress
+import json
 import os
 import pwd
 import re
@@ -12,8 +11,12 @@ import subprocess
 import threading
 import time
 import uuid
-from typing import Dict, List
+from abc import ABC, abstractmethod
+from pathlib import Path
 from urllib import error, parse, request
+
+from vis.content_library.dataclasses import ContentLibrarySyncStats
+from vis.content_library.sync import _SYNC_STATS_FILE
 
 from .models import ServiceDefinition, ValidationResult, utc_now
 from .store import ServiceStore
@@ -77,9 +80,9 @@ class MockServiceAdapter(ServiceAdapter):
         return self.service
 
     def render_config(self) -> str:
-        lines = ["# Mock VIS service configuration", "service_id = {}".format(self.service.id)]
+        lines = ["# Mock VIS service configuration", f"service_id = {self.service.id}"]
         for key in sorted(self.service.settings):
-            lines.append("{} = {}".format(key, self.service.settings[key]))
+            lines.append(f"{key} = {self.service.settings[key]}")
         return "\n".join(lines) + "\n"
 
 
@@ -91,23 +94,25 @@ class LocalSFTPServiceAdapter(ServiceAdapter):
             return ValidationResult(False, "SFTP credentials are not configured", utc_now())
         user_info = self._user_info(username)
         if not user_info:
-            problems.append("missing user {}".format(username))
+            problems.append(f"missing user {username}")
         chroot = "/opt/vis/data/sftp"
         if not self._chroot_permissions_ok(chroot):
-            problems.append("{} must be owned by root and not writable by group/other".format(chroot))
+            problems.append(f"{chroot} must be owned by root and not writable by group/other")
         if not os.path.isdir(self.service.filesystem_root):
-            problems.append("missing {}".format(self.service.filesystem_root))
+            problems.append(f"missing {self.service.filesystem_root}")
         elif user_info and not self._repository_writable_by_user(self.service.filesystem_root, user_info):
-            problems.append("{} is not writable by {}".format(self.service.filesystem_root, username))
+            problems.append(f"{self.service.filesystem_root} is not writable by {username}")
         if not self._ssh_active():
             problems.append("ssh service is inactive")
         if not self._sshd_config_valid():
             problems.append("sshd configuration is invalid")
         if not self._vis_sftp_configured(username, chroot):
-            problems.append("missing sshd Match User configuration for {}".format(username))
+            problems.append(f"missing sshd Match User configuration for {username}")
         if problems:
             return ValidationResult(False, "; ".join(problems), utc_now())
-        return ValidationResult(True, "SFTP backend verified: user, chroot, writable /backup, sshd config, and ssh service", utc_now())
+        return ValidationResult(
+            True, "SFTP backend verified: user, chroot, writable /backup, sshd config, and ssh service", utc_now()
+        )
 
     def enable(self) -> ServiceDefinition:
         self.service.enabled = True
@@ -137,7 +142,7 @@ class LocalSFTPServiceAdapter(ServiceAdapter):
                 "# VIS SFTP backup repository",
                 "user = {}".format(self.service.settings.get("user")),
                 "chroot = /opt/vis/data/sftp",
-                "directory = {}".format(self.service.filesystem_root),
+                f"directory = {self.service.filesystem_root}",
                 "port = {}".format(self.service.settings.get("port")),
                 "force_command = internal-sftp -d /backup",
                 "",
@@ -162,11 +167,17 @@ class LocalSFTPServiceAdapter(ServiceAdapter):
         return result.returncode == 0
 
     def _vis_sftp_configured(self, username: str, chroot: str) -> bool:
-        result = subprocess.run(["sshd", "-T", "-C", "user={},host=vis,addr=127.0.0.1".format(username)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
+        result = subprocess.run(
+            ["sshd", "-T", "-C", f"user={username},host=vis,addr=127.0.0.1"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=False,
+        )
         if result.returncode != 0:
             return False
         expected = {
-            "chrootdirectory {}".format(chroot),
+            f"chrootdirectory {chroot}",
             "forcecommand internal-sftp -d /backup",
         }
         rendered = set(line.strip() for line in result.stdout.splitlines())
@@ -248,10 +259,10 @@ class LocalDepotServiceAdapter(ServiceAdapter):
     def render_config(self) -> str:
         lines = [
             "# VIS Software Depot",
-            "protocol = {}".format(self._protocol()),
-            "port = {}".format(self._port()),
-            "root = {}".format(self.service.filesystem_root),
-            "basic_auth_enabled = {}".format(self._basic_auth_enabled()),
+            f"protocol = {self._protocol()}",
+            f"port = {self._port()}",
+            f"root = {self.service.filesystem_root}",
+            f"basic_auth_enabled = {self._basic_auth_enabled()}",
             "download_mode = {}".format(self.service.settings.get("download_mode", "manual")),
         ]
         if self.service.settings.get("download_credential_path"):
@@ -345,9 +356,9 @@ class LocalHarborServiceAdapter(ServiceAdapter):
     def validate(self) -> ValidationResult:
         problems = []
         if not os.path.isfile(self.compose_file):
-            problems.append("missing {}".format(self.compose_file))
+            problems.append(f"missing {self.compose_file}")
         if not os.path.isdir(self.service.filesystem_root):
-            problems.append("missing {}".format(self.service.filesystem_root))
+            problems.append(f"missing {self.service.filesystem_root}")
         if self._protocol() == "https":
             for key in ("tls_cert_path", "tls_key_path"):
                 if not os.path.isfile(str(self.service.settings.get(key, ""))):
@@ -394,10 +405,10 @@ class LocalHarborServiceAdapter(ServiceAdapter):
             [
                 "# VIS Container Registry",
                 "engine = Harbor",
-                "compose_file = {}".format(self.compose_file),
-                "external_url = {}".format(self.service.endpoint),
-                "data_volume = {}".format(self.service.filesystem_root),
-                "protocol = {}".format(self._protocol()),
+                f"compose_file = {self.compose_file}",
+                f"external_url = {self.service.endpoint}",
+                f"data_volume = {self.service.filesystem_root}",
+                f"protocol = {self._protocol()}",
                 "port = {}".format(self.service.settings.get("port", 9443)),
                 "admin_user = {}".format(self.service.settings.get("admin_user", "")),
                 "tls_mode = {}".format(self.service.settings.get("tls_mode", "shared")),
@@ -411,13 +422,19 @@ class LocalHarborServiceAdapter(ServiceAdapter):
         result = subprocess.run(["systemctl", "is-active", "--quiet", "vis-harbor.service"], check=False)
         if result.returncode == 0:
             return True
-        result = subprocess.run(["docker", "ps", "--filter", "name=harbor-core", "--filter", "status=running", "-q"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
+        result = subprocess.run(
+            ["docker", "ps", "--filter", "name=harbor-core", "--filter", "status=running", "-q"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=False,
+        )
         return bool(result.stdout.strip())
 
     def _harbor_ping_ok(self) -> bool:
         protocol = self._protocol()
         port = str(self.service.settings.get("port", 9443 if protocol == "https" else 9080))
-        command = ["curl", "-fsS", "--connect-timeout", "5", "{}://127.0.0.1:{}/api/v2.0/ping".format(protocol, port)]
+        command = ["curl", "-fsS", "--connect-timeout", "5", f"{protocol}://127.0.0.1:{port}/api/v2.0/ping"]
         if protocol == "https":
             command.insert(1, "-k")
         result = subprocess.run(
@@ -458,7 +475,7 @@ class DNSServiceAdapter(ServiceAdapter):
                 try:
                     ipaddress.ip_address(server)
                 except ValueError:
-                    problems.append("{} is not a valid upstream DNS server IP address".format(server))
+                    problems.append(f"{server} is not a valid upstream DNS server IP address")
         names = set()
         addresses = set()
         for entry in entries:
@@ -466,7 +483,10 @@ class DNSServiceAdapter(ServiceAdapter):
             address = str(entry.get("address", ""))
             if not name:
                 problems.append("missing hostname")
-            elif not name.rstrip(".").lower().endswith(".{}".format(domain.lower())) and name.rstrip(".").lower() != domain.lower():
+            elif (
+                not name.rstrip(".").lower().endswith(f".{domain.lower()}")
+                and name.rstrip(".").lower() != domain.lower()
+            ):
                 problems.append("{} is outside {}".format(entry.get("name"), domain))
             elif name in names:
                 problems.append("{} is listed more than once".format(entry.get("name")))
@@ -476,13 +496,13 @@ class DNSServiceAdapter(ServiceAdapter):
             except ValueError:
                 problems.append("{} is not a valid IP address".format(address or "blank address"))
             if address in addresses:
-                problems.append("{} is listed more than once".format(address))
+                problems.append(f"{address} is listed more than once")
             addresses.add(address)
         if problems:
             return ValidationResult(False, "; ".join(problems), utc_now())
         if not entries:
             return ValidationResult(True, "DNS Server domain is configured", utc_now())
-        return ValidationResult(True, "{} paired DNS entries are valid".format(len(entries)), utc_now())
+        return ValidationResult(True, f"{len(entries)} paired DNS entries are valid", utc_now())
 
     def enable(self) -> ServiceDefinition:
         validation = self.validate()
@@ -531,7 +551,9 @@ class DNSServiceAdapter(ServiceAdapter):
             self.service.health_status = "needs_configuration"
         elif not self._config_valid():
             self.service.health_status = "needs_configuration"
-            self.service.last_validation_result = ValidationResult(False, "Unbound configuration check failed", utc_now())
+            self.service.last_validation_result = ValidationResult(
+                False, "Unbound configuration check failed", utc_now()
+            )
         elif self._service_active():
             self.service.health_status = "healthy"
         else:
@@ -548,15 +570,17 @@ class DNSServiceAdapter(ServiceAdapter):
             "  access-control: 0.0.0.0/0 allow",
         ]
         if bool(self.service.settings.get("disable_dnssec", False)):
-            lines.extend([
-                "  # DNSSEC validation disabled by VIS",
-                "  # {} is disabled".format(self.root_trust_anchor_path),
-            ])
+            lines.extend(
+                [
+                    "  # DNSSEC validation disabled by VIS",
+                    f"  # {self.root_trust_anchor_path} is disabled",
+                ]
+            )
         else:
             lines.append("  # DNSSEC validation uses the system root trust anchor")
         domain = str(self.service.settings.get("domain", "")).strip(".")
         if domain:
-            lines.append('  local-zone: "{}." static'.format(domain))
+            lines.append(f'  local-zone: "{domain}." static')
         else:
             lines.extend(["", "# Configure DNS domain before adding records."])
             return "\n".join(lines) + "\n"
@@ -564,7 +588,7 @@ class DNSServiceAdapter(ServiceAdapter):
         if bool(self.service.settings.get("forward_upstream_enabled", False)) and self._forward_upstream_servers():
             lines.extend(["", "forward-zone:", '  name: "."'])
             for server in self._forward_upstream_servers():
-                lines.append("  forward-addr: {}".format(server))
+                lines.append(f"  forward-addr: {server}")
             lines.append("  forward-no-cache: yes")
         if not entries:
             lines.extend(["", "# Add DNS entries to render local-data records."])
@@ -574,11 +598,11 @@ class DNSServiceAdapter(ServiceAdapter):
             name = str(entry.get("name", "")).rstrip(".")
             address = str(entry.get("address", ""))
             ttl = int(entry.get("ttl", self.service.settings.get("default_ttl", 3600)))
-            lines.append('local-data: "{}. {} IN A {}"'.format(name, ttl, address))
-            lines.append('local-data-ptr: "{} {}."'.format(address, name))
+            lines.append(f'local-data: "{name}. {ttl} IN A {address}"')
+            lines.append(f'local-data-ptr: "{address} {name}."')
         return "\n".join(lines) + "\n"
 
-    def _forward_upstream_servers(self) -> List[str]:
+    def _forward_upstream_servers(self) -> list[str]:
         servers = self.service.settings.get("forward_upstream_servers", [])
         if isinstance(servers, str):
             return [line.strip() for line in servers.splitlines() if line.strip()]
@@ -586,7 +610,7 @@ class DNSServiceAdapter(ServiceAdapter):
             return [str(server).strip() for server in servers if str(server).strip()]
         return []
 
-    def _entries(self) -> List[Dict[str, object]]:
+    def _entries(self) -> list[dict[str, object]]:
         entries = self.service.settings.get("entries", [])
         return entries if isinstance(entries, list) else []
 
@@ -619,7 +643,13 @@ class DNSServiceAdapter(ServiceAdapter):
     def _config_valid(self) -> bool:
         if not os.path.isfile(self.config_path):
             return False
-        result = subprocess.run(["unbound-checkconf", self.check_config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
+        result = subprocess.run(
+            ["unbound-checkconf", self.check_config_path],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=False,
+        )
         return result.returncode == 0
 
     def _service_active(self) -> bool:
@@ -648,7 +678,7 @@ class TimeServerAdapter(ServiceAdapter):
             try:
                 ipaddress.ip_network(network, strict=False)
             except ValueError:
-                problems.append("{} is not a valid allowed client network".format(network))
+                problems.append(f"{network} is not a valid allowed client network")
         upstream_sources = self._upstream_sources()
         local_fallback_enabled = bool(self.service.settings.get("local_fallback_enabled", False))
         if not upstream_sources and not local_fallback_enabled:
@@ -727,9 +757,11 @@ class TimeServerAdapter(ServiceAdapter):
             self.service.health_status = "disabled" if validation.ok else "needs_configuration"
         elif not validation.ok:
             self.service.health_status = "needs_configuration"
-        elif not self._service_active(self.chrony_service_name):
-            self.service.health_status = "stopped"
-        elif bool(self.service.settings.get("ptp_enabled", False)) and not self._service_active(self.ptp_service_name):
+        elif (
+            not self._service_active(self.chrony_service_name)
+            or bool(self.service.settings.get("ptp_enabled", False))
+            and not self._service_active(self.ptp_service_name)
+        ):
             self.service.health_status = "stopped"
         else:
             self.service.health_status = "healthy"
@@ -743,9 +775,9 @@ class TimeServerAdapter(ServiceAdapter):
             "port = {}".format(self.service.settings.get("port", 123)),
         ]
         for network in self._allowed_clients():
-            lines.append("allow = {}".format(network))
+            lines.append(f"allow = {network}")
         for source in self._upstream_sources():
-            lines.append("server = {} iburst".format(source))
+            lines.append(f"server = {source} iburst")
         if bool(self.service.settings.get("local_fallback_enabled", False)):
             lines.append("local_fallback = true")
             lines.append("fallback_stratum = {}".format(self.service.settings.get("fallback_stratum", 10)))
@@ -771,9 +803,9 @@ class TimeServerAdapter(ServiceAdapter):
             "port {}".format(int(self.service.settings.get("port", 123))),
         ]
         for source in self._upstream_sources():
-            lines.append("server {} iburst".format(source))
+            lines.append(f"server {source} iburst")
         for network in self._allowed_clients():
-            lines.append("allow {}".format(network))
+            lines.append(f"allow {network}")
         if bool(self.service.settings.get("local_fallback_enabled", False)):
             lines.append("local stratum {}".format(int(self.service.settings.get("fallback_stratum", 10))))
         lines.extend(["makestep 1.0 3", "rtcsync", ""])
@@ -790,11 +822,11 @@ class TimeServerAdapter(ServiceAdapter):
         timestamping = str(self.service.settings.get("ptp_timestamping", "auto"))
         config_lines = [
             "[global]",
-            "domainNumber {}".format(domain),
-            "network_transport {}".format(network_transport),
+            f"domainNumber {domain}",
+            f"network_transport {network_transport}",
         ]
         if timestamping in ("software", "hardware"):
-            config_lines.append("time_stamping {}".format(timestamping))
+            config_lines.append(f"time_stamping {timestamping}")
         config_lines.append("")
         os.makedirs(self.ptp_config_dir, exist_ok=True)
         with open(self.ptp_config_path, "w", encoding="utf-8") as handle:
@@ -808,7 +840,7 @@ class TimeServerAdapter(ServiceAdapter):
                 "",
                 "[Service]",
                 "Type=simple",
-                "ExecStart=/usr/sbin/ptp4l -i {} -m -f {}".format(interface, self.ptp_config_path),
+                f"ExecStart=/usr/sbin/ptp4l -i {interface} -m -f {self.ptp_config_path}",
                 "Restart=on-failure",
                 "",
                 "[Install]",
@@ -819,13 +851,13 @@ class TimeServerAdapter(ServiceAdapter):
         with open(self.ptp_unit_path, "w", encoding="utf-8") as handle:
             handle.write(unit)
 
-    def _allowed_clients(self) -> List[str]:
+    def _allowed_clients(self) -> list[str]:
         return self._setting_lines("allowed_clients")
 
-    def _upstream_sources(self) -> List[str]:
+    def _upstream_sources(self) -> list[str]:
         return self._setting_lines("upstream_sources")
 
-    def _setting_lines(self, key: str) -> List[str]:
+    def _setting_lines(self, key: str) -> list[str]:
         value = self.service.settings.get(key, [])
         if isinstance(value, str):
             return [line.strip() for line in value.splitlines() if line.strip()]
@@ -907,7 +939,9 @@ class DHCPServerAdapter(ServiceAdapter):
             "dns = disabled",
             "interface = {}".format(self.service.settings.get("interface", "")),
             "subnet = {}".format(self.service.settings.get("subnet_cidr", "")),
-            "pool = {} - {}".format(self.service.settings.get("pool_start", ""), self.service.settings.get("pool_end", "")),
+            "pool = {} - {}".format(
+                self.service.settings.get("pool_start", ""), self.service.settings.get("pool_end", "")
+            ),
             "gateway = {}".format(self.service.settings.get("gateway", "")),
             "dns_servers = {}".format(", ".join(self.service.settings.get("dns_servers", []))),
             "domain = {}".format(self.service.settings.get("domain", "")),
@@ -950,35 +984,35 @@ class DHCPServerAdapter(ServiceAdapter):
             lines.append("dhcp-authoritative")
         gateway = str(settings.get("gateway", "")).strip()
         if gateway:
-            lines.append("dhcp-option=option:router,{}".format(gateway))
+            lines.append(f"dhcp-option=option:router,{gateway}")
         dns_servers = settings.get("dns_servers", [])
         if dns_servers:
             lines.append("dhcp-option=option:dns-server,{}".format(",".join(dns_servers)))
         domain = str(settings.get("domain", "")).strip()
         if domain:
-            lines.append("dhcp-option=option:domain-name,{}".format(domain))
+            lines.append(f"dhcp-option=option:domain-name,{domain}")
         max_lease_time = int(settings.get("max_lease_time", 7200))
-        lines.append("dhcp-option=option:lease-time,{}".format(max_lease_time))
+        lines.append(f"dhcp-option=option:lease-time,{max_lease_time}")
         for reservation in settings.get("reservations", []):
             hostname = str(reservation.get("hostname", "")).strip()
-            suffix = ",{}".format(hostname) if hostname else ""
+            suffix = f",{hostname}" if hostname else ""
             lines.append("dhcp-host={},{}{}".format(reservation.get("mac", ""), reservation.get("ip", ""), suffix))
         with open(self.config_path, "w", encoding="utf-8") as handle:
             handle.write("\n".join(lines) + "\n")
 
     def _write_unit(self):
-        unit = """[Unit]
+        unit = f"""[Unit]
 Description=VIS DHCP Server
 After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/usr/sbin/dnsmasq --keep-in-foreground --conf-file={config_path}
+ExecStart=/usr/sbin/dnsmasq --keep-in-foreground --conf-file={self.config_path}
 Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
-""".format(config_path=self.config_path)
+"""
         with open(self.unit_path, "w", encoding="utf-8") as handle:
             handle.write(unit)
 
@@ -996,7 +1030,7 @@ WantedBy=multi-user.target
         if not interface:
             problems.append("Network interface is required")
         elif not re.match(r"^[A-Za-z0-9_.:-]+$", interface):
-            problems.append("{} is not a valid interface name".format(interface))
+            problems.append(f"{interface} is not a valid interface name")
         try:
             subnet = ipaddress.ip_network(str(settings.get("subnet_cidr", "")).strip(), strict=False)
         except ValueError:
@@ -1005,25 +1039,25 @@ WantedBy=multi-user.target
         pool_start = self._ip_value(settings.get("pool_start", ""), "Pool start", problems)
         pool_end = self._ip_value(settings.get("pool_end", ""), "Pool end", problems)
         if subnet and pool_start and pool_start not in subnet:
-            problems.append("Pool start must be inside {}".format(subnet))
+            problems.append(f"Pool start must be inside {subnet}")
         if subnet and pool_end and pool_end not in subnet:
-            problems.append("Pool end must be inside {}".format(subnet))
+            problems.append(f"Pool end must be inside {subnet}")
         if pool_start and pool_end and int(pool_start) > int(pool_end):
             problems.append("Pool start must be lower than or equal to pool end")
         gateway = str(settings.get("gateway", "")).strip()
         if gateway:
             gateway_ip = self._ip_value(gateway, "Gateway", problems)
             if subnet and gateway_ip and gateway_ip not in subnet:
-                problems.append("Gateway must be inside {}".format(subnet))
+                problems.append(f"Gateway must be inside {subnet}")
         for dns_server in settings.get("dns_servers", []):
-            self._ip_value(dns_server, "DNS server {}".format(dns_server), problems)
+            self._ip_value(dns_server, f"DNS server {dns_server}", problems)
         for reservation in settings.get("reservations", []):
             mac = str(reservation.get("mac", "")).strip()
             if not re.match(r"^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}$", mac):
                 problems.append("{} is not a valid reservation MAC address".format(mac or "blank MAC"))
             reserved_ip = self._ip_value(reservation.get("ip", ""), "Reservation IP", problems)
             if subnet and reserved_ip and reserved_ip not in subnet:
-                problems.append("Reservation IP {} must be inside {}".format(reserved_ip, subnet))
+                problems.append(f"Reservation IP {reserved_ip} must be inside {subnet}")
         try:
             default_lease = int(settings.get("default_lease_time", 3600))
             max_lease = int(settings.get("max_lease_time", 7200))
@@ -1033,14 +1067,16 @@ WantedBy=multi-user.target
             if default_lease < 60 or default_lease > 604800:
                 problems.append("Default lease time must be between 60 and 604800 seconds")
             if max_lease < default_lease or max_lease > 604800:
-                problems.append("Max lease time must be greater than default lease time and no more than 604800 seconds")
+                problems.append(
+                    "Max lease time must be greater than default lease time and no more than 604800 seconds"
+                )
         return problems
 
     def _ip_value(self, value, label, problems):
         try:
             return ipaddress.ip_address(str(value).strip())
         except ValueError:
-            problems.append("{} must be a valid IP address".format(label))
+            problems.append(f"{label} must be a valid IP address")
             return None
 
 
@@ -1120,7 +1156,7 @@ class PyKMIPServiceAdapter(ServiceAdapter):
                 "protocol = kmip",
                 "listen = {}".format(self.service.settings.get("listen_address", "0.0.0.0")),
                 "port = {}".format(self.service.settings.get("port", 5696)),
-                "database = {}".format(self._database_path()),
+                f"database = {self._database_path()}",
                 "tls_mode = shared",
                 "tls_ca = {}".format(self.service.settings.get("tls_ca_path", "")),
                 "tls_cert = {}".format(self.service.settings.get("tls_cert_path", "")),
@@ -1144,12 +1180,12 @@ class PyKMIPServiceAdapter(ServiceAdapter):
             "key_path={}".format(self.service.settings.get("tls_key_path", "")),
             "ca_path={}".format(self.service.settings.get("tls_ca_path", "")),
             "auth_suite=TLS1.2",
-            "policy_path={}".format(self.policy_dir),
+            f"policy_path={self.policy_dir}",
             "logging_level=INFO",
             "",
             "[database]",
             "engine=sqlite",
-            "name={}".format(database_path),
+            f"name={database_path}",
             "",
         ]
         with open(self.config_path, "w", encoding="utf-8") as handle:
@@ -1157,7 +1193,7 @@ class PyKMIPServiceAdapter(ServiceAdapter):
         os.chmod(self.config_path, 0o600)
 
     def _write_unit(self):
-        unit = """[Unit]
+        unit = f"""[Unit]
 Description=VIS Key Management Service
 After=network-online.target
 Wants=network-online.target
@@ -1165,13 +1201,13 @@ Wants=network-online.target
 [Service]
 Type=simple
 Environment=PYTHONPATH=/opt/vis/app
-ExecStart=/opt/vis/app/venv/bin/python -m vis.pykmip_compat -f {config_path} --ignore_tls_client_auth
+ExecStart=/opt/vis/app/venv/bin/python -m vis.pykmip_compat -f {self.config_path} --ignore_tls_client_auth
 Restart=on-failure
 RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
-""".format(config_path=self.config_path)
+"""
         with open(self.unit_path, "w", encoding="utf-8") as handle:
             handle.write(unit)
 
@@ -1183,14 +1219,20 @@ WantedBy=multi-user.target
                 problems.append("KMIP port must be between 1 and 65535")
         except (TypeError, ValueError):
             problems.append("KMIP port must be a whole number")
-        for key, label in (("tls_ca_path", "VIS Root CA"), ("tls_cert_path", "TLS certificate"), ("tls_key_path", "TLS private key")):
+        for key, label in (
+            ("tls_ca_path", "VIS Root CA"),
+            ("tls_cert_path", "TLS certificate"),
+            ("tls_key_path", "TLS private key"),
+        ):
             path = str(self.service.settings.get(key, "")).strip()
             if not path or not os.path.isfile(path):
-                problems.append("{} is missing".format(label))
+                problems.append(f"{label} is missing")
         return problems
 
     def _database_path(self):
-        return str(self.service.settings.get("database_path", "")) or os.path.join(self.service.filesystem_root, "pykmip.db")
+        return str(self.service.settings.get("database_path", "")) or os.path.join(
+            self.service.filesystem_root, "pykmip.db"
+        )
 
     def _service_active(self):
         try:
@@ -1215,11 +1257,20 @@ class LDAPProviderAdapter(ServiceAdapter):
 
     def validate(self) -> ValidationResult:
         missing = []
-        for key, label in (("base_dn", "Base DN"), ("bind_dn", "Bind DN"), ("admin_user", "Admin user"), ("admin_password", "Admin password")):
+        for key, label in (
+            ("base_dn", "Base DN"),
+            ("bind_dn", "Bind DN"),
+            ("admin_user", "Admin user"),
+            ("admin_password", "Admin password"),
+        ):
             if not str(self.service.settings.get(key, "")).strip():
                 missing.append(label)
         if self._protocol() == "ldaps":
-            for key, label in (("tls_ca_path", "Root CA"), ("tls_cert_path", "TLS certificate"), ("tls_key_path", "TLS private key")):
+            for key, label in (
+                ("tls_ca_path", "Root CA"),
+                ("tls_cert_path", "TLS certificate"),
+                ("tls_key_path", "TLS private key"),
+            ):
                 path = str(self.service.settings.get(key, ""))
                 if not path or not os.path.isfile(path):
                     missing.append(label)
@@ -1273,10 +1324,14 @@ class LDAPProviderAdapter(ServiceAdapter):
             self.service.health_status = "needs_configuration"
         elif self._service_active() and self._ldap_search_ok():
             self.service.health_status = "healthy"
-            self.service.last_validation_result = ValidationResult(True, "OpenLDAP service and base DN verified", utc_now())
+            self.service.last_validation_result = ValidationResult(
+                True, "OpenLDAP service and base DN verified", utc_now()
+            )
         elif self._service_active():
             self.service.health_status = "needs_configuration"
-            self.service.last_validation_result = ValidationResult(False, "OpenLDAP service is active but LDAP bind/search failed", utc_now())
+            self.service.last_validation_result = ValidationResult(
+                False, "OpenLDAP service is active but LDAP bind/search failed", utc_now()
+            )
         else:
             self.service.health_status = "stopped"
         return self.service
@@ -1285,12 +1340,12 @@ class LDAPProviderAdapter(ServiceAdapter):
         lines = [
             "# VIS LDAP Provider",
             "engine = OpenLDAP",
-            "protocol = {}".format(self._protocol()),
+            f"protocol = {self._protocol()}",
             "port = {}".format(self.service.settings.get("port", 389)),
             "base_dn = {}".format(self.service.settings.get("base_dn", "")),
             "bind_dn = {}".format(self.service.settings.get("bind_dn", "")),
             "admin_user = {}".format(self.service.settings.get("admin_user", "")),
-            "data_root = {}".format(self.service.filesystem_root),
+            f"data_root = {self.service.filesystem_root}",
             "users = {}".format(len(self._items("users"))),
             "groups = {}".format(len(self._items("groups"))),
         ]
@@ -1308,7 +1363,7 @@ class LDAPProviderAdapter(ServiceAdapter):
     def _protocol(self) -> str:
         return str(self.service.settings.get("protocol", "ldap")).lower()
 
-    def _items(self, key: str) -> List[Dict[str, object]]:
+    def _items(self, key: str) -> list[dict[str, object]]:
         items = self.service.settings.get(key, [])
         return items if isinstance(items, list) else []
 
@@ -1320,7 +1375,13 @@ class LDAPProviderAdapter(ServiceAdapter):
         if os.path.isdir(data_dir):
             shutil.rmtree(data_dir)
         os.makedirs(data_dir, exist_ok=True)
-        slapadd = subprocess.run(["slapadd", "-f", self._slapd_conf_path(), "-l", self._bootstrap_ldif_path()], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
+        slapadd = subprocess.run(
+            ["slapadd", "-f", self._slapd_conf_path(), "-l", self._bootstrap_ldif_path()],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=False,
+        )
         if slapadd.returncode != 0:
             raise OSError(slapadd.stderr.strip() or "Unable to load VIS LDAP directory")
         subprocess.run(["chown", "-R", "openldap:openldap", self.service.filesystem_root], check=False)
@@ -1384,13 +1445,13 @@ class LDAPProviderAdapter(ServiceAdapter):
             [
                 "database mdb",
                 "maxsize 1073741824",
-                "suffix \"{}\"".format(self._base_dn()),
-                "rootdn \"{}\"".format(self._bind_dn()),
-                "rootpw {}".format(self._password_hash()),
-                "directory {}".format(self._data_dir()),
+                f'suffix "{self._base_dn()}"',
+                f'rootdn "{self._bind_dn()}"',
+                f"rootpw {self._password_hash()}",
+                f"directory {self._data_dir()}",
                 "index objectClass eq",
                 "index uid eq",
-                "access to * by dn.exact=\"{}\" manage by * read".format(self._bind_dn()),
+                f'access to * by dn.exact="{self._bind_dn()}" manage by * read',
                 "overlay memberof",
                 "memberof-group-oc groupOfNames",
                 "memberof-member-ad member",
@@ -1416,12 +1477,12 @@ class LDAPProviderAdapter(ServiceAdapter):
                 members = [self._bind_dn()]
             changes.extend(
                 [
-                    "dn: cn={},ou=groups,{}".format(name, self._base_dn()),
+                    f"dn: cn={name},ou=groups,{self._base_dn()}",
                     "changetype: modify",
                     "replace: member",
                 ]
             )
-            changes.extend("member: {}".format(member) for member in members)
+            changes.extend(f"member: {member}" for member in members)
             changes.append("")
         if not changes:
             return
@@ -1432,7 +1493,7 @@ class LDAPProviderAdapter(ServiceAdapter):
                 "ldapmodify",
                 "-x",
                 "-H",
-                "{}://127.0.0.1:{}".format(self._protocol(), self._port()),
+                f"{self._protocol()}://127.0.0.1:{self._port()}",
                 "-D",
                 self._bind_dn(),
                 "-w",
@@ -1458,14 +1519,14 @@ class LDAPProviderAdapter(ServiceAdapter):
                 ("entryUUID", self._entry_uuid("base", self._base_dn())),
             ],
             [
-                ("dn", "ou=users,{}".format(self._base_dn())),
+                ("dn", f"ou=users,{self._base_dn()}"),
                 ("objectClass", "top"),
                 ("objectClass", "organizationalUnit"),
                 ("ou", "users"),
                 ("entryUUID", self._entry_uuid("ou", "users")),
             ],
             [
-                ("dn", "ou=groups,{}".format(self._base_dn())),
+                ("dn", f"ou=groups,{self._base_dn()}"),
                 ("objectClass", "top"),
                 ("objectClass", "organizationalUnit"),
                 ("ou", "groups"),
@@ -1503,7 +1564,7 @@ class LDAPProviderAdapter(ServiceAdapter):
             name = str(group.get("name", "")).strip()
             if not name:
                 continue
-            group_dn = "cn={},ou=groups,{}".format(name, self._base_dn())
+            group_dn = f"cn={name},ou=groups,{self._base_dn()}"
             members = []
             for member_id in group.get("members", []):
                 user = self._user_by_id(str(member_id))
@@ -1531,7 +1592,7 @@ class LDAPProviderAdapter(ServiceAdapter):
         urls = "ldap://0.0.0.0:389/"
         if self._protocol() == "ldaps":
             urls = "ldaps://0.0.0.0:636/"
-        return """[Unit]
+        return f"""[Unit]
 Description=VIS OpenLDAP Provider
 After=network-online.target
 Wants=network-online.target
@@ -1539,13 +1600,13 @@ Wants=network-online.target
 [Service]
 Type=forking
 ExecStartPre=/usr/bin/install -d -o openldap -g openldap -m 755 /run/vis-ldap
-ExecStart=/usr/sbin/slapd -h "{urls}" -f {config} -u openldap -g openldap
+ExecStart=/usr/sbin/slapd -h "{urls}" -f {self._slapd_conf_path()} -u openldap -g openldap
 ExecStop=/bin/kill -TERM $MAINPID
 Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
-""".format(urls=urls, config=self._slapd_conf_path())
+"""
 
     def _ldap_search_ok(self) -> bool:
         env = os.environ.copy()
@@ -1554,7 +1615,9 @@ WantedBy=multi-user.target
             "ldapsearch",
             "-x",
             "-H",
-            "{}://127.0.0.1:{}".format(self._protocol(), self.service.settings.get("port", 636 if self._protocol() == "ldaps" else 389)),
+            "{}://127.0.0.1:{}".format(
+                self._protocol(), self.service.settings.get("port", 636 if self._protocol() == "ldaps" else 389)
+            ),
             "-D",
             self._bind_dn(),
             "-w",
@@ -1565,7 +1628,9 @@ WantedBy=multi-user.target
             "base",
             "dn",
         ]
-        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env, check=False)
+        result = subprocess.run(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env, check=False
+        )
         return result.returncode == 0 and self._base_dn().lower() in result.stdout.lower()
 
     def _service_active(self) -> bool:
@@ -1574,7 +1639,9 @@ WantedBy=multi-user.target
 
     def _password_hash(self) -> str:
         password = str(self.service.settings.get("admin_password", ""))
-        result = subprocess.run(["slappasswd", "-s", password], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
+        result = subprocess.run(
+            ["slappasswd", "-s", password], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False
+        )
         if result.returncode == 0 and result.stdout.strip():
             return result.stdout.strip()
         return "{CLEARTEXT}" + password.replace("\n", "")
@@ -1624,7 +1691,7 @@ WantedBy=multi-user.target
         return "vis"
 
     def _user_dn(self, uid: str) -> str:
-        return "uid={},ou=users,{}".format(uid, self._base_dn())
+        return f"uid={uid},ou=users,{self._base_dn()}"
 
     def _user_by_id(self, user_id: str):
         for user in self._items("users"):
@@ -1632,7 +1699,7 @@ WantedBy=multi-user.target
                 return user
         return None
 
-    def _group_members(self, group) -> List[str]:
+    def _group_members(self, group) -> list[str]:
         members = []
         for member_id in group.get("members", []):
             user = self._user_by_id(str(member_id))
@@ -1648,7 +1715,7 @@ WantedBy=multi-user.target
             return self._entry_uuid(kind, key)
 
     def _entry_uuid(self, kind: str, key: str) -> str:
-        value = "vis:{}:{}:{}".format(self._base_dn().lower(), kind, str(key).lower())
+        value = f"vis:{self._base_dn().lower()}:{kind}:{str(key).lower()}"
         return str(uuid.uuid5(uuid.NAMESPACE_DNS, value))
 
     def _safe_rdn(self, value: str) -> str:
@@ -1669,7 +1736,12 @@ class OIDCProviderAdapter(ServiceAdapter):
 
     def validate(self) -> ValidationResult:
         missing = []
-        for key, label in (("admin_user", "Admin user"), ("admin_password", "Admin password"), ("realm", "Realm"), ("default_group", "Default group")):
+        for key, label in (
+            ("admin_user", "Admin user"),
+            ("admin_password", "Admin password"),
+            ("realm", "Realm"),
+            ("default_group", "Default group"),
+        ):
             if not str(self.service.settings.get(key, "")).strip():
                 missing.append(label)
         if self._protocol() == "https":
@@ -1734,7 +1806,9 @@ class OIDCProviderAdapter(ServiceAdapter):
             try:
                 self._sync_realm_group_users_and_clients()
                 self.service.health_status = "healthy"
-                self.service.last_validation_result = ValidationResult(True, "Keycloak realm {} and groups verified".format(self._realm()), utc_now())
+                self.service.last_validation_result = ValidationResult(
+                    True, f"Keycloak realm {self._realm()} and groups verified", utc_now()
+                )
             except OSError as err:
                 self.service.health_status = "needs_configuration"
                 self.service.last_validation_result = ValidationResult(False, str(err), utc_now())
@@ -1746,17 +1820,17 @@ class OIDCProviderAdapter(ServiceAdapter):
         lines = [
             "# VIS OIDC Provider",
             "engine = Keycloak",
-            "image = {}".format(self._image()),
-            "login_theme = {}".format(self._login_theme()),
-            "protocol = {}".format(self._protocol()),
-            "port = {}".format(self._port()),
-            "realm = {}".format(self._realm()),
-            "default_group = {}".format(self._group()),
+            f"image = {self._image()}",
+            f"login_theme = {self._login_theme()}",
+            f"protocol = {self._protocol()}",
+            f"port = {self._port()}",
+            f"realm = {self._realm()}",
+            f"default_group = {self._group()}",
             "admin_user = {}".format(self.service.settings.get("admin_user", "")),
-            "data_root = {}".format(self.service.filesystem_root),
-            "users = {}".format(len(self._users())),
-            "groups = {}".format(len(self._groups())),
-            "oidc_clients = {}".format(len(self._oidc_clients())),
+            f"data_root = {self.service.filesystem_root}",
+            f"users = {len(self._users())}",
+            f"groups = {len(self._groups())}",
+            f"oidc_clients = {len(self._oidc_clients())}",
         ]
         if self._protocol() == "https":
             self._apply_shared_tls_settings()
@@ -1778,8 +1852,16 @@ class OIDCProviderAdapter(ServiceAdapter):
         theme_dir = self._stage_theme()
         env_path = os.path.join(self.config_dir, "keycloak.env")
         with open(env_path, "w", encoding="utf-8") as handle:
-            handle.write("KC_BOOTSTRAP_ADMIN_USERNAME={}\n".format(self._env_value(str(self.service.settings.get("admin_user", "")))))
-            handle.write("KC_BOOTSTRAP_ADMIN_PASSWORD={}\n".format(self._env_value(str(self.service.settings.get("admin_password", "")))))
+            handle.write(
+                "KC_BOOTSTRAP_ADMIN_USERNAME={}\n".format(
+                    self._env_value(str(self.service.settings.get("admin_user", "")))
+                )
+            )
+            handle.write(
+                "KC_BOOTSTRAP_ADMIN_PASSWORD={}\n".format(
+                    self._env_value(str(self.service.settings.get("admin_password", "")))
+                )
+            )
         os.chmod(env_path, 0o600)
         container_port = 8443 if self._protocol() == "https" else 8080
         start_args = "start-dev --hostname-strict=false"
@@ -1788,8 +1870,8 @@ class OIDCProviderAdapter(ServiceAdapter):
             tls_paths = self._keycloak_tls_paths()
             start_args = "start-dev --http-enabled=false --https-port=8443 --hostname-strict=false --https-certificate-file=/opt/keycloak/vis-tls/server.crt --https-certificate-key-file=/opt/keycloak/vis-tls/server.key"
             tls_mount = "-v {tls_dir}:/opt/keycloak/vis-tls:ro ".format(tls_dir=os.path.dirname(tls_paths["cert"]))
-        theme_mount = "-v {theme_dir}:/opt/keycloak/themes/{theme_name}:ro ".format(theme_dir=theme_dir, theme_name=self._login_theme())
-        unit = """[Unit]
+        theme_mount = f"-v {theme_dir}:/opt/keycloak/themes/{self._login_theme()}:ro "
+        unit = f"""[Unit]
 Description=VIS Keycloak OIDC Provider
 Requires=docker.service
 After=docker.service network-online.target
@@ -1799,8 +1881,8 @@ Wants=network-online.target
 Type=simple
 EnvironmentFile={env_path}
 ExecStartPre=-/usr/bin/docker rm -f vis-keycloak
-ExecStartPre=/usr/bin/install -d -o 1000 -g 0 -m 775 {data_root}
-ExecStart=/usr/bin/docker run --name vis-keycloak --rm --env-file {env_path} -p {port}:{container_port} -v {data_root}:/opt/keycloak/data {tls_mount}{theme_mount}{image} {start_args}
+ExecStartPre=/usr/bin/install -d -o 1000 -g 0 -m 775 {self.service.filesystem_root}
+ExecStart=/usr/bin/docker run --name vis-keycloak --rm --env-file {env_path} -p {self._port()}:{container_port} -v {self.service.filesystem_root}:/opt/keycloak/data {tls_mount}{theme_mount}{self._image()} {start_args}
 ExecStop=/usr/bin/docker stop vis-keycloak
 Restart=on-failure
 RestartSec=5
@@ -1808,16 +1890,7 @@ TimeoutStartSec=0
 
 [Install]
 WantedBy=multi-user.target
-""".format(
-            env_path=env_path,
-            data_root=self.service.filesystem_root,
-            port=self._port(),
-            container_port=container_port,
-            tls_mount=tls_mount,
-            theme_mount=theme_mount,
-            image=self._image(),
-            start_args=start_args,
-        )
+"""
         with open(self.unit_path, "w", encoding="utf-8") as handle:
             handle.write(unit)
 
@@ -1831,9 +1904,18 @@ WantedBy=multi-user.target
             if name:
                 group_keycloak_ids[str(group.get("id", ""))] = self._ensure_group(token, name)
         for user in self._users():
-            group_ids = [group_keycloak_ids[group_id] for group_id in user.get("groups", []) if group_id in group_keycloak_ids]
+            group_ids = [
+                group_keycloak_ids[group_id] for group_id in user.get("groups", []) if group_id in group_keycloak_ids
+            ]
             if not group_ids and group_keycloak_ids:
-                default = next((group for group in self._groups_with_default() if str(group.get("name", "")).lower() == self._group().lower()), None)
+                default = next(
+                    (
+                        group
+                        for group in self._groups_with_default()
+                        if str(group.get("name", "")).lower() == self._group().lower()
+                    ),
+                    None,
+                )
                 if default and default.get("id") in group_keycloak_ids:
                     group_ids = [group_keycloak_ids[default.get("id")]]
             self._ensure_user(token, user, group_ids)
@@ -1861,24 +1943,26 @@ WantedBy=multi-user.target
     def _ensure_group(self, token: str, group_name: str = None) -> str:
         realm = parse.quote(self._realm(), safe="")
         group_name = str(group_name or self._group()).strip()
-        groups = self._kc_json("GET", "/admin/realms/{}/groups?search={}".format(realm, parse.quote(group_name)), token=token)
+        groups = self._kc_json("GET", f"/admin/realms/{realm}/groups?search={parse.quote(group_name)}", token=token)
         for group in groups or []:
             if group.get("name") == group_name:
                 return str(group.get("id"))
-        self._kc_json("POST", "/admin/realms/{}/groups".format(realm), token=token, payload={"name": group_name})
-        groups = self._kc_json("GET", "/admin/realms/{}/groups?search={}".format(realm, parse.quote(group_name)), token=token)
+        self._kc_json("POST", f"/admin/realms/{realm}/groups", token=token, payload={"name": group_name})
+        groups = self._kc_json("GET", f"/admin/realms/{realm}/groups?search={parse.quote(group_name)}", token=token)
         for group in groups or []:
             if group.get("name") == group_name:
                 return str(group.get("id"))
-        raise OSError("Unable to create Keycloak group {}".format(group_name))
+        raise OSError(f"Unable to create Keycloak group {group_name}")
 
-    def _ensure_user(self, token: str, user: Dict[str, object], group_ids: List[str]) -> None:
+    def _ensure_user(self, token: str, user: dict[str, object], group_ids: list[str]) -> None:
         username = str(user.get("username", "")).strip()
         password = str(user.get("password", ""))
         if not username or not password:
             return
         realm = parse.quote(self._realm(), safe="")
-        matches = self._kc_json("GET", "/admin/realms/{}/users?username={}&exact=true".format(realm, parse.quote(username)), token=token)
+        matches = self._kc_json(
+            "GET", f"/admin/realms/{realm}/users?username={parse.quote(username)}&exact=true", token=token
+        )
         if matches:
             user_id = str(matches[0].get("id"))
             payload = {
@@ -1888,7 +1972,12 @@ WantedBy=multi-user.target
                 "lastName": str(user.get("last_name", "")),
                 "email": str(user.get("email", "")),
             }
-            self._kc_json("PUT", "/admin/realms/{}/users/{}".format(realm, parse.quote(user_id, safe="")), token=token, payload=payload)
+            self._kc_json(
+                "PUT",
+                "/admin/realms/{}/users/{}".format(realm, parse.quote(user_id, safe="")),
+                token=token,
+                payload=payload,
+            )
         else:
             payload = {
                 "username": username,
@@ -1898,15 +1987,17 @@ WantedBy=multi-user.target
                 "email": str(user.get("email", "")),
                 "credentials": [{"type": "password", "value": password, "temporary": False}],
             }
-            self._kc_json("POST", "/admin/realms/{}/users".format(realm), token=token, payload=payload)
-            matches = self._kc_json("GET", "/admin/realms/{}/users?username={}&exact=true".format(realm, parse.quote(username)), token=token)
+            self._kc_json("POST", f"/admin/realms/{realm}/users", token=token, payload=payload)
+            matches = self._kc_json(
+                "GET", f"/admin/realms/{realm}/users?username={parse.quote(username)}&exact=true", token=token
+            )
             if not matches:
-                raise OSError("Unable to create Keycloak user {}".format(username))
+                raise OSError(f"Unable to create Keycloak user {username}")
             user_id = str(matches[0].get("id"))
         for group_id in group_ids:
-            self._kc_json("PUT", "/admin/realms/{}/users/{}/groups/{}".format(realm, user_id, group_id), token=token)
+            self._kc_json("PUT", f"/admin/realms/{realm}/users/{user_id}/groups/{group_id}", token=token)
 
-    def ensure_oidc_client(self, client: Dict[str, object], token: str = None) -> Dict[str, object]:
+    def ensure_oidc_client(self, client: dict[str, object], token: str = None) -> dict[str, object]:
         client_id = str(client.get("client_id", "")).strip()
         redirect_url = str(client.get("redirect_url", "")).strip()
         if not client_id or not redirect_url:
@@ -1928,39 +2019,61 @@ WantedBy=multi-user.target
         }
         keycloak_id = str(client.get("keycloak_id", "")).strip()
         if keycloak_id:
-            self._kc_json("PUT", "/admin/realms/{}/clients/{}".format(realm, parse.quote(keycloak_id, safe="")), token=token, payload=payload)
+            self._kc_json(
+                "PUT",
+                "/admin/realms/{}/clients/{}".format(realm, parse.quote(keycloak_id, safe="")),
+                token=token,
+                payload=payload,
+            )
         else:
-            matches = self._kc_json("GET", "/admin/realms/{}/clients?clientId={}".format(realm, parse.quote(client_id)), token=token)
+            matches = self._kc_json(
+                "GET", f"/admin/realms/{realm}/clients?clientId={parse.quote(client_id)}", token=token
+            )
             for match in matches or []:
                 if match.get("clientId") == client_id:
                     keycloak_id = str(match.get("id", ""))
                     break
             if keycloak_id:
-                self._kc_json("PUT", "/admin/realms/{}/clients/{}".format(realm, parse.quote(keycloak_id, safe="")), token=token, payload=payload)
+                self._kc_json(
+                    "PUT",
+                    "/admin/realms/{}/clients/{}".format(realm, parse.quote(keycloak_id, safe="")),
+                    token=token,
+                    payload=payload,
+                )
             else:
-                self._kc_json("POST", "/admin/realms/{}/clients".format(realm), token=token, payload=payload)
-                matches = self._kc_json("GET", "/admin/realms/{}/clients?clientId={}".format(realm, parse.quote(client_id)), token=token)
+                self._kc_json("POST", f"/admin/realms/{realm}/clients", token=token, payload=payload)
+                matches = self._kc_json(
+                    "GET", f"/admin/realms/{realm}/clients?clientId={parse.quote(client_id)}", token=token
+                )
                 for match in matches or []:
                     if match.get("clientId") == client_id:
                         keycloak_id = str(match.get("id", ""))
                         break
         if not keycloak_id:
-            raise OSError("Unable to create Keycloak OIDC client {}".format(client_id))
-        secret_payload = self._kc_json("GET", "/admin/realms/{}/clients/{}/client-secret".format(realm, parse.quote(keycloak_id, safe="")), token=token)
+            raise OSError(f"Unable to create Keycloak OIDC client {client_id}")
+        secret_payload = self._kc_json(
+            "GET",
+            "/admin/realms/{}/clients/{}/client-secret".format(realm, parse.quote(keycloak_id, safe="")),
+            token=token,
+        )
         secret = str(secret_payload.get("value", "")).strip()
         if not secret:
-            raise OSError("Keycloak did not return a client secret for {}".format(client_id))
+            raise OSError(f"Keycloak did not return a client secret for {client_id}")
         updated = dict(client)
-        updated.update({"client_id": client_id, "redirect_url": redirect_url, "keycloak_id": keycloak_id, "client_secret": secret})
+        updated.update(
+            {"client_id": client_id, "redirect_url": redirect_url, "keycloak_id": keycloak_id, "client_secret": secret}
+        )
         return updated
 
-    def delete_oidc_client(self, client: Dict[str, object]) -> None:
+    def delete_oidc_client(self, client: dict[str, object]) -> None:
         keycloak_id = str(client.get("keycloak_id", "")).strip()
         if not keycloak_id:
             return
         token = self._admin_token()
         realm = parse.quote(self._realm(), safe="")
-        self._kc_json("DELETE", "/admin/realms/{}/clients/{}".format(realm, parse.quote(keycloak_id, safe="")), token=token)
+        self._kc_json(
+            "DELETE", "/admin/realms/{}/clients/{}".format(realm, parse.quote(keycloak_id, safe="")), token=token
+        )
 
     def _admin_token(self) -> str:
         body = parse.urlencode(
@@ -1971,24 +2084,26 @@ WantedBy=multi-user.target
                 "password": str(self.service.settings.get("admin_password", "")),
             }
         ).encode("utf-8")
-        req = request.Request(self._base_url() + "/realms/master/protocol/openid-connect/token", data=body, method="POST")
+        req = request.Request(
+            self._base_url() + "/realms/master/protocol/openid-connect/token", data=body, method="POST"
+        )
         req.add_header("Content-Type", "application/x-www-form-urlencoded")
         try:
             with self._urlopen(req, timeout=10) as response:
                 payload = json.loads(response.read().decode("utf-8"))
         except error.URLError as err:
-            raise OSError("Unable to authenticate to Keycloak: {}".format(err)) from err
+            raise OSError(f"Unable to authenticate to Keycloak: {err}") from err
         token = payload.get("access_token")
         if not token:
             raise OSError("Keycloak did not return an admin token")
         return str(token)
 
-    def _kc_json(self, method: str, path: str, token: str, payload: Dict[str, object] = None):
+    def _kc_json(self, method: str, path: str, token: str, payload: dict[str, object] = None):
         data = None
         if payload is not None:
             data = json.dumps(payload).encode("utf-8")
         req = request.Request(self._base_url() + path, data=data, method=method)
-        req.add_header("Authorization", "Bearer {}".format(token))
+        req.add_header("Authorization", f"Bearer {token}")
         if payload is not None:
             req.add_header("Content-Type", "application/json")
         try:
@@ -1998,9 +2113,9 @@ WantedBy=multi-user.target
         except error.HTTPError as err:
             if err.code in (201, 204):
                 return {}
-            raise OSError("Keycloak API {} {} failed with HTTP {}".format(method, path, err.code)) from err
+            raise OSError(f"Keycloak API {method} {path} failed with HTTP {err.code}") from err
         except error.URLError as err:
-            raise OSError("Keycloak API {} {} failed: {}".format(method, path, err)) from err
+            raise OSError(f"Keycloak API {method} {path} failed: {err}") from err
 
     def _wait_ready(self, timeout: int = 90) -> bool:
         deadline = time.time() + timeout
@@ -2069,15 +2184,15 @@ WantedBy=multi-user.target
     def _login_theme(self) -> str:
         return str(self.service.settings.get("login_theme", "vis")).strip() or "vis"
 
-    def _users(self) -> List[Dict[str, object]]:
+    def _users(self) -> list[dict[str, object]]:
         users = self.service.settings.get("users", [])
         return users if isinstance(users, list) else []
 
-    def _groups(self) -> List[Dict[str, object]]:
+    def _groups(self) -> list[dict[str, object]]:
         groups = self.service.settings.get("groups", [])
         return groups if isinstance(groups, list) else []
 
-    def _groups_with_default(self) -> List[Dict[str, object]]:
+    def _groups_with_default(self) -> list[dict[str, object]]:
         groups = [dict(group) for group in self._groups() if isinstance(group, dict)]
         expected = [
             {"id": "vcf-admins", "name": self._group(), "description": "Default VCF administrators", "members": []},
@@ -2090,12 +2205,12 @@ WantedBy=multi-user.target
                 names.add(str(group["name"]).lower())
         return groups
 
-    def _oidc_clients(self) -> List[Dict[str, object]]:
+    def _oidc_clients(self) -> list[dict[str, object]]:
         clients = self.service.settings.get("oidc_clients", [])
         return clients if isinstance(clients, list) else []
 
     def _base_url(self) -> str:
-        return "{}://127.0.0.1:{}".format(self._protocol(), self._port())
+        return f"{self._protocol()}://127.0.0.1:{self._port()}"
 
     def _env_value(self, value: str) -> str:
         return value.replace("\\", "\\\\").replace("\n", "")
@@ -2105,7 +2220,8 @@ WantedBy=multi-user.target
             return request.urlopen(target, timeout=timeout, context=ssl._create_unverified_context())
         return request.urlopen(target, timeout=timeout)
 
-class ContentLibraryServiceAdapter(ServiceAdapter):
+
+class LocalContentLibraryServiceAdapter(ServiceAdapter):
     def validate(self) -> ValidationResult:
         missing = []
         if not os.path.isdir(self.service.filesystem_root):
@@ -2119,6 +2235,17 @@ class ContentLibraryServiceAdapter(ServiceAdapter):
             return ValidationResult(False, "Missing: {}".format(", ".join(missing)), utc_now())
         return ValidationResult(True, "Content Library configuration is valid", utc_now())
 
+    def has_synced(self) -> bool:
+        stats_file = Path(self.service.filesystem_root, "cache", _SYNC_STATS_FILE)
+        if not stats_file.is_file():
+            return False
+
+        try:
+            stats = ContentLibrarySyncStats.from_json(stats_file.read_bytes())
+            return stats.last_sync_result == "SUCCESS"
+        except:
+            return False
+
     def enable(self) -> ServiceDefinition:
         self.service.enabled = True
         self._write_unit()
@@ -2126,7 +2253,7 @@ class ContentLibraryServiceAdapter(ServiceAdapter):
         subprocess.run(["systemctl", "enable", "--now", "vis-content-library-server.service"], check=False)
         if self._auto_sync_enabled():
             subprocess.run(["systemctl", "enable", "--now", "vis-content-library-sync.timer"], check=False)
-            
+
         return self.health_check()
 
     def disable(self) -> ServiceDefinition:
@@ -2154,10 +2281,13 @@ class ContentLibraryServiceAdapter(ServiceAdapter):
         active = self._service_active()
         if not self.service.enabled:
             self.service.health_status = "disabled"
-        elif validation.ok and active:
-            self.service.health_status = "healthy"
         elif validation.ok:
-            self.service.health_status = "stopped"
+            if active and self.has_synced():
+                self.service.health_status = "healthy"
+            elif active:
+                self.service.health_status = "needs_upstream_sync"
+            else:
+                self.service.health_status = "stopped"
         else:
             self.service.health_status = "needs_configuration"
         return self.service
@@ -2165,13 +2295,15 @@ class ContentLibraryServiceAdapter(ServiceAdapter):
     def render_config(self) -> str:
         lines = [
             "# vSphere Content Library Service",
-            "protocol = {}".format(self._protocol()),
-            "port = {}".format(self._port()),
-            "root = {}".format(self.service.filesystem_root),
-            "basic_auth_enabled = {}".format(self._basic_auth_enabled()),
-            "source_url = {}".format(self.service.settings.get("source_url", "https://wp-content.broadcom.com/v2/latest/lib.json")),
-            "auto_source_sync_enabled = {}".format(self._auto_sync_enabled()),
-            "parallel_source_sync = {}".format(self._parallel_sync_enabled())
+            f"protocol = {self._protocol()}",
+            f"port = {self._port()}",
+            f"root = {self.service.filesystem_root}",
+            f"basic_auth_enabled = {self._basic_auth_enabled()}",
+            "source_url = {}".format(
+                self.service.settings.get("source_url", "https://wp-content.broadcom.com/v2/latest/lib.json")
+            ),
+            f"auto_source_sync_enabled = {self._auto_sync_enabled()}",
+            f"parallel_source_sync = {self._parallel_sync_enabled()}",
         ]
 
         if self._basic_auth_enabled():
@@ -2190,7 +2322,6 @@ class ContentLibraryServiceAdapter(ServiceAdapter):
         return "\n".join(lines) + "\n"
 
     def _write_unit(self) -> None:
-        os.makedirs("/opt/vis/config/depot", exist_ok=True)
         os.makedirs(self.service.filesystem_root, exist_ok=True)
         self._write_server_unit()
         self._write_sync_unit()
@@ -2232,7 +2363,7 @@ Description=vSphere Content Library Synchronization Timer
 
 [Timer]
 Unit=vis-content-library-sync.service
-OnCalendar=Sun *-*-* 08:06:00
+OnCalendar=Sun 08:06:00
 
 [Install]
 WantedBy=timers.target
@@ -2262,19 +2393,22 @@ WantedBy=multi-user.target
             handle.write(unit)
 
         with open("/etc/systemd/system/vis-content-library-sync.timer", "w") as handle:
-             handle.write(timer)
-
+            handle.write(timer)
 
     def _service_active(self) -> bool:
-        server_result = subprocess.run(["systemctl", "is-active", "--quiet", "vis-content-library-server.service"], check=False)
-        sync_result = subprocess.run(["systemctl", "is-active", "--quiet", "vis-content-library-sync.service"], check=False)
+        server_result = subprocess.run(
+            ["systemctl", "is-active", "--quiet", "vis-content-library-server.service"], check=False
+        )
+        sync_result = subprocess.run(
+            ["systemctl", "is-active", "--quiet", "vis-content-library-sync.service"], check=False
+        )
         return server_result.returncode == 0 and (not self._auto_sync_enabled() or (sync_result.returncode == 0))
 
     def _protocol(self) -> str:
         return str(self.service.settings.get("protocol", "http")).lower()
 
     def _port(self) -> int:
-        return int(self.service.settings.get("port", 8443 if self._protocol() == "https" else 8081))
+        return int(self.service.settings.get("port", 9943 if self._protocol() == "https" else 9091))
 
     def _basic_auth_enabled(self) -> bool:
         return bool(self.service.settings.get("basic_auth_enabled", False))
@@ -2306,7 +2440,7 @@ class ServiceManager:
         self._health_followups = set()
         self._health_followup_lock = threading.Lock()
 
-    def list_services(self) -> List[ServiceDefinition]:
+    def list_services(self) -> list[ServiceDefinition]:
         return self.store.list_services()
 
     def get_service(self, service_id: str) -> ServiceDefinition:
@@ -2315,7 +2449,7 @@ class ServiceManager:
             raise KeyError(service_id)
         return service
 
-    def service_summary(self) -> Dict[str, object]:
+    def service_summary(self) -> dict[str, object]:
         services = self.list_services()
         enabled = len([service for service in services if service.enabled])
         configured = len([service for service in services if service.configured])
@@ -2328,7 +2462,13 @@ class ServiceManager:
         else:
             health = "Needs attention"
             health_note = "Review enabled service health"
-        return {"total": len(services), "enabled": enabled, "configured": configured, "health": health, "health_note": health_note}
+        return {
+            "total": len(services),
+            "enabled": enabled,
+            "configured": configured,
+            "health": health,
+            "health_note": health_note,
+        }
 
     def adapter_for(self, service_id: str) -> ServiceAdapter:
         service = self.get_service(service_id)
@@ -2339,6 +2479,8 @@ class ServiceManager:
             return LocalHarborServiceAdapter(service)
         if os.environ.get("VIS_ENABLE_LOCAL_ADAPTERS") == "1" and service_id == "sftp-backup":
             return LocalSFTPServiceAdapter(service)
+        if os.environ.get("VIS_ENABLE_LOCAL_ADAPTERS") == "1" and service_id == "content-library":
+            return LocalContentLibraryServiceAdapter(service)
         if service_id == "unbound-dns":
             return DNSServiceAdapter(service)
         if service_id == "time-server":
