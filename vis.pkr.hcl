@@ -343,7 +343,7 @@ build {
   
   provisioner "file" {
     destination = "/tmp/vis-update-signing.pub"
-    source      = "scripts/vis-update-signing.pub"
+    source      = "files/vis-update-signing.pub"
   }
   
   provisioner "shell" {
