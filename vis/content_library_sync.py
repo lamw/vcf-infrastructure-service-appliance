@@ -1,4 +1,4 @@
-from sys import argv
+from sys import argv, stdout
 import os
 import logging
 from vis.content_library import initialize_content_library_fs
@@ -12,11 +12,10 @@ if __name__ == "__main__":
 
     main_file = os.path.realpath(argv[0]) if argv[0] else "__sync__"
 
-    logger = logging.Logger(name=main_file, level=logging.DEBUG)
-    logger.addHandler(logging.StreamHandler())
-    logger.info("starting sync manager")
+    logging.basicConfig(stream=stdout, level=logging.DEBUG)
+    logging.info("starting sync manager")
 
-    manager = SyncManager(config, logger)
+    manager = SyncManager(config)
 
     cmd = "sync"
     if len(argv) > 1:

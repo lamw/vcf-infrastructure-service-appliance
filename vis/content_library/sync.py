@@ -56,7 +56,7 @@ def load_items(config: ContentLibraryConfig, source_auth: HTTPBasicAuth | None) 
 
 
 class SyncManager:
-    def __init__(self, config: ContentLibraryConfig, log: logging.Logger | None = None):
+    def __init__(self, config: ContentLibraryConfig):
         self._config = config
         self._dry_run = False
         self._source_auth: HTTPBasicAuth | None = (
@@ -65,15 +65,9 @@ class SyncManager:
             else None
         )
 
-        if not log:
-            log = logging.Logger("content_library_sync", logging.DEBUG)
-            log.addHandler(logging.StreamHandler())
-
-        self._log = log
-
     def __run_task(self, task: ContentLibrarySyncTask) -> ContentLibrarySyncTaskResult:
         relative_path = task.lib_path.relative_to(self._config.lib_path)
-        self._log.debug(msg=f"Processing task [action: {task.action} file: {relative_path}]")
+        logging.debug(msg=f"Processing task [action: {task.action} file: {relative_path}]")
 
         result = ContentLibrarySyncTaskResult.from_task(task)
         try:
@@ -96,7 +90,7 @@ class SyncManager:
 
             if self._dry_run:
                 result.result = "success"
-                self._log.debug("dry run is enabled so skip actual download")
+                logging.debug("dry run is enabled so skip actual download")
                 return result
 
             if task.remote_uri is None:
@@ -229,13 +223,13 @@ class SyncManager:
         start_execution = timer()
         try:
             all_tasks = self.__collect_all_tasks()
-            self._log.debug(f"preparing to process {len(all_tasks)} synchronization tasks")
-            self._log.debug(f"tasks will {'' if self._config.parallel_source_sync else 'not '}be processed in parallel")
+            logging.debug(f"preparing to process {len(all_tasks)} synchronization tasks")
+            logging.debug(f"tasks will {'' if self._config.parallel_source_sync else 'not '}be processed in parallel")
             if self._config.parallel_source_sync:
-                self._log.debug(
-                    f"maximum parallel work queues are set to 1 per cpu for a total of {multiprocessing.cpu_count()}"
+                logging.debug(
+                    f"maximum parallel work queues are set to 4 per cpu for a total of {4 * multiprocessing.cpu_count()}"
                 )
-                with multiprocessing.Pool() as pool:
+                with multiprocessing.Pool(maxtasksperchild=4) as pool:
                     proc_mgr = pool.map_async(func=self.__run_task, iterable=all_tasks)
                     proc_mgr.wait()
                     results = proc_mgr.get()
@@ -243,7 +237,7 @@ class SyncManager:
             else:
                 results = [result for result in map(self.__run_task, all_tasks)]
         except BaseException as e:
-            self._log.error(msg="An unexpected error was raised in the sync process", exc_info=e)
+            logging.error(msg="An unexpected error was raised in the sync process", exc_info=e)
             stats.last_sync_result = "FAILURE"
         else:
             stats.last_sync_result = "FAILURE" if any([r.reason is not None for r in results]) else "SUCCESS"
