@@ -300,13 +300,18 @@
             pattern="^\d+\.\d+\.\d+(\.\d+)?$" placeholder="9.1.0" required {% if job_running %}disabled{% endif %} />
 
           <label class="field-label">Type</label>
-          <div class="segmented-choice">
-            <label><input type="checkbox" name="download_type" value="INSTALL" checked {% if job_running %}disabled{%
-                endif %} /> Install</label>
-            <label><input type="checkbox" name="download_type" value="UPGRADE" {% if job_running %}disabled{% endif
-                %} /> Upgrade</label>
-            <label><input type="checkbox" name="download_type" value="ESX_PATCHES" {% if job_running %}disabled{% endif
-                %} /> ESX Patches</label>
+          <div class="download-type-stack">
+            <div class="download-type-card">
+              <label class="download-type-main"><input id="depotDownloadInstall" type="checkbox" name="download_type" value="INSTALL" checked {% if job_running %}disabled{% endif %} /> Install</label>
+              <label class="download-type-child"><input id="depotDownloadInstallDayN" type="checkbox" name="include_dayn_install" value="on" {% if job_running %}disabled{% endif %} /> Include Day-N</label>
+            </div>
+            <div class="download-type-card">
+              <label class="download-type-main"><input id="depotDownloadUpgrade" type="checkbox" name="download_type" value="UPGRADE" {% if job_running %}disabled{% endif %} /> Upgrade</label>
+              <label class="download-type-child"><input id="depotDownloadUpgradeDayN" type="checkbox" name="include_dayn_upgrade" value="on" disabled /> Include Day-N</label>
+            </div>
+            <div class="download-type-card">
+              <label class="download-type-main"><input id="depotDownloadEsxPatches" type="checkbox" name="download_type" value="ESX_PATCHES" {% if job_running %}disabled{% endif %} /> ESX Patches</label>
+            </div>
           </div>
 
           <div></div>

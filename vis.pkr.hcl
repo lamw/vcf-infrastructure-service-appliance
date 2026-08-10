@@ -336,6 +336,16 @@ build {
     source      = "scripts/vis-apply-update.sh"
   }
 
+  provisioner "file" {
+    destination = "/tmp/vis-offline-update.sh"
+    source      = "scripts/vis-offline-update.sh"
+  }
+  
+  provisioner "file" {
+    destination = "/tmp/vis-update-signing.pub"
+    source      = "scripts/vis-update-signing.pub"
+  }
+  
   provisioner "shell" {
     inline = ["mkdir -p /tmp/vis-optional-files", "if [ -n \"$${PACKER_HTTP_ADDR:-}\" ]; then curl -fsS -o /tmp/vis-optional-files/vcf-download-tool-local.tar.gz \"http://$${PACKER_HTTP_ADDR}/optional-artifacts/vcf-download-tool-local.tar.gz\" || :; fi"]
   }

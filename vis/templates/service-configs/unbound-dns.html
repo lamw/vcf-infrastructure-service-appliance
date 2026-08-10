@@ -22,6 +22,20 @@
       <input class="text-input" id="dnsDefaultTtl" name="default_ttl" type="number" min="60" max="86400"
         value="{{ service.settings.default_ttl or 3600 }}" required />
 
+      <label class="field-label" for="dnsDisableDnssec">DNSSEC</label>
+      <label class="toggle-row" for="dnsDisableDnssec">
+        <input id="dnsDisableDnssec" name="disable_dnssec" type="checkbox" {% if service.settings.disable_dnssec %}checked{% endif %} />
+        <span>Disable DNSSEC</span>
+      </label>
+      <label class="field-label" for="dnsForwardUpstreamEnabled">Forwarding</label>
+      <label class="toggle-row" for="dnsForwardUpstreamEnabled">
+        <input id="dnsForwardUpstreamEnabled" name="forward_upstream_enabled" type="checkbox" {% if service.settings.forward_upstream_enabled %}checked{% endif %} />
+        <span>Forward Upstream DNS</span>
+      </label>
+
+      <label class="field-label" for="dnsForwardUpstreamServers">Upstream DNS Servers</label>
+      <textarea class="text-input" id="dnsForwardUpstreamServers" name="forward_upstream_servers" rows="3" placeholder="172.30.0.1">{{ (service.settings.forward_upstream_servers or [])|join('
+      ') }}</textarea>
       <div></div>
       <button class="btn primary" type="submit">Save DNS Configuration</button>
     </form>
