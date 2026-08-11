@@ -2421,7 +2421,7 @@ pre.config-preview {
   margin-bottom: 14px;
 }
 
-.log-target {
+.log-target, .log-target:visited {
   display: grid;
   gap: 4px;
   min-height: 68px;

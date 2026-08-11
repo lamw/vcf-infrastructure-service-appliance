@@ -63,10 +63,9 @@
         subnet</label>
 
       <label class="field-label" for="dhcpReservations">Reservations</label>
-      <textarea class="text-input" id="dhcpReservations" name="reservations" rows="4"
-        placeholder="00:50:56:aa:bb:cc,172.30.0.60,vcf01">{% for reservation in service.settings.reservations or [] %}{{
-        reservation.mac }},{{ reservation.ip }}{% if reservation.hostname %},{{ reservation.hostname }}{% endif %}{% if
-        not loop.last %}</textarea>
+      <textarea class="text-input" id="dhcpReservations" name="reservations" rows="4" placeholder="00:50:56:aa:bb:cc,172.30.0.60,vcf01">
+          {% for reservation in service.settings.reservations or [] %}{{ reservation.mac }},{{ reservation.ip }}{% if reservation.hostname %},{{ reservation.hostname }}{% endif %}{% endfor %}
+      </textarea>
     </form>
   </div>
 </div>
