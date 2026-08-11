@@ -26,6 +26,7 @@
     <article class="metric">
       <div class="metric-label">Last Synchronization Result</div>
       <div class="metric-value {% if sync_stats.last_sync_result == 'SUCCESS' %}good{% else %}warn{% endif %}">{{ sync_stats.last_sync_result | title }}</div>
+      <div class="metric-note"><a class="in-text" href="{{ url_for('logs', service='content-library') }}">View logs</a> for more information</div>
     </article>
   </section>
 
@@ -77,6 +78,9 @@
 {% else %}
   <div>
     <h2>Sync stats not available</h2>
+    <form method="post" action="{{ url_for('run_manual_sync') }}">
+      <button class="btn primary" type="submit">Sync Now</button>
+    </form>
   </div>
 {% endif %}
 </section>

@@ -1098,7 +1098,8 @@ def create_app(config=None):
         } if result else {
             "content_library_error": "Another sync is currently in progress"
         }
-        
+
+        redirect_args.update({"sync_stats": get_sync_stats() })
         return redirect(url_for("service_detail", service_id="content-library", _anchor="content-library-config", **redirect_args))
 
     @app.route("/services/sftp-backup/files/mkdir", methods=["POST"])

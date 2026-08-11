@@ -1,8 +1,10 @@
-from vis.content_library.logging import new_sync_logger, initialize_clean_logging
+import atexit
+import os
 from asyncio import run
 
 from vis.content_library import initialize_content_library_fs
 from vis.content_library.dataclasses import ContentLibraryConfig
+from vis.content_library.logging import initialize_clean_logging, new_sync_logger
 from vis.content_library.sync import run_sync
 
 
@@ -12,10 +14,16 @@ async def main():
     config = ContentLibraryConfig.from_env()
     initialize_content_library_fs(config)
 
+    lock_file = config.root / ".sync-in-progress"
+    if lock_file.exists():
+        raise SystemExit("another sync already in progress")
+
+    lock_file.touch()
+    atexit.register(os.remove, lock_file)
     try:
         await run_sync(config, logger)
     except BaseException as e:
-        logger.error(f"error running sync", exc_info=e)
+        logger.error("error running sync", exc_info=e)
 
 
 if __name__ == "__main__":

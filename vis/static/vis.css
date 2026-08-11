@@ -2433,6 +2433,10 @@ pre.config-preview {
   text-decoration: none;
 }
 
+a.in-text, a.in-text:hover, a.in-text:active, a.in-text:visited {
+  color: currentColor !important;
+}
+
 .log-target.active,
 .log-target:hover {
   border-color: var(--vis-accent);
