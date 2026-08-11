@@ -1459,7 +1459,7 @@ input[type="file"] {
   display: grid;
   grid-template-columns: auto auto auto;
   gap: 4px;
-  align-items: start;
+  align-items: stretch;
   margin-bottom: 14px;
   font-weight: 600;
 }
@@ -1541,8 +1541,16 @@ input[type="file"] {
   background: rgba(255, 255, 255, 0.08);
 }
 
-.notice-dismiss:visited {
-  color: currentColor;
+.notice.prominent.good .notice-dismiss, .notice.notice.prominent.good .notice-dismiss:visited {
+  color: var(--vis-good);
+}
+
+.notice.prominent.warn .notice-dismiss, .notice.notice.prominent.warn .notice-dismiss:visited {
+  color: var(--vis-warn);
+}
+
+.notice.prominent.bad .notice-dismiss, .notice.notice.prominent.bad .notice-dismiss:visited {
+  color: var(--vis-bad);
 }
 
 .login-body {
