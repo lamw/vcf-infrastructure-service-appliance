@@ -311,7 +311,7 @@ html[data-visual="grid"] .vis-sidebar {
   text-transform: uppercase;
 }
 
-.nav-item {
+.nav-item, .nav-item:visited {
   width: 100%;
   min-height: 40px;
   display: flex;
