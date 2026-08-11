@@ -19,7 +19,7 @@
       Ready
       {% endif %}
       </span>
-      <form method="post" action="{% url_for('run_manual_sync') %}">
+      <form method="post" action="{{ url_for('run_manual_sync') }}">
         <button class="btn primary" type="submit" {% if sync_stats.sync_in_progress %}disabled{% endif %}>Sync Now</button>
       </form>
     </div>
