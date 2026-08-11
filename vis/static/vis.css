@@ -2429,7 +2429,7 @@ pre.config-preview {
   border: 1px solid var(--vis-border);
   border-radius: 4px;
   background: var(--vis-panel-soft);
-  color: var(--vis-text);
+  color: var(--vis-text) !important;
   text-decoration: none;
 }
 
