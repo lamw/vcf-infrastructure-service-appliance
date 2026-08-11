@@ -44,31 +44,31 @@
     <aside class="vis-sidebar">
       <div class="nav-section">
         <p class="nav-title">Appliance</p>
-        <a class="nav-item {% if request.path == '/' %}active{% endif %}" href="/"><span class="nav-icon">⌂</span>Summary</a>
-        <a class="nav-item {% if request.path == '/system-health' %}active{% endif %}" href="{{ url_for('system_health') }}"><span class="nav-icon">◉</span>System Health</a>
-        <a class="nav-item {% if request.path == '/certificates' %}active{% endif %}" href="{{ url_for('certificates') }}"><span class="nav-icon">▣</span>Certificate Authority</a>
-        <a class="nav-item {% if request.path.startswith('/config') %}active{% endif %}" href="{{ url_for('config_profiles') }}"><span class="nav-icon">⇅</span>Config Export/Import</a>
-        <a class="nav-item {% if request.path.startswith('/updates') %}active{% endif %}" href="{{ url_for('updates') }}"><span class="nav-icon">↻</span>Updates</a>
-        <a class="nav-item {% if request.path == '/logs' %}active{% endif %}" href="{{ url_for('logs') }}"><span class="nav-icon">≡</span>Logs</a>
+        <a class="nav-item nav-link {% if request.path == '/' %}active{% endif %}" href="/"><span class="nav-icon">⌂</span>Summary</a>
+        <a class="nav-item nav-link {% if request.path == '/system-health' %}active{% endif %}" href="{{ url_for('system_health') }}"><span class="nav-icon">◉</span>System Health</a>
+        <a class="nav-item nav-link {% if request.path == '/certificates' %}active{% endif %}" href="{{ url_for('certificates') }}"><span class="nav-icon">▣</span>Certificate Authority</a>
+        <a class="nav-item nav-link {% if request.path.startswith('/config') %}active{% endif %}" href="{{ url_for('config_profiles') }}"><span class="nav-icon">⇅</span>Config Export/Import</a>
+        <a class="nav-item nav-link {% if request.path.startswith('/updates') %}active{% endif %}" href="{{ url_for('updates') }}"><span class="nav-icon">↻</span>Updates</a>
+        <a class="nav-item nav-link {% if request.path == '/logs' %}active{% endif %}" href="{{ url_for('logs') }}"><span class="nav-icon">≡</span>Logs</a>
       </div>
       <div class="nav-section">
         <p class="nav-title">Services</p>
         {% for nav_service in config.service_manager.list_services() %}
-          <a class="nav-item {% if request.path == '/services/' + nav_service.id %}active{% endif %}" href="{{ url_for('service_detail', service_id=nav_service.id) }}">
+          <a class="nav-item nav-link {% if request.path == '/services/' + nav_service.id %}active{% endif %}" href="{{ url_for('service_detail', service_id=nav_service.id) }}">
             <span class="nav-icon">{{ icons.service_icon(nav_service.id) }}</span>{{ nav_service.name }}
           </a>
         {% endfor %}
       </div>
       <div class="nav-section">
         <p class="nav-title">Resources</p>
-        <a class="nav-item" href="https://vmware.github.io/vcf-upgrade-planner/" target="_blank" rel="noopener"><span class="nav-icon">⌘</span>VCF Upgrade Planning Tool</a>
-        <a class="nav-item" href="https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-9-0-and-later/9-1.html" target="_blank" rel="noopener"><span class="nav-icon">▤</span>VCF Docs</a>
-        <a class="nav-item" href="https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-9-0-and-later/9-1/design.html" target="_blank" rel="noopener"><span class="nav-icon">◇</span>VCF Designs</a>
-        <a class="nav-item" href="https://developer.broadcom.com/xapis?tab=App%2520Modernization" target="_blank" rel="noopener"><span class="nav-icon">{}</span>VCF API Reference</a>
+        <a class="nav-item nav-link" href="https://vmware.github.io/vcf-upgrade-planner/" target="_blank" rel="noopener"><span class="nav-icon">⌘</span>VCF Upgrade Planning Tool</a>
+        <a class="nav-item nav-link" href="https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-9-0-and-later/9-1.html" target="_blank" rel="noopener"><span class="nav-icon">▤</span>VCF Docs</a>
+        <a class="nav-item nav-link" href="https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-9-0-and-later/9-1/design.html" target="_blank" rel="noopener"><span class="nav-icon">◇</span>VCF Designs</a>
+        <a class="nav-item nav-link" href="https://developer.broadcom.com/xapis?tab=App%2520Modernization" target="_blank" rel="noopener"><span class="nav-icon">{}</span>VCF API Reference</a>
       </div>
       <div class="nav-section">
         <p class="nav-title">Administration</p>
-        <a class="nav-item {% if request.path == '/users' %}active{% endif %}" href="{{ url_for('users') }}"><span class="nav-icon">●</span>Users</a>
+        <a class="nav-item nav-link {% if request.path == '/users' %}active{% endif %}" href="{{ url_for('users') }}"><span class="nav-icon">●</span>Users</a>
       </div>
     </aside>
 
