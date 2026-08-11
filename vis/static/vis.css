@@ -1456,10 +1456,11 @@ input[type="file"] {
 }
 
 .notice.prominent {
-  display: grid;
+  display: flex;
   grid-template-columns: auto auto auto;
   gap: 4px;
-  align-items: stretch;
+  align-items: baseline;
+  justify-content: space-between;
   margin-bottom: 14px;
   font-weight: 600;
 }
