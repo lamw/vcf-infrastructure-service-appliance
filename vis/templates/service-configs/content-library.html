@@ -22,6 +22,9 @@
       <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
     </div>
     {% endif %}
+    <form class="compact content-library-config-form" method="post" action="{{ url_for('run_manual_sync') }}">
+      <button class="btn primary" type="submit" {% if needs_required_config %}disabled{% endif %}>Run Manual Sync</button>
+    </form>
     <form class="credential-form compact content-library-config-form" method="post" action="{{ url_for('content_library_config') }}">
       <input type="hidden" name="form_context" value="content_library_config" />
       <label class="field-label" for="contentLibraryTlsEnabled">TLS</label>
@@ -80,13 +83,53 @@
           autocomplete="url" />
       </div>
 
+      <label class="field-label" for="contentLibrarySourceUser">Source URL Username</label>
+      <div class="copy-row">
+        <input class="text-input" id="contentLibrarySourceUser" name="source_user" type="text"
+          value="{{ service.settings.source_user or '' }}" placeholder="Leave blank if source URL does not require Basic Auth"
+          autocomplete="username" />
+        <button class="btn icon-btn" type="button" data-copy-target="contentLibrarySourceUser" title="Copy username"
+          aria-label="Copy username">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </div>
+
+      <label class="field-label" for="contentLibrarySourcePassword">Password</label>
+      <div class="secret-row">
+        <input class="text-input secret-input" id="contentLibrarySourcePassword" name="auth_password" type="password"
+          value="{{ service.settings.source_password or '' }}" placeholder="Leave blank if source URL does not require Basic Auth"
+          autocomplete="new-password" />
+        <button class="btn icon-btn" type="button" data-secret-toggle="contentLibrarySourcePassword" title="Show password"
+          aria-label="Show password">
+          <svg class="eye-icon eye-show" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg class="eye-icon eye-hide" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2 12s3.5-6 10-6 10 6 10 6a18.4 18.4 0 0 1-3.2 3.7" />
+            <path d="M14.1 14.1A3 3 0 0 1 9.9 9.9" />
+            <path d="M3 3l18 18" />
+          </svg>
+        </button>
+        <button class="btn icon-btn" type="button" data-copy-target="contentLibrarySourcePassword" title="Copy password"
+          aria-label="Copy password">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </div>
+
+
       <label class="field-label" for="contentLibraryAutoSync">Automatically Sync with Source</label>
       <label class="toggle-row"><input id="contentLibraryAutoSync" name="auto_source_sync_enabled" type="checkbox" {% if
           service.settings.auto_source_sync_enabled %}checked{% endif %} /> Enabled</label>
-      
-      <label class="field-label" for="contentLibraryParallelSync">Sync in Parallel</label>
-      <label class="toggle-row"><input id="contentLibraryParallelSync" name="parallel_source_sync" type="checkbox" {% if
-          service.settings.parallel_source_sync %}checked{% endif %} /> Enabled</label>
+
+      <label class="field-label" for="contentLibraryWorkerPoolSize">Worker Pool Size</label>
+      <div class="copy-row"><input class="text-input" id="contentLibraryWorkerPoolSize" name="worker_pool_size" type="number" min="1" max="100" value="{{ service.settings.worker_pool_size or '1'}}" /></div>
 
       <div></div>
       <button class="btn primary" type="submit">Save Configuration</button>

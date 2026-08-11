@@ -1,0 +1,85 @@
+<section class="panel" id="content-library-sync-stats">
+  <div class="panel-header">
+    <div>
+      <h2>Content Library Sync Stats</h2>
+      <p class="subtle">Stats about the last sync action and some overall metrics</p>
+    </div>
+  </div>
+</section>
+
+{% if sync_stats %}
+<section class="sync-stats-grid col2 service-metrics" aria-label="Content Library Sync Summary">
+  <article class="metric">
+    <div class="metric-label">Sync State</div>
+    <div class="metric-value {% if sync_stats.sync_in_progress %}warn{% else %}good{% endif %}">
+      <span>
+      {% if sync_stats.sync_in_progress %}
+      In Progress
+      {% else %}
+      Ready
+      {% endif %}
+      </span>
+      <form method="post" action="{% url_for('run_manual_sync') %}">
+        <button class="btn primary" type="submit" {% if sync_stats.sync_in_progress %}disabled{% endif %}>Sync Now</button>
+      </form>
+    </div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Last Synchronization Result</div>
+    <div class="metric-value {% if sync_stats.last_sync_result == 'SUCCESS' %}good{% else %}warn{% endif %}">{{ sync_stats.last_sync_result | title }}</div>
+  </article>
+</section>
+
+<section class="sync-stats-grid col2 service-metrics" aria-label="Content Library Sync Times">
+  <article class="metric">
+    <div class="metric-label">Last Synchronization</div>
+    <div class="metric-value">{{ sync_stats.last_sync_time | relative_datetime | title }}</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Next Synchronization</div>
+    <div class="metric-value">{% title(relative_datetime(sync_stats.next_sync_time, 'Not Configured')) %</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Last Synchronization Time</div>
+    <div class="metric-value">{{ sync_stats.last_sync_duration | duration | title }}</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Mean Synchronization Time</div>
+    <div class="metric-value">{{ sync_stats.mean_sync_duration | duration | title }} over {{ sync_stats.total_sync_count }} syncs</div>
+  </article>
+</section>
+
+<section class="sync-stats-grid col3 service-metrics" aria-label="Content Library Sync Usage">
+  <article class="metric">
+    <div class="metric-label">Files already cached during last sync</div>
+    <div class="metric-value">{{ sync_stats.files_already_cached }}</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">New files downloaded during last sync</div>
+    <div class="metric-value">{{ sync_stats.files_downloaded }}</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Old files deleted during last sync</div>
+    <div class="metric-value">{{ sync_stats.files_deleted }}</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Total download size from last sync</div>
+    <div class="metric-value">{{ sync_stats.download_size_bytes | readable_size }}</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Total library size</div>
+    <div class="metric-value">{{ sync_stats.lib_size_bytes | readable_size }}</div>
+  </article>
+  <article class="metric">
+    <div class="metric-label">Library count</div>
+    <div class="metric-value">{{ sync_stats.lib_file_count }} files, {{ sync_stats.lib_dir_count }} directories</div>
+  </article>
+</section>
+{% else %}
+<section class="panel">
+  <div>
+    <h2>Sync stats not available</h2>
+  </div>
+</section>
+{% endif %}
+{% include "./file-browser.html" with context %}

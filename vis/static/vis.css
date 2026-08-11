@@ -2727,6 +2727,23 @@ pre.config-preview {
   align-items: center;
 }
 
+.sync-stats-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.sync-stats-grid.col2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.sync-stats-grid.col3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.sync-stats-grid.col4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
 @media (max-width: 1120px) {
   .summary-grid,
   .service-metrics,
@@ -2738,6 +2755,9 @@ pre.config-preview {
   .dns-config-grid,
   .directory-config-grid,
   .health-card-grid,
+  .sync-stats-grid.col2,
+  .sync-stats-grid.col3,
+  .sync-stats-grid.col4,
   .partition-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2844,6 +2864,9 @@ pre.config-preview {
   .health-card-grid,
   .health-card,
   .storage-summary-layout,
+  .sync-stats-grid.col2,
+  .sync-stats-grid.col3,
+  .sync-stats-grid.col4,
   .partition-row {
     display: grid;
     grid-template-columns: 1fr;

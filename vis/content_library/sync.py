@@ -1,22 +1,22 @@
 import json
 import logging
-import multiprocessing
 import os
 import subprocess
-from collections.abc import Callable, Iterable
-from datetime import datetime, timezone
+from asyncio import Queue, create_task, gather
+from collections.abc import Callable
+from datetime import datetime, timedelta, timezone
 from functools import reduce
 from os import makedirs
-from timeit import default_timer as timer
-from urllib.parse import urljoin, urlparse
+from time import monotonic_ns
+from urllib.parse import urljoin
 
-import requests
 from dataclasses_json import DataClassJsonMixin
-from requests.auth import HTTPBasicAuth
+from requests import Request, Session
+
+from vis.content_library.logging import logger
 
 from .dataclasses import (
     ContentLibraryConfig,
-    ContentLibraryFile,
     ContentLibraryItemsList,
     ContentLibrarySpec,
     ContentLibrarySyncStats,
@@ -24,246 +24,243 @@ from .dataclasses import (
     ContentLibrarySyncTaskResult,
 )
 
-logger: logging.Logger = logging.Logger("", logging.CRITICAL)
-
-_CHUNK_SIZE = 5 * (1 << 20)  # 5 MiB
+_CHUNK_SIZE = 10 * (1 << 20)  # 10 MiB
 
 _SYNC_STATS_FILE = ".sync-stats.json"
 
+_session: Session | None = None
 
-def load_items(config: ContentLibraryConfig, source_auth: HTTPBasicAuth | None) -> list[ContentLibraryFile]:
-    logger.debug("loading list of content library files")
+now = lambda: datetime.now(tz=timezone.utc)
 
-    all_files: list[ContentLibraryFile] = []
-    with requests.get(config.source_url, auth=source_auth) as resp:
-        resp.raise_for_status()
-        spec: ContentLibrarySpec = ContentLibrarySpec.from_json(resp.content)  # ty: ignore[unresolved-attribute]
-        # add the url itself so we download it
-        parsed = urlparse(config.source_url)
-        name = parsed.path.split("/")[-1]
-        all_files.append(ContentLibraryFile(hrefs=[name]))
-        all_files.append(ContentLibraryFile(hrefs=[spec.itemsHref]))
-
-    with requests.get(urljoin(config.source_url, spec.itemsHref), auth=source_auth) as resp:
-        resp.raise_for_status()
-        itemlist: ContentLibraryItemsList = ContentLibraryItemsList.from_json(resp.content)  # ty: ignore[unresolved-attribute]
-        # flatten the file lists into a single list
-        for item in itemlist.items:
-            all_files.append(ContentLibraryFile(name=item.selfHref, hrefs=[item.selfHref]))
-            all_files.extend(item.files)
-
-    return all_files
+log = logger("Content Library Sync")
 
 
-class SyncManager:
-    def __init__(self, config: ContentLibraryConfig):
-        self._config = config
-        self._dry_run = False
-        self._source_auth: HTTPBasicAuth | None = (
-            HTTPBasicAuth(username=config.source_user, password=config.source_password)
-            if config.source_user and config.source_password
-            else None
+def __get_global_session(config: ContentLibraryConfig) -> Session:
+    global _session
+
+    if not _session:
+        _session = Session()
+        _session.verify = False
+        if config.source_password and config.source_user:
+            _session.auth = (config.source_url, config.source_password)
+
+    return _session
+
+
+def __fetch_remote_item(config: ContentLibraryConfig, task: ContentLibrarySyncTask) -> None:
+    log.debug("fetching remote item for task", extra={"task": task})
+    request = Request(method="GET", url=urljoin(config.source_url, task.remote_uri))
+    with __get_global_session(config) as s:
+        p = s.prepare_request(request)
+
+        makedirs(task.lib_path.parent, exist_ok=True)
+
+        with s.send(p, stream=True) as file_resp:
+            file_resp.raise_for_status()
+
+            with task.lib_path.open("wb") as local_file:
+                local_file.writelines(file_resp.iter_content(chunk_size=_CHUNK_SIZE))
+
+            if task.can_cache():
+                task.cache()
+
+
+def __fetch_remote_json[T: DataClassJsonMixin](
+    config: ContentLibraryConfig, task: ContentLibrarySyncTask, fetch_type: type[T]
+) -> T:
+    log.debug("fetching remote json for task", extra={"task": task})
+    request = Request(method="GET", url=urljoin(config.source_url, task.remote_uri))
+    with __get_global_session(config) as s:
+        p = s.prepare_request(request)
+
+        with s.send(p, stream=True) as resp:
+            resp.raise_for_status()
+            return fetch_type.from_json(resp.content)
+
+
+def __collect_tasks(config: ContentLibraryConfig, dry_run: bool = False) -> list[ContentLibrarySyncTask]:
+    log.debug("collecting all tasks to be processed")
+    delete_tasks = [
+        ContentLibrarySyncTask(action="delete", lib_path=f, dry_run=dry_run)
+        for f in config.lib_path.rglob("*")
+        if f.is_file()
+    ]
+
+    root_url_prefix = urljoin(config.source_url, ".")
+    source_url_file = config.source_url[len(root_url_prefix) :]
+
+    add_tasks = [ContentLibrarySyncTask(action="add", lib_path=config.lib_path / source_url_file, remote_uri="")]
+    spec: ContentLibrarySpec = __fetch_remote_json(config, add_tasks[0], ContentLibrarySpec)
+
+    add_tasks.append(
+        ContentLibrarySyncTask(action="add", lib_path=config.lib_path / spec.itemsHref, remote_uri=spec.itemsHref)
+    )
+    itemsList: ContentLibraryItemsList = __fetch_remote_json(config, add_tasks[1], ContentLibraryItemsList)
+
+    for item in itemsList.items:
+        add_tasks.append(
+            ContentLibrarySyncTask(action="add", lib_path=config.lib_path / item.selfHref, remote_uri=item.selfHref)
+        )
+        add_tasks.extend(
+            [
+                ContentLibrarySyncTask(
+                    action="add",
+                    lib_path=config.lib_path / f.hrefs[0],
+                    cache_path=config.cache_path / f.hrefs[0],
+                    remote_uri=f.hrefs[0],
+                    size=f.size,
+                    etag=f.etag,
+                )
+                for f in item.files
+            ]
         )
 
-    def __run_task(self, task: ContentLibrarySyncTask) -> ContentLibrarySyncTaskResult:
-        relative_path = task.lib_path.relative_to(self._config.lib_path)
-        logging.debug(msg=f"Processing task [action: {task.action} file: {relative_path}]")
+    files_to_add = [f.lib_path for f in add_tasks]
+
+    all_tasks = list(add_tasks)
+    all_tasks.extend([d for d in delete_tasks if d.lib_path not in files_to_add])
+
+    return all_tasks
+
+
+def get_sync_stats(config: ContentLibraryConfig = ContentLibraryConfig.from_env()) -> ContentLibrarySyncStats | None:
+    stats_file = config.cache_path / _SYNC_STATS_FILE
+    return ContentLibrarySyncStats.from_json(stats_file.read_bytes()) if stats_file.is_file() else None
+
+
+def __store_sync_stats(config: ContentLibraryConfig, stats: ContentLibrarySyncStats) -> None:
+    stats_file = config.cache_path / _SYNC_STATS_FILE
+    stats_file.write_text(stats.marshal())
+
+
+async def __sync_worker(config: ContentLibraryConfig, work_queue: Queue, results_queue: Queue):
+    log.debug("starting sync worker")
+    while True:
+        task: ContentLibrarySyncTask = await work_queue.get()
+        relative_path = task.lib_path.relative_to(config.lib_path)
+
+        log.debug("processing sync task", extra={"task": task})
 
         result = ContentLibrarySyncTaskResult.from_task(task)
         try:
+            if task.dry_run:
+                result.result = "success"
+                log.debug("dry run is enabled so skip actual IO operation")
+                results_queue.put_nowait(result)
+                continue
+
             if task.action == "delete":
+                log.debug(f"attempting to delete file {task.lib_path}")
                 try:
                     os.remove(task.lib_path)
-                    os.remove(self._config.cache_path / relative_path)
-                except FileNotFoundError:
-                    pass
+                    os.remove(config.cache_path / relative_path)
+                except FileNotFoundError as e:
+                    log.warning(f"error deleting {task.lib_path}", exc_info=e)
 
                 result.result = "success"
-                return result
+                results_queue.put_nowait(result)
+                continue
 
-            if self.__file_is_cached(task):
+            if task.is_cached():
+                log.debug(f"{task.lib_path} is already cached, do nothing")
                 result.cache_hit = True
                 result.result = "success"
-                return result
+                results_queue.put_nowait(result)
+                continue
 
             result.cache_hit = False
 
-            if self._dry_run:
-                result.result = "success"
-                logging.debug("dry run is enabled so skip actual download")
-                return result
-
             if task.remote_uri is None:
+                log.error("remote_uri is missing", extra={"task": task})
                 result.result = "failure"
                 result.reason = ValueError("remote_url is missing")
-                return result
+                results_queue.put_nowait(result)
+                continue
 
-            cache_path = self._config.cache_path / relative_path
-            makedirs(task.lib_path.parent, exist_ok=True)
-            makedirs(cache_path.parent, exist_ok=True)
-
-            file_resp: requests.Response = self.__fetch_http_resource(relative_uri=task.remote_uri, stream=True)
-            with file_resp:
-                file_resp.raise_for_status()
-
-                with open(task.lib_path, "wb") as local_file:
-                    local_file.writelines(file_resp.iter_content(chunk_size=_CHUNK_SIZE))
-
-                if task.etag:
-                    with open(cache_path, "wt") as cache_file:
-                        cache_file.write(task.etag)
-
-                result.result = "success"
-                return result
+            __fetch_remote_item(config, task)
+            result.result = "success"
+            results_queue.put_nowait(result)
+            continue
         except BaseException as e:
+            log.error("process failed", exc_info=e, extra={"task": task})
             result.result = "failure"
             result.reason = e
-            return result
-
-    def __file_is_cached(self, task: ContentLibrarySyncTask) -> bool:
-        if task.cache_path is None or task.etag is None:
-            return False
-
-        try:
-            cached_etag = task.cache_path.read_text().strip()
-        except BaseException:
-            return False
-        else:
-            return cached_etag == task.etag
-
-    def __load_sync_stats(self) -> ContentLibrarySyncStats:
-        stats_file = self._config.cache_path / _SYNC_STATS_FILE
-        return (
-            ContentLibrarySyncStats.from_json(stats_file.read_bytes())
-            if stats_file.is_file()
-            else ContentLibrarySyncStats()
-        )
-
-    def __collect_delete_tasks(self) -> Iterable[ContentLibrarySyncTask]:
-        """
-        This collects all files under self._config.lib_dir and creates a delete task
-        for it. It will be overwritten by an add task if it still exists in the remote
-        content library
-        """
-        return [
-            ContentLibrarySyncTask(action="delete", lib_path=f) for f in self._config.lib_path.rglob("*") if f.is_file()
-        ]
-
-    def __fetch_http_resource(
-        self, relative_uri: str, fetch_json_type: type[DataClassJsonMixin] | None = None, **request_get_options
-    ):
-        url = urljoin(self._config.source_url, relative_uri)
-        if fetch_json_type is None:
-            return requests.get(url=url, auth=self._source_auth, **request_get_options)
-
-        with requests.get(url=url, auth=self._source_auth, **request_get_options) as resp:
-            return fetch_json_type.from_json(resp.content)
-
-    def __collect_add_tasks(self) -> Iterable[ContentLibrarySyncTask]:
-        """
-        This creates a list of all files to add to the library by parsing the root items
-        directory and adding every file it finds
-        """
-        root_url_prefix = urljoin(self._config.source_url, ".")
-        source_url_file = self._config.source_url[len(root_url_prefix) :]
-
-        tasks = [ContentLibrarySyncTask(action="add", lib_path=self._config.lib_path / source_url_file, remote_uri="")]
-
-        spec: ContentLibrarySpec = self.__fetch_http_resource(relative_uri="", fetch_json_type=ContentLibrarySpec)
-        tasks.append(
-            ContentLibrarySyncTask(
-                action="add", lib_path=self._config.lib_path / spec.itemsHref, remote_uri=spec.itemsHref
-            )
-        )
-        itemList: ContentLibraryItemsList = self.__fetch_http_resource(
-            relative_uri=spec.itemsHref, fetch_json_type=ContentLibraryItemsList
-        )
-
-        for item in itemList.items:
-            tasks.append(
-                ContentLibrarySyncTask(
-                    action="add", lib_path=self._config.lib_path / item.selfHref, remote_uri=item.selfHref
-                )
-            )
-            tasks.extend(
-                [
-                    ContentLibrarySyncTask(
-                        action="add",
-                        lib_path=self._config.lib_path / f.hrefs[0],
-                        remote_uri=f.hrefs[0],
-                        size=f.size,
-                        etag=f.etag,
-                    )
-                    for f in item.files
-                ]
-            )
-
-        return tasks
-
-    def __collect_all_tasks(self) -> Iterable[ContentLibrarySyncTask]:
-        add_tasks = self.__collect_add_tasks()
-        delete_tasks = self.__collect_delete_tasks()
-
-        files_to_add = [f.lib_path for f in add_tasks]
-
-        all_tasks = list(add_tasks)
-        all_tasks.extend([d for d in delete_tasks if d.lib_path not in files_to_add])
-
-        return all_tasks
-
-    def print_sync_stats(self) -> None:
-        stats: ContentLibrarySyncStats = self.__load_sync_stats()
-        print(stats.marshal(omit_empty=False))
-
-    def run(self, dry_run: bool = False) -> ContentLibrarySyncStats:
-        self._dry_run = dry_run
-        stats = self.__load_sync_stats()
-        stats.last_sync_time = datetime.now(tz=timezone.utc)
-
-        start_execution = timer()
-        try:
-            all_tasks = self.__collect_all_tasks()
-            logging.debug(f"preparing to process {len(all_tasks)} synchronization tasks")
-            logging.debug(f"tasks will {'' if self._config.parallel_source_sync else 'not '}be processed in parallel")
-            if self._config.parallel_source_sync:
-                logging.debug(
-                    f"maximum parallel work queues are set to 4 per cpu for a total of {4 * multiprocessing.cpu_count()}"
-                )
-                with multiprocessing.Pool(maxtasksperchild=4) as pool:
-                    proc_mgr = pool.map_async(func=self.__run_task, iterable=all_tasks)
-                    proc_mgr.wait()
-                    results = proc_mgr.get()
-                    pool.terminate()
-            else:
-                results = [result for result in map(self.__run_task, all_tasks)]
-        except BaseException as e:
-            logging.error(msg="An unexpected error was raised in the sync process", exc_info=e)
-            stats.last_sync_result = "FAILURE"
-        else:
-            stats.last_sync_result = "FAILURE" if any([r.reason is not None for r in results]) else "SUCCESS"
+            results_queue.put_nowait(result)
+            continue
         finally:
-            end_execution = timer()
-            stats.last_sync_duration = end_execution - start_execution
-            total_sync_duration = stats.mean_sync_duration * stats.total_sync_count
-            stats.total_sync_count = stats.total_sync_count + 1
-            stats.mean_sync_duration = (total_sync_duration + stats.last_sync_duration) / stats.total_sync_count
+            log.debug("finished processing task", extra={"task": task})
+            work_queue.task_done()
 
-            if stats.last_sync_result == "SUCCESS":
-                reducer: Callable[[int, ContentLibrarySyncTaskResult], int] = lambda acc, r: acc + (r.size or 0)
 
-                stats.files_already_cached = len([r for r in results if r.action == "add" and r.cache_hit])
-                stats.files_downloaded = len([r for r in results if r.action == "add"]) - stats.files_already_cached
-                stats.files_deleted = len([r for r in results if r.action == "delete"])
-                stats.download_size_bytes = reduce(
-                    reducer, [r for r in results if r.action == "add" and r.size is not None], 0
-                )
+async def run_sync(config: ContentLibraryConfig, dry_run: bool = False) -> ContentLibrarySyncStats:
+    log.debug(f"Beginning sync with upstream library at {config.source_url}")
+    stats = get_sync_stats(config) or ContentLibrarySyncStats()
+    start_time = now()
+    stats.sync_in_progress = True
+    __store_sync_stats(config, stats)
 
-            stats.next_sync_time = _get_next_sync_time()
+    start_execution = monotonic_ns()
+    try:
+        all_tasks = __collect_tasks(config, dry_run)
+        work_queue = Queue()
+        results_queue = Queue()
+        logging.debug(f"preparing to process {len(all_tasks)} synchronization tasks")
+        logging.debug(f"worker pool size = {config.worker_pool_size}")
 
-            with open(self._config.cache_path / _SYNC_STATS_FILE, "wt") as fp:
-                fp.write(stats.marshal())
+        for t in all_tasks:
+            work_queue.put_nowait(t)
 
-            return stats
+        worker_pool = []
+        for i in range(max(config.worker_pool_size, 1)):
+            worker_pool.append(
+                create_task(__sync_worker(config, work_queue, results_queue), name=f"sync-pool-worker-{i}")
+            )
+
+        await work_queue.join()
+        for worker in worker_pool:
+            worker.cancel()
+
+        await gather(*worker_pool, return_exceptions=False)
+    except BaseException as e:
+        log.error("an unexpected error was raised in the sync process", exc_info=e)
+        stats.last_sync_result = "FAILURE"
+    finally:
+        end_execution = monotonic_ns()
+        stats.last_sync_time = start_time
+        stats.sync_in_progress = False
+        stats.last_sync_duration = timedelta(microseconds=(end_execution - start_execution) // 1000)
+        total_sync_duration = stats.mean_sync_duration * stats.total_sync_count
+        stats.total_sync_count = stats.total_sync_count + 1
+        stats.mean_sync_duration = (total_sync_duration + stats.last_sync_duration) / stats.total_sync_count
+
+        results = []
+        while not results_queue.empty():
+            results.append(results_queue.get_nowait())
+
+        stats.last_sync_result = "FAILURE" if any([r.reason is not None for r in results]) else "SUCCESS"
+
+        if stats.last_sync_result == "SUCCESS":
+            reducer: Callable[[int, ContentLibrarySyncTaskResult], int] = lambda acc, r: acc + (r.size or 0)
+
+            stats.files_already_cached = len([r for r in results if r.action == "add" and r.cache_hit])
+            stats.files_downloaded = len([r for r in results if r.action == "add"]) - stats.files_already_cached
+            stats.files_deleted = len([r for r in results if r.action == "delete"])
+            stats.download_size_bytes = reduce(
+                reducer, [r for r in results if r.action == "add" and r.size is not None], 0
+            )
+
+        stats.next_sync_time = _get_next_sync_time()
+        stats.lib_size_bytes = config.lib_size()
+        stats.lib_file_count, stats.lib_dir_count = config.lib_counts()
+
+        __store_sync_stats(config, stats)
+
+        return stats
+
+
+def is_sync_in_progress(config: ContentLibraryConfig = ContentLibraryConfig.from_env()) -> bool:
+    stats = get_sync_stats(config)
+    return stats.sync_in_progress if stats else False
 
 
 def _get_next_sync_time() -> datetime | None:

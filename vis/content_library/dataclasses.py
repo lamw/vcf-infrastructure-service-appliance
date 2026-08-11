@@ -1,9 +1,10 @@
+from functools import reduce
 import json
 import os
 import subprocess
 from collections.abc import Callable
-from dataclasses import dataclass, field, fields
-from datetime import datetime
+from dataclasses import dataclass, field, fields, asdict
+from datetime import datetime, timedelta
 from errno import ENOENT
 from ipaddress import IPv4Address, IPv6Address, ip_address
 from pathlib import Path
@@ -15,27 +16,20 @@ from dataclasses_json import DataClassJsonMixin, config, dataclass_json
 from .helpers import empty, env_prefix, xor
 
 
-def env_config[T](metadata: dict | None = None, *, decoder: Callable[[str], T] | None = None):
-    if metadata is None:
-        metadata = {}
 
-    env_metadata = metadata.setdefault("env_config", {})
-    if decoder:
-        env_metadata["decoder"] = decoder
-
-    return metadata
-
-
-_path_config_metadata = env_config(decoder=lambda s: Path(s))
-_int_config_metadata = env_config(decoder=lambda s: int(s, base=10))
+_path_config_metadata = config(decoder=lambda s: Path(s))
+_int_config_metadata = config(decoder=lambda s: int(s, base=10))
+_ns_timedelta_config_metadata = config(
+    decoder=lambda s: timedelta(microseconds=int(s) // 1000), encoder=lambda td: (td.total_seconds() * 1e9) + (td.microseconds * 1000)
+)
 
 _valid_true_strings = ["1", "y", "yes", "t", "true"]
-_bool_config_metadata = env_config(decoder=lambda s: s.lower() in _valid_true_strings)
+_bool_config_metadata = config(decoder=lambda s: s.lower() in _valid_true_strings)
 
 _datetime_metadata = config(
     decoder=lambda s: datetime.fromisoformat(s) if s else None, encoder=lambda d: datetime.isoformat(d) if d else None
 )
-_ip_config_metadata = env_config(decoder=lambda s: ip_address(s))
+_ip_config_metadata = config(decoder=lambda s: ip_address(s))
 
 
 @dataclass
@@ -52,7 +46,7 @@ class ContentLibraryConfig:
     tls_cert: Path | None = field(metadata=_path_config_metadata, default=None)
     tls_key: Path | None = field(metadata=_path_config_metadata, default=None)
     auto_source_sync_enabled: bool = field(metadata=_bool_config_metadata, default=True)
-    parallel_source_sync: bool = field(metadata=_bool_config_metadata, default=True)
+    worker_pool_size: int = field(metadata=_int_config_metadata, default=25)
     sync_schedule: str = "Sun 8:06"
 
     def __post_init__(self):
@@ -105,7 +99,26 @@ class ContentLibraryConfig:
 
         self.lib_path = self.root / "lib"
         self.cache_path = self.root / "cache"
+        
 
+    def lib_size(self) -> int:
+        def __size(p: Path) -> int:
+            if p.is_dir():
+                return 0
+            try:
+                return p.stat().st_size
+            except:
+                return 0
+
+        sizes = [__size(p) for p in self.lib_path.rglob('*.*')]
+
+        return reduce(lambda acc, s: acc + s, sizes, 0)
+
+        
+    def lib_counts(self) -> tuple[int, int]:
+        paths = self.lib_path.rglob("*")
+        return len([p for p in paths if not p.is_dir()]), len([p for p in paths if p.is_dir()])
+        
     @classmethod
     def from_env(cls, environ: dict[str, str] = dict(os.environ)) -> Self:
         to_field_name = lambda k: k[len(env_prefix) :].lower()
@@ -144,6 +157,34 @@ class ContentLibrarySyncTask:
     remote_uri: str | None = None
     etag: str | None = None
     size: int | None = None
+    dry_run: bool = False
+
+    def __repr__(self) -> str:
+        data = asdict(self)
+        return json.dumps(data)
+
+    def is_cached(self) -> bool:
+        if self.cache_path is None or self.etag is None:
+            return False
+
+        try:
+            cached_etag = self.cache_path.read_text().strip()
+        except BaseException:
+            return False
+        else:
+            return cached_etag == self.etag
+
+    def can_cache(self) -> bool:
+        if self.cache_path is None or self.etag is None:
+            return False
+
+    def cache(self) -> None:
+        if self.can_cache():
+            os.makedirs(self.cache_path.parent, exist_ok=True)  # ty: ignore
+            self.cache_path.write_text(self.etag)  # ty: ignore
+            return
+
+        raise ValueError("cannot cache this task file")
 
 
 @dataclass
@@ -198,23 +239,29 @@ class ContentLibrarySpec:
 @dataclass_json
 @dataclass
 class ContentLibrarySyncStats(DataClassJsonMixin):
+    sync_in_progress: bool = False
     last_sync_time: datetime | None = field(metadata=_datetime_metadata, default=None)
     next_sync_time: datetime | None = field(metadata=_datetime_metadata, default=None)
     last_sync_result: Literal["SUCCESS", "FAILURE"] | None = None
     total_sync_count: int = 0
-    last_sync_duration: float = 0.0
-    mean_sync_duration: float = 0.0
-    files_already_cached: int | None = None
-    files_downloaded: int | None = None
-    files_deleted: int | None = None
-    download_size_bytes: int | None = None
+    last_sync_duration: timedelta = field(metadata=_datetime_metadata, default=timedelta())
+    mean_sync_duration: timedelta = field(metadata=_datetime_metadata, default=timedelta())
+    files_already_cached: int = 0
+    files_downloaded: int = 0
+    files_deleted: int = 0
+    download_size_bytes: int = 0
+    lib_size_bytes: int = 0
+    lib_file_count: int = 0
+    lib_dir_count: int = 0
 
     def marshal(self, omit_empty: bool = True) -> str:
+        return json.dumps(self.marshal_to_dict(omit_empty), indent=4)
+
+    def marshal_to_dict(self, omit_empty: bool = True) -> dict[str, Any]:
         d = self.to_dict(encode_json=False)
 
         if omit_empty:
             for k in [f.name for f in fields(self)]:
                 if d.get(k, None) is None:
                     d.pop(k, None)
-
-        return json.dumps(d, indent=4)
+        return d

@@ -2303,7 +2303,7 @@ class LocalContentLibraryServiceAdapter(ServiceAdapter):
                 self.service.settings.get("source_url", "https://wp-content.broadcom.com/v2/latest/lib.json")
             ),
             f"auto_source_sync_enabled = {self._auto_sync_enabled()}",
-            f"parallel_source_sync = {self._parallel_sync_enabled()}",
+            f"worker_pool_size = {self.service.settings.get("worker_pool_size", "25")}",
         ]
 
         if self._basic_auth_enabled():
@@ -2381,7 +2381,9 @@ WorkingDirectory=/opt/vis/app
 Environment=PYTHONPATH=/opt/vis/app
 Environment=VIS_CONTENT_LIB_ROOT={self.service.filesystem_root}
 Environment=VIS_CONTENT_LIB_SOURCE_URL={self.service.settings.get("source_url", "https://wp-content.broadcom.com/v2/latest/lib.json")}
-Environment=VIS_CONTENT_LIB_PARALLEL_SOURCE_SYNC={self._parallel_sync_enabled()}
+Environment=VIS_CONTENT_LIB_SOURCE_USER={self.service.settings.get("source_user", "")}
+Environment=VIS_CONTENT_LIB_SOURCE_PASSWORD={self.service.settings.get("source_password", "")}
+Environment=VIS_CONTENT_LIB_WORKER_POOL_SIZE={self.service.settings.get("worker_pool_size", 25)}
 ExecStart=/opt/vis/app/venv/bin/python -m vis.content_library_sync
 Restart=on-failure
 RestartSec=2
@@ -2399,10 +2401,8 @@ WantedBy=multi-user.target
         server_result = subprocess.run(
             ["systemctl", "is-active", "--quiet", "vis-content-library-server.service"], check=False
         )
-        sync_result = subprocess.run(
-            ["systemctl", "is-active", "--quiet", "vis-content-library-sync.service"], check=False
-        )
-        return server_result.returncode == 0 and (not self._auto_sync_enabled() or (sync_result.returncode == 0))
+       
+        return server_result.returncode == 0 
 
     def _protocol(self) -> str:
         return str(self.service.settings.get("protocol", "http")).lower()
@@ -2415,9 +2415,6 @@ WantedBy=multi-user.target
 
     def _auto_sync_enabled(self) -> bool:
         return bool(self.service.settings.get("auto_source_sync_enabled", True))
-
-    def _parallel_sync_enabled(self) -> bool:
-        return bool(self.service.settings.get("parallel_source_sync", True))
 
     def _apply_shared_tls_settings(self) -> None:
         self.service.settings.update(

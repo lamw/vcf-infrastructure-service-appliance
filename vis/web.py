@@ -1,9 +1,8 @@
-from typing import Any
-import pathlib
 import errno
 import ipaddress
 import json
 import os
+import pathlib
 import re
 import shutil
 import signal
@@ -13,6 +12,7 @@ import sys
 import tempfile
 import uuid
 from pathlib import Path
+from typing import Any, Tuple
 from urllib.parse import urlparse
 
 from flask import (
@@ -32,15 +32,19 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
+from vis.content_library import get_sync_stats, is_sync_in_progress
+from vis.content_library.helpers import TEMPLATE_FUNCTIONS
+
 from .definitions import DEFAULT_IDENTITY_GROUPS
 from .file_manager import RepositoryFileManager
 from .manager import ServiceManager
-from .models import ValidationResult, utc_now, ServiceDefinition
+from .models import ServiceDefinition, ValidationResult, utc_now
 from .store import ServiceStore
 
 
 def create_app(config=None):
     app = Flask(__name__)
+    app.jinja_env.globals.update(**TEMPLATE_FUNCTIONS)
     app.config.update(config or {})
     app.secret_key = app.config.get("SECRET_KEY") or os.environ.get("VIS_SECRET_KEY") or "vis-development-secret"
     app.config["VIS_APPLIANCE_FQDN"] = os.environ.get("VIS_APPLIANCE_FQDN", "vis.williamlam.local")
@@ -445,6 +449,7 @@ def create_app(config=None):
             vcfdt_available=vcfdt_available,
             vcfdt_system_id=vcfdt_system_id,
             depot_download_job=_depot_download_job(app) if service_id == "web-depot" else {},
+            sync_stats=get_sync_stats() if service_id == "content-library" else None,
         )
 
     @app.route("/services/<service_id>/health", methods=["POST"])
@@ -1085,6 +1090,17 @@ def create_app(config=None):
         refresh_service_backend(service.id)
         return redirect(url_for("service_detail", service_id=service.id, content_library_status="Content Library Service configuration updated", _anchor="content-library-config"))
 
+    @app.route("/services/content-library/manual-sync", methods=["POST"])
+    def run_manual_sync():
+        result = _run_manual_content_library_sync()
+        redirect_args = {
+            "content_library_status": "Content Library Manual Sync Queued. Check the sync stats for more details"
+        } if result else {
+            "content_library_error": "Another sync is currently in progress"
+        }
+        
+        return redirect(url_for("service_detail", service_id="content-library", _anchor="content-library-config", **redirect_args))
+
     @app.route("/services/sftp-backup/files/mkdir", methods=["POST"])
     def sftp_mkdir():
         service = manager.get_service("sftp-backup")
@@ -1575,10 +1591,10 @@ def _kms_settings_from_form():
 
 def _shared_web_service_settings_from_form(app: Flask, /, service_id: str, anchor: str = "", default_https_port: int = 8443, default_http_port: int = 8080, allow_privileged: bool = False) -> dict[str, object]:
     tls_enabled = request.form.get("tls_enabled") == "on"
-    
+
     protocol = "https" if tls_enabled else "http"
     default_port = str(default_https_port) if tls_enabled else str(default_http_port)
-    
+
     try:
         port = _port_from_form(default_port=default_port, allow_privileged=allow_privileged)
     except ValueError as err:
@@ -1593,7 +1609,7 @@ def _shared_web_service_settings_from_form(app: Flask, /, service_id: str, ancho
         "basic_auth_enabled": request.form.get("basic_auth_enabled") == "on",
         "auth_user": request.form.get("auth_user", "").strip()
     }
-    
+
     if tls_enabled:
         try:
             _ensure_shared_tls(app)
@@ -1609,7 +1625,7 @@ def _shared_web_service_settings_from_form(app: Flask, /, service_id: str, ancho
             )
         except OSError as err:
             return redirect(url_for("service_detail", service_id=service_id, client_error=str(err), _anchor=anchor))
-   
+
     password = request.form.get("auth_password", "")
     if password:
         shared_settings["auth_password"] = password
@@ -1639,8 +1655,10 @@ def _content_library_settings_from_form(app: Flask):
     else:
         settings.update({
             "source_library_url": request.form.get("source_library_url"),
+            "source_user": request.form.get("source_user", None),
+            "source_password": request.form.get("source_password", None),
             "auto_source_sync_enabled": request.form.get("auto_source_sync_enabled") == "on",
-            "parallel_source_sync": request.form.get("parallel_source_sync") == "on",
+            "worker_pool_size": int(request.form.get("worker_pool_size")),
         })
 
     return settings, None
@@ -3635,3 +3653,10 @@ def _openssl_digest(command):
     if result.returncode != 0:
         return ""
     return result.stdout.strip()
+
+def _run_manual_content_library_sync() -> bool:
+    if is_sync_in_progress():
+        return False
+        
+    subprocess.run(["systemctl", "start", "vis-content-library-sync.service"])
+    return True
