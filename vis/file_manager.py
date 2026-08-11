@@ -45,6 +45,7 @@ class RepositoryFileManager:
             "current": self._relative(current),
             "parent": self._parent(current),
             "entries": entries,
+            "readonly": self.readonly,
         }
 
     def mkdir(self, relative_path: str, name: str) -> None:

@@ -1,34 +1,56 @@
-# Source - https://stackoverflow.com/a/70223539
-# Posted by Bogdan Mircea, modified by community. See post 'Timeline' for change history
-# Retrieved 2026-08-10, License - CC BY-SA 4.0
-
+from logging import Logger, DEBUG, Formatter, basicConfig, NullHandler
+import gzip
 import json
-import logging
-import sys
+import os
+import shutil
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
 from typing import override
 
+_DEFAULT_SYNC_LOG_NAME = "content-library-sync"
+_BACKUP_LOG_COUNT = 10
 
-def logger(name: str) -> logging.Logger:
-    handler = logging.StreamHandler(stream=sys.stdout)
-    formatter = JsonFormatter(
-        {
-            "level": "levelname",
-            "message": "message",
-            "loggerName": "name",
-            "processName": "processName",
-            "timestamp": "asctime",
-            "current_task": "taskName",
-        }
+def initialize_clean_logging():
+    basicConfig(handlers=[NullHandler()], force=True)
+
+def new_sync_logger(name: str = _DEFAULT_SYNC_LOG_NAME, log_path: Path = Path("/opt/vis/state")) -> Logger:
+    current_log = log_path / f"{name}.log"
+
+    def namer(name: str) -> str:
+        return f"{name}.gz"
+
+    def rotator(source, dest) -> None:
+        with open(source, "rb") as f_in, gzip.open(dest, "rb") as f_out:
+            shutil.copyfileobj(f_in, f_out)
+        os.remove(source)
+
+    handler = RotatingFileHandler(filename=current_log, mode="w", maxBytes=1, backupCount=10, delay=True)
+    handler.namer = namer
+    handler.rotator = rotator
+    handler.setFormatter(
+        JsonFormatter(
+            {
+                "level": "levelname",
+                "message": "message",
+                "loggerName": "name",
+                "processName": "processName",
+                "timestamp": "asctime",
+                "current_task": "taskName",
+                "module": "module",
+            }
+        )
     )
-    handler.setFormatter(formatter)
 
-    log = logging.Logger(name=name, level=logging.DEBUG)
+    log = Logger(name=name, level=DEBUG)
     log.addHandler(handler)
-    
+
     return log
 
 
-class JsonFormatter(logging.Formatter):
+# Source - https://stackoverflow.com/a/70223539
+# Posted by Bogdan Mircea, modified by community. See post 'Timeline' for change history
+# Retrieved 2026-08-10, License - CC BY-SA 4.0
+class JsonFormatter(Formatter):
     """
     Formatter that outputs JSON strings after parsing the LogRecord.
 

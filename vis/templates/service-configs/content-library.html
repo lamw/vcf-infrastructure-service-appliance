@@ -22,10 +22,7 @@
       <button class="notice-dismiss" type="button" data-dismiss-notice aria-label="Dismiss message">×</button>
     </div>
     {% endif %}
-    <form class="compact content-library-config-form" method="post" action="{{ url_for('run_manual_sync') }}">
-      <button class="btn primary" type="submit" {% if needs_required_config %}disabled{% endif %}>Run Manual Sync</button>
-    </form>
-    <form class="credential-form compact content-library-config-form" method="post" action="{{ url_for('content_library_config') }}">
+    <form class="credential-form content-library-config-form" method="post" action="{{ url_for('content_library_config') }}">
       <input type="hidden" name="form_context" value="content_library_config" />
       <label class="field-label" for="contentLibraryTlsEnabled">TLS</label>
       <label class="toggle-row"><input id="contentLibraryTlsEnabled" name="tls_enabled" type="checkbox" {% if
@@ -129,7 +126,7 @@
           service.settings.auto_source_sync_enabled %}checked{% endif %} /> Enabled</label>
 
       <label class="field-label" for="contentLibraryWorkerPoolSize">Worker Pool Size</label>
-      <div class="copy-row"><input class="text-input" id="contentLibraryWorkerPoolSize" name="worker_pool_size" type="number" min="1" max="100" value="{{ service.settings.worker_pool_size or '1'}}" /></div>
+      <div class="copy-row"><input class="text-input" id="contentLibraryWorkerPoolSize" name="worker_pool_size" type="number" min="1" max="100" value="{{ service.settings.worker_pool_size or '25' }}" /></div>
 
       <div></div>
       <button class="btn primary" type="submit">Save Configuration</button>

@@ -13,8 +13,6 @@ from urllib.parse import urljoin
 from dataclasses_json import DataClassJsonMixin
 from requests import Request, Session
 
-from vis.content_library.logging import logger
-
 from .dataclasses import (
     ContentLibraryConfig,
     ContentLibraryItemsList,
@@ -32,7 +30,7 @@ _session: Session | None = None
 
 now = lambda: datetime.now(tz=timezone.utc)
 
-log = logger("Content Library Sync")
+log: logging.Logger = logging.root
 
 
 def __get_global_session(config: ContentLibraryConfig) -> Session:
@@ -192,7 +190,13 @@ async def __sync_worker(config: ContentLibraryConfig, work_queue: Queue, results
             work_queue.task_done()
 
 
-async def run_sync(config: ContentLibraryConfig, dry_run: bool = False) -> ContentLibrarySyncStats:
+async def run_sync(
+    config: ContentLibraryConfig, logger: logging.Logger | None = None, dry_run: bool = False
+) -> ContentLibrarySyncStats:
+    global log
+    if logger:
+        log = logger
+
     log.debug(f"Beginning sync with upstream library at {config.source_url}")
     stats = get_sync_stats(config) or ContentLibrarySyncStats()
     start_time = now()

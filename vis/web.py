@@ -3031,7 +3031,7 @@ def _log_targets(manager):
         "time-server": ["chrony.service", "vis-ptp4l.service"],
         "dhcp-server": ["vis-dhcp.service"],
         "kms-service": ["vis-kms.service"],
-        "content-library": ["vis-content-library.service", "vis-content-library-sync.service"]
+        "content-library": ["vis-content-library.service"],
     }
     for service in manager.list_services():
         targets[service.id] = {
@@ -3045,12 +3045,18 @@ def _log_targets(manager):
 
 
 def _log_files_for_service(service_id):
-    if service_id == "web-depot":
-        return [
-            "/opt/vis/state/depot-download-job.log",
-            "/usr/local/lib/vcf-download-tool/log/vdt.log",
-        ]
-    return []
+    match service_id:
+        case "web-depot":
+            return [
+                "/opt/vis/state/depot-download-job.log",
+                "/usr/local/lib/vcf-download-tool/log/vdt.log",
+            ]
+        case "content-library":
+            return [
+                "/opt/vis/state/content-library-sync.log",
+            ]
+        case _:
+            return []
 
 
 def _read_logs(target, lines):
@@ -3102,6 +3108,7 @@ def _filter_log_text(log_text, query="", level="all"):
         "error": ("error", "failed", "failure", "critical", "panic", "exception"),
         "warning": ("warn", "warning", "deprecated"),
         "info": ("info", "started", "stopped", "accepted", "listening", "running"),
+        "debug": ("debug", "verbose", "trace"),
     }
     filtered = []
     for line in log_text.splitlines():

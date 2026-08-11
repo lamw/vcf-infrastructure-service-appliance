@@ -5,7 +5,15 @@
   <div class="panel-header">
     <div>
       <h2>Repository Files</h2>
-      <p class="subtle">{{ "View or manage folders within Software Depot" if service.id == "web-depot" else "View or manage folders within SFTP Server" }}</p>
+      <p class="subtle">
+        {% if service.id == "web-depot" %}
+          View or manage folders within Software Depot
+        {% elif service.id == "content-library" %}
+          View folders within Content Library
+        {% else %}
+          View or manage folders within SFTP Server
+        {% endif %}
+      </p>
     </div>
     {% if not file_browser.readonly %}
     <form class="inline-form" method="post" action="{{ url_for(mkdir_endpoint) }}">
