@@ -179,7 +179,7 @@ html[data-visual="grid"] .brand-title strong {
   font-weight: 600;
 }
 
-.brand-title a {
+.brand-title a, .brand-title a:visited {
   color: rgba(255, 255, 255, 0.76);
   font-size: 12px;
   text-decoration: none;
@@ -888,7 +888,7 @@ pre.config-preview {
   font-weight: 700;
 }
 
-.record-table a {
+.record-table a, .record-table a:visited {
   color: var(--vis-accent);
   font-weight: 600;
   text-decoration: none;
@@ -1535,10 +1535,15 @@ input[type="file"] {
   line-height: 1;
   font-size: 18px;
   font-weight: 700;
+  text-decoration: none;
 }
 
 .notice-dismiss:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+
+.notice-dismiss:visited {
+  color: currentColor;
 }
 
 .login-body {
@@ -1597,7 +1602,7 @@ input[type="file"] {
   text-align: center;
 }
 
-.login-credit a {
+.login-credit a, .login-cred a:visited {
   color: var(--vis-accent);
   font-weight: 600;
   text-decoration: none;
@@ -1716,7 +1721,7 @@ input[type="file"] {
   content: "";
 }
 
-.repo-tree a {
+.repo-tree a, .repo-tree a:visited {
   position: relative;
   display: flex;
   align-items: center;
