@@ -33,11 +33,11 @@
 <section class="sync-stats-grid col2 service-metrics" aria-label="Content Library Sync Times">
   <article class="metric">
     <div class="metric-label">Last Synchronization</div>
-    <div class="metric-value">{{ sync_stats.last_sync_time | relative_datetime | title }}</div>
+    <div class="metric-value">{{ (sync_stats.last_sync_time | relative_datetime | title) or 'No syncs have occurred yet' }}</div>
   </article>
   <article class="metric">
     <div class="metric-label">Next Synchronization</div>
-    <div class="metric-value">{% title(relative_datetime(sync_stats.next_sync_time, 'Not Configured')) %</div>
+    <div class="metric-value">{{ (sync_stats.next_sync_time | relative_datetime | title) or 'Not configured' }}</div>
   </article>
   <article class="metric">
     <div class="metric-label">Last Synchronization Time</div>

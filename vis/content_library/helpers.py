@@ -14,7 +14,7 @@ def xor(a: bool, b: bool) -> bool:
 
 
 def duration(dur: timedelta, include_microseconds: bool = True) -> str:
-    if dur.total_seconds() == 0:
+    if not dur or dur.total_seconds() == 0:
         return "0"
 
     days = dur.days
@@ -37,9 +37,9 @@ def duration(dur: timedelta, include_microseconds: bool = True) -> str:
     return ", ".join(parts)
 
 
-def relative_datetime(then: datetime | None, default_val: str = "") -> str:
+def relative_datetime(then: datetime | None) -> str:
     if not then:
-        return default_val
+        return ""
 
     now: datetime = datetime.now(tz=timezone.utc)
     span = then - now
