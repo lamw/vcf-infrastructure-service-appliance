@@ -2,7 +2,7 @@ import json
 import logging
 import os
 import subprocess
-from asyncio import Queue, create_task, gather, Lock, run
+from asyncio import Lock, Queue, create_task, gather, run
 from collections.abc import Callable
 from datetime import datetime, timedelta, timezone
 from functools import reduce
@@ -32,6 +32,7 @@ now = lambda: datetime.now(tz=timezone.utc)
 
 log: logging.Logger = logging.root
 write_lock = Lock()
+
 
 def __get_global_session(config: ContentLibraryConfig) -> Session:
     global _session
@@ -121,25 +122,37 @@ def __collect_tasks(config: ContentLibraryConfig, dry_run: bool = False) -> list
     return all_tasks
 
 
-def get_sync_stats(config: ContentLibraryConfig = ContentLibraryConfig.from_env()) -> ContentLibrarySyncStats | None:
+async def __get_sync_stats(config: ContentLibraryConfig) -> ContentLibrarySyncStats | None:
     global write_lock
 
     try:
-        run(write_lock.acquire())
+        await write_lock.acquire()
         stats_file = config.cache_path / _SYNC_STATS_FILE
         return ContentLibrarySyncStats.from_json(stats_file.read_bytes()) if stats_file.is_file() else None
     finally:
-        write_lock.release()
+        if write_lock.locked:
+            write_lock.release()
 
-def __store_sync_stats(config: ContentLibraryConfig, stats: ContentLibrarySyncStats) -> None:
+
+def get_sync_stats(config: ContentLibraryConfig = ContentLibraryConfig.from_env()) -> ContentLibrarySyncStats | None:
+    return run(__get_sync_stats(config))
+
+
+async def __store_sync_stats(config: ContentLibraryConfig, stats: ContentLibrarySyncStats) -> None:
     global write_lock
 
     try:
-        run(write_lock.acquire())
+        await write_lock.acquire()
         stats_file = config.cache_path / _SYNC_STATS_FILE
         stats_file.write_text(stats.marshal())
     finally:
-        write_lock.release()
+        if write_lock.locked:
+            write_lock.release()
+
+
+def store_sync_stats(config: ContentLibraryConfig, stats: ContentLibrarySyncStats) -> None:
+    run(__store_sync_stats(config, stats))
+
 
 async def __sync_worker(config: ContentLibraryConfig, work_queue: Queue, results_queue: Queue):
     log.debug("starting sync worker")
@@ -207,7 +220,7 @@ async def run_sync(
     if logger:
         log = logger
 
-    stats = get_sync_stats(config) or ContentLibrarySyncStats()
+    stats = await __get_sync_stats(config) or ContentLibrarySyncStats()
     if stats.sync_in_progress:
         # this failure is ephemeral, intentionally do not save it
         stats.last_sync_result = "FAILURE"
@@ -217,7 +230,7 @@ async def run_sync(
     log.debug(f"Beginning sync with upstream library at {config.source_url}")
     start_time = now()
     stats.sync_in_progress = True
-    __store_sync_stats(config, stats)
+    await __store_sync_stats(config, stats)
 
     start_execution = monotonic_ns()
     try:
@@ -273,7 +286,7 @@ async def run_sync(
         stats.lib_size_bytes = config.lib_size()
         stats.lib_file_count, stats.lib_dir_count = config.lib_counts()
 
-        __store_sync_stats(config, stats)
+        await __store_sync_stats(config, stats)
 
         return stats
 
