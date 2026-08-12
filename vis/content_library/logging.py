@@ -1,8 +1,8 @@
-from logging import Logger, DEBUG, Formatter, basicConfig, NullHandler
 import gzip
 import json
 import os
 import shutil
+from logging import DEBUG, Formatter, Logger, NullHandler, basicConfig
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import override
@@ -10,8 +10,10 @@ from typing import override
 _DEFAULT_SYNC_LOG_NAME = "content-library-sync"
 _BACKUP_LOG_COUNT = 10
 
+
 def initialize_clean_logging():
     basicConfig(handlers=[NullHandler()], force=True)
+
 
 def new_sync_logger(name: str = _DEFAULT_SYNC_LOG_NAME, log_path: Path = Path("/opt/vis/state")) -> Logger:
     current_log = log_path / f"{name}.log"
@@ -20,7 +22,7 @@ def new_sync_logger(name: str = _DEFAULT_SYNC_LOG_NAME, log_path: Path = Path("/
         return f"{name}.gz"
 
     def rotator(source, dest) -> None:
-        with open(source, "rb") as f_in, gzip.open(dest, "rb") as f_out:
+        with open(source, "rb") as f_in, gzip.open(dest, "wb") as f_out:
             shutil.copyfileobj(f_in, f_out)
         os.remove(source)
 
