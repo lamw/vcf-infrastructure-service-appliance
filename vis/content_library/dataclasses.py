@@ -1,52 +1,76 @@
-from functools import reduce
 import json
 import os
 import subprocess
 from collections.abc import Callable
-from dataclasses import dataclass, field, fields, asdict
+from dataclasses import asdict, dataclass, field, fields
 from datetime import datetime, timedelta
 from errno import ENOENT
+from functools import reduce
 from ipaddress import IPv4Address, IPv6Address, ip_address
 from pathlib import Path
 from typing import Any, Literal, Self
 
 import validators
-from dataclasses_json import DataClassJsonMixin, config, dataclass_json
+from dataclasses_json import DataClassJsonMixin, dataclass_json
+from dataclasses_json import config as json_config
 
 from .helpers import empty, env_prefix, xor
 
 
+def env_config(
+    metadata: dict[str, dict[Any, Any]] | None = None,
+    /,
+    decoder: Callable[[str], Any] | None = None,
+    encoder: Callable[[Any], str] | None = None,
+) -> dict[str, dict[Any, Any]]:
+    if metadata is None:
+        metadata = {}
 
-_path_metadata = config(decoder=lambda s: Path(s))
-_int_metadata = config(decoder=lambda s: int(s, base=10))
-_ns_timedelta_metadata = config(
-    decoder=lambda s: timedelta(microseconds=int(s) // 1000), encoder=lambda td: (td.total_seconds() * 1e9) + (td.microseconds * 1000)
+    lib_metadata = metadata.setdefault("env_config", {})
+    json_metadata = metadata.get("dataclasses_json", {})
+
+    lib_metadata["decoder"] = decoder or json_metadata.get("decoder", None)
+    lib_metadata["encoder"] = encoder or json_metadata.get("encoder", None)
+
+    return metadata
+
+
+path_field = env_config(decoder=lambda s: Path(s) if s else None)
+int_field = env_config(decoder=lambda s: int(s, base=10) if s else 0)
+duration_field = env_config(
+    json_config(
+        decoder=lambda s: timedelta(microseconds=int(s) // 1000),
+        encoder=lambda td: (td.total_seconds() * 1e9) + (td.microseconds * 1000),
+    )
 )
 
 _valid_true_strings = ["1", "y", "yes", "t", "true"]
-_bool_metadata = config(decoder=lambda s: s.lower() in _valid_true_strings)
+bool_field = env_config(decoder=lambda s: s.lower() in _valid_true_strings)
 
-_datetime_metadata = config(
-    decoder=lambda s: datetime.fromisoformat(s) if s else None, encoder=lambda d: datetime.isoformat(d) if d else None
+datetime_field = env_config(
+    json_config(
+        decoder=lambda s: datetime.fromisoformat(s) if s else None,
+        encoder=lambda d: datetime.isoformat(d) if d else None,
+    )
 )
-_ip_metadata = config(decoder=lambda s: ip_address(s))
+ip_field = env_config(decoder=lambda s: ip_address(s))
 
 
 @dataclass
 class ContentLibraryConfig:
-    root: Path = field(metadata=_path_metadata, default=Path("/opt/vis/data/content-library"))
+    root: Path = field(metadata=path_field, default=Path("/opt/vis/data/content-library"))
     source_url: str = "https://wp-content.broadcom.com/v2/latest/lib.json"
     source_user: str | None = None
     source_password: str | None = None
-    host: IPv4Address | IPv6Address = field(metadata=_ip_metadata, default=ip_address(0))
-    port: int = field(metadata=_int_metadata, default=9091)
+    host: IPv4Address | IPv6Address = field(metadata=ip_field, default=ip_address(0))
+    port: int = field(metadata=int_field, default=9091)
     protocol: str = "http"
     auth_user: str | None = None
     auth_password: str | None = None
-    tls_cert: Path | None = field(metadata=_path_metadata, default=None)
-    tls_key: Path | None = field(metadata=_path_metadata, default=None)
-    auto_source_sync_enabled: bool = field(metadata=_bool_metadata, default=True)
-    worker_pool_size: int = field(metadata=_int_metadata, default=25)
+    tls_cert: Path | None = field(metadata=path_field, default=None)
+    tls_key: Path | None = field(metadata=path_field, default=None)
+    auto_source_sync_enabled: bool = field(metadata=bool_field, default=True)
+    worker_pool_size: int = field(metadata=int_field, default=25)
     sync_schedule: str = "Sun 8:06"
 
     def __post_init__(self):
@@ -99,7 +123,6 @@ class ContentLibraryConfig:
 
         self.lib_path = self.root / "lib"
         self.cache_path = self.root / "cache"
-        
 
     def lib_size(self) -> int:
         def __size(p: Path) -> int:
@@ -110,15 +133,14 @@ class ContentLibraryConfig:
             except:
                 return 0
 
-        sizes = [__size(p) for p in self.lib_path.rglob('*.*')]
+        sizes = [__size(p) for p in self.lib_path.rglob("*.*")]
 
         return reduce(lambda acc, s: acc + s, sizes, 0)
 
-        
     def lib_counts(self) -> tuple[int, int]:
         paths = self.lib_path.rglob("*")
-        return len([p for p in paths if not p.is_dir()]), len([p for p in paths if p.is_dir()])
-        
+        return len([p for p in paths if p.is_file()]), len([p for p in paths if p.is_dir()])
+
     @classmethod
     def from_env(cls, environ: dict[str, str] = dict(os.environ)) -> Self:
         to_field_name = lambda k: k[len(env_prefix) :].lower()
@@ -240,12 +262,12 @@ class ContentLibrarySpec:
 @dataclass
 class ContentLibrarySyncStats(DataClassJsonMixin):
     sync_in_progress: bool = False
-    last_sync_time: datetime | None = field(metadata=_datetime_metadata, default=None)
-    next_sync_time: datetime | None = field(metadata=_datetime_metadata, default=None)
+    last_sync_time: datetime | None = field(metadata=datetime_field, default=None)
+    next_sync_time: datetime | None = field(metadata=datetime_field, default=None)
     last_sync_result: Literal["SUCCESS", "FAILURE"] | None = None
     total_sync_count: int = 0
-    last_sync_duration: timedelta = field(metadata=_ns_timedelta_metadata, default=timedelta())
-    mean_sync_duration: timedelta = field(metadata=_ns_timedelta_metadata, default=timedelta())
+    last_sync_duration: timedelta = field(metadata=duration_field, default=timedelta())
+    mean_sync_duration: timedelta = field(metadata=duration_field, default=timedelta())
     files_already_cached: int = 0
     files_downloaded: int = 0
     files_deleted: int = 0

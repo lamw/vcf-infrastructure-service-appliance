@@ -282,6 +282,7 @@ INITIAL_SERVICES = [
             "source_user": "",
             "source_password": "",
             "source_library_url": "https://wp-content.broadcom.com/v2/latest/lib.json",
+            "sync_schedule": "Sun 8:06",
             "tls_enabled": False,
             "tls_mode": "shared",
             "tls_ca_path": "/opt/vis/config/tls/rootCA.pem",

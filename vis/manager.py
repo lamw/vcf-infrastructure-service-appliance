@@ -2358,19 +2358,19 @@ WantedBy=multi-user.target
             handle.write(unit)
 
     def _write_sync_unit(self):
-        timer = """[Unit]
+        timer = f"""[Unit]
 Description=vSphere Content Library Synchronization Timer
 
 [Timer]
 Unit=vis-content-library-sync.service
-OnCalendar=Sun 08:06:00
+OnCalendar={self.service.settings.get("sync_schedule", "Sun 8:06")}
 
 [Install]
 WantedBy=timers.target
 """
 
         unit = f"""[Unit]
-Description=vSphere Content Library Service
+Description=vSphere Content Library Upstream Sync Service
 Requires=vis-content-library-sync.timer
 After=network-online.target
 Wants=network-online.target
@@ -2398,11 +2398,15 @@ WantedBy=multi-user.target
             handle.write(timer)
 
     def _service_active(self) -> bool:
-        server_result = subprocess.run(
+        is_server_active = subprocess.run(
             ["systemctl", "is-active", "--quiet", "vis-content-library-server.service"], check=False
-        )
+        ).returncode == 0
+
+        sync_test = not self._auto_sync_enabled() or subprocess.run(
+            ["systemctl", "is-active", "--quiet", "vis-content-library-sync.timer"], check=False
+        ).returncode == 0
        
-        return server_result.returncode == 0 
+        return is_server_active and sync_test
 
     def _protocol(self) -> str:
         return str(self.service.settings.get("protocol", "http")).lower()
