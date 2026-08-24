@@ -561,21 +561,20 @@ class DNSServiceAdapter(ServiceAdapter):
             lines.extend(["", "# Configure DNS domain before adding records."])
             return "\n".join(lines) + "\n"
         entries = self._entries()
+        if entries:
+            for entry in entries:
+                name = str(entry.get("name", "")).rstrip(".")
+                address = str(entry.get("address", ""))
+                ttl = int(entry.get("ttl", self.service.settings.get("default_ttl", 3600)))
+                lines.append('  local-data: "{}. {} IN A {}"'.format(name, ttl, address))
+                lines.append('  local-data-ptr: "{} {}."'.format(address, name))
+        else:
+            lines.extend(["", "# Add DNS entries to render local-data records."])
         if bool(self.service.settings.get("forward_upstream_enabled", False)) and self._forward_upstream_servers():
             lines.extend(["", "forward-zone:", '  name: "."'])
             for server in self._forward_upstream_servers():
                 lines.append("  forward-addr: {}".format(server))
             lines.append("  forward-no-cache: yes")
-        if not entries:
-            lines.extend(["", "# Add DNS entries to render local-data records."])
-            return "\n".join(lines) + "\n"
-        lines.append("")
-        for entry in entries:
-            name = str(entry.get("name", "")).rstrip(".")
-            address = str(entry.get("address", ""))
-            ttl = int(entry.get("ttl", self.service.settings.get("default_ttl", 3600)))
-            lines.append('local-data: "{}. {} IN A {}"'.format(name, ttl, address))
-            lines.append('local-data-ptr: "{} {}."'.format(address, name))
         return "\n".join(lines) + "\n"
 
     def _forward_upstream_servers(self) -> List[str]:
