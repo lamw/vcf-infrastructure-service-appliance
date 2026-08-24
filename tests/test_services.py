@@ -430,6 +430,9 @@ class ServiceManagerTest(unittest.TestCase):
             store.initialize()
             service = store.get_service("unbound-dns")
             service.settings["domain"] = "williamlam.local"
+            service.settings["entries"] = [
+                {"id": "1", "name": "vcf01.williamlam.local", "address": "172.30.0.60", "ttl": 3600}
+            ]
             service.settings["forward_upstream_enabled"] = True
             service.settings["forward_upstream_servers"] = ["172.30.0.1", "192.168.30.29"]
             adapter = DNSServiceAdapter(service)
@@ -438,7 +441,10 @@ class ServiceManagerTest(unittest.TestCase):
             validation = adapter.validate()
 
             self.assertTrue(validation.ok)
+            self.assertIn('  local-data: "vcf01.williamlam.local. 3600 IN A 172.30.0.60"', rendered)
+            self.assertIn('  local-data-ptr: "172.30.0.60 vcf01.williamlam.local."', rendered)
             self.assertIn("forward-zone:", rendered)
+            self.assertLess(rendered.index("local-data:"), rendered.index("forward-zone:"))
             self.assertIn('  name: "."', rendered)
             self.assertIn("  forward-addr: 172.30.0.1", rendered)
             self.assertIn("  forward-addr: 192.168.30.29", rendered)
