@@ -1945,6 +1945,7 @@ WantedBy=multi-user.target
                         break
         if not keycloak_id:
             raise OSError("Unable to create Keycloak OIDC client {}".format(client_id))
+        self._ensure_oidc_group_membership_mapper(token, keycloak_id)
         secret_payload = self._kc_json("GET", "/admin/realms/{}/clients/{}/client-secret".format(realm, parse.quote(keycloak_id, safe="")), token=token)
         secret = str(secret_payload.get("value", "")).strip()
         if not secret:
@@ -1952,6 +1953,37 @@ WantedBy=multi-user.target
         updated = dict(client)
         updated.update({"client_id": client_id, "redirect_url": redirect_url, "keycloak_id": keycloak_id, "client_secret": secret})
         return updated
+
+    def _ensure_oidc_group_membership_mapper(self, token: str, keycloak_id: str) -> None:
+        realm = parse.quote(self._realm(), safe="")
+        client_path = "/admin/realms/{}/clients/{}".format(realm, parse.quote(keycloak_id, safe=""))
+        mapper_payload = {
+            "name": "groups",
+            "protocol": "openid-connect",
+            "protocolMapper": "oidc-group-membership-mapper",
+            "consentRequired": False,
+            "config": {
+                "claim.name": "groups",
+                "full.path": "false",
+                "id.token.claim": "true",
+                "access.token.claim": "true",
+                "userinfo.token.claim": "true",
+                "jsonType.label": "String",
+                "multivalued": "true",
+            },
+        }
+        mappers = self._kc_json("GET", client_path + "/protocol-mappers/models", token=token)
+        for mapper in mappers or []:
+            if mapper.get("name") == "groups" and mapper.get("protocolMapper") == "oidc-group-membership-mapper":
+                mapper_payload["id"] = mapper.get("id")
+                self._kc_json(
+                    "PUT",
+                    client_path + "/protocol-mappers/models/{}".format(parse.quote(str(mapper.get("id", "")), safe="")),
+                    token=token,
+                    payload=mapper_payload,
+                )
+                return
+        self._kc_json("POST", client_path + "/protocol-mappers/models", token=token, payload=mapper_payload)
 
     def delete_oidc_client(self, client: Dict[str, object]) -> None:
         keycloak_id = str(client.get("keycloak_id", "")).strip()

@@ -317,6 +317,8 @@ class ServiceManagerTest(unittest.TestCase):
                 if path.endswith("/clients?clientId=vcf-sso"):
                     post_seen = any(call[0] == "POST" and call[1].endswith("/clients") for call in calls)
                     return [{"id": "kc-client-id", "clientId": "vcf-sso"}] if post_seen else []
+                if path.endswith("/protocol-mappers/models") and method == "GET":
+                    return []
                 if path.endswith("/client-secret"):
                     return {"value": "generated-secret"}
                 return {}
@@ -332,6 +334,14 @@ class ServiceManagerTest(unittest.TestCase):
         self.assertFalse(create_payload["publicClient"])
         self.assertTrue(create_payload["directAccessGrantsEnabled"])
         self.assertEqual(["https://vcf.example.com/callback"], create_payload["redirectUris"])
+        mapper_payload = next(payload for method, path, payload in calls if method == "POST" and path.endswith("/protocol-mappers/models"))
+        self.assertEqual("groups", mapper_payload["name"])
+        self.assertEqual("oidc-group-membership-mapper", mapper_payload["protocolMapper"])
+        self.assertEqual("groups", mapper_payload["config"]["claim.name"])
+        self.assertEqual("false", mapper_payload["config"]["full.path"])
+        self.assertEqual("true", mapper_payload["config"]["id.token.claim"])
+        self.assertEqual("true", mapper_payload["config"]["access.token.claim"])
+        self.assertEqual("true", mapper_payload["config"]["userinfo.token.claim"])
 
     def test_dns_adapter_writes_unbound_config_and_controls_service(self):
         with tempfile.TemporaryDirectory() as tmpdir:
