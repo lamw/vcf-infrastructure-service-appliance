@@ -115,6 +115,12 @@ class PackerOptionalArtifactTest(unittest.TestCase):
         self.assertIn('HARBOR_AUTOSTART="false"', script)
         self.assertIn('sudo systemctl disable vis-harbor.service || true', script)
 
+    def test_packer_sftp_uses_chroot_authorized_keys_path(self):
+        script = (ROOT / "scripts" / "vis-services.sh").read_text(encoding="utf-8")
+
+        self.assertIn('sudo install -d -o "${SFTP_USER}" -g "${SFTP_USER}" -m 700 "${SFTP_BACKUP_DIR}/.ssh"', script)
+        self.assertIn("AuthorizedKeysFile ${SFTP_BACKUP_DIR}/.ssh/authorized_keys", script)
+
     def test_packer_places_containerd_storage_on_registry_disk(self):
         script = (ROOT / "scripts" / "vis-harbor.sh").read_text(encoding="utf-8")
 

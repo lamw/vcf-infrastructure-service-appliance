@@ -2483,6 +2483,7 @@ def _configure_local_sftp(username, password, service):
         _run_root_command(["useradd", "--home-dir", "/backup", "--shell", "/usr/sbin/nologin", "--no-create-home", username])
     _run_root_command(["usermod", "--home", "/backup", "--shell", "/usr/sbin/nologin", username])
     _run_root_command(["install", "-d", "-o", username, "-g", username, "-m", "750", backup_dir])
+    _run_root_command(["install", "-d", "-o", username, "-g", username, "-m", "700", os.path.join(backup_dir, ".ssh")])
     _run_root_command(["chpasswd"], input="{}:{}\n".format(username, password))
     os.makedirs("/etc/ssh/sshd_config.d", exist_ok=True)
     Path("/etc/ssh/sshd_config.d/99-vis-sftp.conf").write_text(
@@ -2491,6 +2492,7 @@ def _configure_local_sftp(username, password, service):
                 "Match User {}".format(username),
                 "    ChrootDirectory {}".format(chroot),
                 "    ForceCommand internal-sftp -d /backup",
+                "    AuthorizedKeysFile {}/.ssh/authorized_keys".format(backup_dir),
                 "    PasswordAuthentication yes",
                 "    AllowTcpForwarding no",
                 "    X11Forwarding no",

@@ -184,6 +184,29 @@ class ServiceManagerTest(unittest.TestCase):
         self.assertTrue(result.last_validation_result.ok)
         self.assertIn("SFTP backend verified", result.last_validation_result.message)
 
+    def test_sftp_adapter_requires_authorized_keys_file_in_match_block(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            store = ServiceStore(os.path.join(tmpdir, "vis.db"))
+            store.initialize()
+            service = store.get_service("sftp-backup")
+            service.settings["user"] = "vis-backup"
+            service.filesystem_root = "/opt/vis/data/sftp/backup"
+            adapter = LocalSFTPServiceAdapter(service)
+
+            with patch("vis.manager.subprocess.run") as run:
+                run.return_value.returncode = 0
+                run.return_value.stdout = "\n".join(
+                    [
+                        "chrootdirectory /opt/vis/data/sftp",
+                        "forcecommand internal-sftp -d /backup",
+                        "authorizedkeysfile /opt/vis/data/sftp/backup/.ssh/authorized_keys",
+                    ]
+                )
+                self.assertTrue(adapter._vis_sftp_configured("vis-backup", "/opt/vis/data/sftp"))
+
+            rendered = adapter.render_config()
+            self.assertIn("authorized_keys_file = /opt/vis/data/sftp/backup/.ssh/authorized_keys", rendered)
+
     def test_sftp_health_check_reports_missing_user(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             store = ServiceStore(os.path.join(tmpdir, "vis.db"))
