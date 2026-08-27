@@ -107,13 +107,14 @@ VM_DATASTORE="local-vmfs-datastore-1"
 VM_NAME="vis"
 
 # VIS appliance networking
+# Separate multiple DNS or NTP servers with commas.
 VIS_FQDN="vis.vcf.lab"
 VIS_IP="172.30.0.9"
 VIS_NETMASK="24 (255.255.255.0)"
 VIS_GATEWAY="172.30.0.1"
-VIS_DNS_SERVER="192.168.30.29"
+VIS_DNS_SERVERS="192.168.30.29"
 VIS_DNS_DOMAIN="vcf.lab"
-VIS_NTP_SERVER="pool.ntp.org"
+VIS_NTP_SERVERS="pool.ntp.org"
 
 # Appliance OS credentials
 VIS_ROOT_PASSWORD="VMware1!"
