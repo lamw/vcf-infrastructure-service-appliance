@@ -28,17 +28,17 @@ GitHub release assets have a file size limit, so VIS release OVAs may be publish
 Example release assets:
 
 ```text
-vcf-infrastructure-services-appliance-1.0.3.ova.part-aa
-vcf-infrastructure-services-appliance-1.0.3.ova.part-ab
-vcf-infrastructure-services-appliance-1.0.3.ova.part-ac
-vcf-infrastructure-services-appliance-1.0.3.ova.sha256
-vcf-infrastructure-services-appliance-1.0.3.ova.parts.sha256
+vcf-infrastructure-services-appliance-1.0.4.ova.part-aa
+vcf-infrastructure-services-appliance-1.0.4.ova.part-ab
+vcf-infrastructure-services-appliance-1.0.4.ova.part-ac
+vcf-infrastructure-services-appliance-1.0.4.ova.sha256
+vcf-infrastructure-services-appliance-1.0.4.ova.parts.sha256
 ```
 
 Verify the downloaded parts first:
 
 ```shell
-shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.3.ova.parts.sha256
+shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.4.ova.parts.sha256
 ```
 
 Reconstruct the OVA:
@@ -46,19 +46,19 @@ Reconstruct the OVA:
 * Linux/macOS
 
 ```shell
-cat vcf-infrastructure-services-appliance-1.0.3.ova.part-* > vcf-infrastructure-services-appliance-1.0.3.ova
+cat vcf-infrastructure-services-appliance-1.0.4.ova.part-* > vcf-infrastructure-services-appliance-1.0.4.ova
 ```
 
 * Windows PowerShell
 ```shell
-cmd /c 'copy /b vcf-infrastructure-services-appliance-1.0.3.ova.part-a* vcf-infrastructure-services-appliance-1.0.3.ova'
+cmd /c 'copy /b vcf-infrastructure-services-appliance-1.0.4.ova.part-a* vcf-infrastructure-services-appliance-1.0.4.ova'
 ```
 
 
 Verify the reconstructed OVA before importing it:
 
 ```shell
-shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.3.ova.sha256
+shasum -a 256 -c vcf-infrastructure-services-appliance-1.0.4.ova.sha256
 ```
 
 The final checksum must pass before deploying the OVA. If it fails, delete the reconstructed OVA, re-download the failed part listed by `shasum`, and repeat the verification.
@@ -67,9 +67,9 @@ Release maintainers can create the split files and checksums with:
 
 ```shell
 cd output-vmware-iso
-shasum -a 256 vcf-infrastructure-services-appliance-1.0.3.ova > vcf-infrastructure-services-appliance-1.0.3.ova.sha256
-split -b 1900m vcf-infrastructure-services-appliance-1.0.3.ova vcf-infrastructure-services-appliance-1.0.3.ova.part-
-shasum -a 256 vcf-infrastructure-services-appliance-1.0.3.ova.part-* > vcf-infrastructure-services-appliance-1.0.3.ova.parts.sha256
+shasum -a 256 vcf-infrastructure-services-appliance-1.0.4.ova > vcf-infrastructure-services-appliance-1.0.4.ova.sha256
+split -b 1900m vcf-infrastructure-services-appliance-1.0.4.ova vcf-infrastructure-services-appliance-1.0.4.ova.part-
+shasum -a 256 vcf-infrastructure-services-appliance-1.0.4.ova.part-* > vcf-infrastructure-services-appliance-1.0.4.ova.parts.sha256
 ```
 
 ## vCenter Server Deployment
@@ -96,7 +96,7 @@ Step 2 - Edit the variables based on your environment
 
 ```shell
 OVFTOOL="/Applications/VMware OVF Tool/ovftool"
-VIS_OVA="./output-vmware-iso/vcf-infrastructure-services-appliance-1.0.3.ova"
+VIS_OVA="./output-vmware-iso/vcf-infrastructure-services-appliance-1.0.4.ova"
 
 # ESX deployment target
 ESX_HOST="172.30.0.10"
