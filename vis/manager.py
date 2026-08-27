@@ -140,6 +140,7 @@ class LocalSFTPServiceAdapter(ServiceAdapter):
                 "directory = {}".format(self.service.filesystem_root),
                 "port = {}".format(self.service.settings.get("port")),
                 "force_command = internal-sftp -d /backup",
+                "authorized_keys_file = {}/.ssh/authorized_keys".format(self.service.filesystem_root),
                 "",
             ]
         )
@@ -168,6 +169,7 @@ class LocalSFTPServiceAdapter(ServiceAdapter):
         expected = {
             "chrootdirectory {}".format(chroot),
             "forcecommand internal-sftp -d /backup",
+            "authorizedkeysfile {}/.ssh/authorized_keys".format(self.service.filesystem_root),
         }
         rendered = set(line.strip() for line in result.stdout.splitlines())
         return expected.issubset(rendered)

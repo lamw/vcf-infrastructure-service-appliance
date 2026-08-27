@@ -100,12 +100,14 @@ if [ -n "${SFTP_USER}" ] && [ -n "${SFTP_PASSWORD}" ]; then
   echo "${SFTP_USER}:${SFTP_PASSWORD}" | sudo chpasswd
   sudo usermod --home /backup --shell /usr/sbin/nologin "${SFTP_USER}"
   sudo install -d -o "${SFTP_USER}" -g "${SFTP_USER}" -m 750 "${SFTP_BACKUP_DIR}"
+  sudo install -d -o "${SFTP_USER}" -g "${SFTP_USER}" -m 700 "${SFTP_BACKUP_DIR}/.ssh"
 
   sudo mkdir -p /etc/ssh/sshd_config.d
   sudo tee /etc/ssh/sshd_config.d/99-vis-sftp.conf >/dev/null <<EOF
 Match User ${SFTP_USER}
     ChrootDirectory ${SFTP_CHROOT}
     ForceCommand internal-sftp -d /backup
+    AuthorizedKeysFile ${SFTP_BACKUP_DIR}/.ssh/authorized_keys
     PasswordAuthentication yes
     AllowTcpForwarding no
     X11Forwarding no
