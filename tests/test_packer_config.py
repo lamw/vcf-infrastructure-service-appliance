@@ -145,6 +145,8 @@ class PackerOptionalArtifactTest(unittest.TestCase):
         self.assertIn('ovf:key="guestinfo.gateway" ovf:type="string" ovf:userConfigurable="true" ovf:value="172.30.0.1"', template)
         self.assertIn('ovf:key="guestinfo.dns" ovf:type="string" ovf:userConfigurable="true" ovf:value="192.168.30.29"', template)
         self.assertIn('ovf:key="guestinfo.domain" ovf:type="string" ovf:userConfigurable="true" ovf:value="vcf.lab"', template)
+        self.assertIn("One or more DNS servers. Separate multiple values with commas", template)
+        self.assertIn("One or more NTP servers. Separate multiple values with commas", template)
         self.assertIn('ovf:key="guestinfo.ssh_public_key" ovf:type="string" ovf:userConfigurable="true" ovf:value=""', template)
         self.assertNotIn("ssh-rsa ", template)
         self.assertNotIn("ssh-ed25519 ", template)
@@ -290,6 +292,23 @@ class PackerOptionalArtifactTest(unittest.TestCase):
             script.index("rm -f /etc/netplan/00-installer-config.yaml"),
             script.index("cat > /etc/netplan/99-vis-appliance.yaml"),
         )
+
+    def test_firstboot_supports_multiple_dns_and_ntp_ovf_values(self):
+        script = (ROOT / "files" / "setup-02-network.sh").read_text(encoding="utf-8")
+        deploy_script = (ROOT / "scripts" / "deploy_vis_esx.sh").read_text(encoding="utf-8")
+
+        self.assertIn("normalize_ovf_list", script)
+        self.assertIn("tr ','", script)
+        self.assertIn('DNS_SERVERS=$(normalize_ovf_list "${DNS_SERVER}")', script)
+        self.assertIn('NTP_SERVERS=$(normalize_ovf_list "${NTP_SERVER}")', script)
+        self.assertIn('DNS_NETPLAN_ADDRESSES=$(printf', script)
+        self.assertIn('${DNS_SYSTEMD_LINES}', script)
+        self.assertIn('DNS=${DNS_RESOLVED_VALUE}', script)
+        self.assertIn('NTP=${NTP_VALUE}', script)
+        self.assertIn('VIS_DNS_SERVERS="192.168.30.29"', deploy_script)
+        self.assertIn('VIS_NTP_SERVERS="pool.ntp.org"', deploy_script)
+        self.assertIn('Separate multiple DNS or NTP servers with commas.', deploy_script)
+
 
 
 if __name__ == "__main__":
