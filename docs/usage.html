@@ -47,6 +47,18 @@
 <li><code>vis-update-&lt;version&gt;.zip.sha256.sig</code></li>
 </ul>
 <p>VIS verifies the SHA256 signature with the built-in VIS release public key, verifies the archive hash, safely extracts the release, and then applies the same update workflow used by online updates.</p>
+<h3 id="outbound-proxy">Outbound Proxy</h3>
+<p>Starting with VIS v1.0.5, configure <strong>Appliance &gt; Outbound Proxy</strong> if Internet access requires an HTTP/HTTPS proxy.</p>
+<ol>
+<li>Check <strong>Use outbound proxy</strong>.</li>
+<li>Select <strong>HTTP</strong> or <strong>HTTPS</strong> for the connection to the proxy itself. An HTTP proxy can also forward HTTPS downloads using CONNECT.</li>
+<li>Enter the proxy server hostname/IP and port. Do not include a URL scheme or port in the server field.</li>
+<li>Enter an optional username and password if the proxy requires authentication.</li>
+<li>Review <strong>Bypass Proxy For</strong>, a comma-separated list for <code>NO_PROXY</code>-aware clients. Keep local VIS addresses in the list.</li>
+<li>Click <strong>Save Configuration</strong>.</li>
+</ol>
+<p>Software Depot uses these settings for Activation Code validation, Install/Upgrade downloads, and ESX patches. Online updates use them for Git and Python dependency downloads. Existing downloads retain the settings captured when they started. To return to direct connections, uncheck <strong>Use outbound proxy</strong> and save.</p>
+<p>The effective configuration and VCFDT command previews mask the password. Proxy settings persist across updates and are included in configuration export/import; keep exported profiles secure. This setting does not configure APT or Docker/Harbor image pulls. See <a href="services.html#outbound-proxy">Outbound Proxy capabilities and limitations</a>.</p>
 <h3 id="system-health">System Health</h3>
 <p>You can view the compute and storage resource utilization for VIS.</p>
 <p><img src="images/vis-system-health.png" alt="" /></p>
@@ -80,6 +92,7 @@
 <p>If you have outbound connectivity to Broadcom.com to download the VCF Install/Upgrade Binaries, VIS can perform that on your behalf. You will need to manually download the VCF Download Tool (VCFDT) from the Broadcom Support Portal, then drag and drop it to install VCFDT on VIS.</p>
 <p><img src="images/vis-software-depot-vcfdt-install.png" alt="" /></p>
 <p>If you choose to have VIS download the binaries, you will need to register your VCFDT System ID with Broadcom Support Portal and generate Broadcom Activation Code</p>
+<p>If outbound access requires a proxy, save <a href="#outbound-proxy">Outbound Proxy</a> settings before validating the Activation Code or starting a download.</p>
 <p><img src="images/vis-software-depot-automatic-download.png" alt="" /></p>
 <p>If you have already downloaded the VCF binaries through alternative means, you can simply drag/drop the <code>PROD</code> folder into VIS file explorer at the bottom of the page and once it has completed, you can access your offline depot.</p>
 <p><img src="images/vis-software-depot-manual-upload.png" alt="" /></p>

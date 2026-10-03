@@ -32,6 +32,21 @@ For offline updates, download the matching release files from a trusted machine 
 
 VIS verifies the SHA256 signature with the built-in VIS release public key, verifies the archive hash, safely extracts the release, and then applies the same update workflow used by online updates.
 
+### Outbound Proxy
+
+Starting with VIS v1.0.5, configure **Appliance > Outbound Proxy** if Internet access requires an HTTP/HTTPS proxy.
+
+1. Check **Use outbound proxy**.
+2. Select **HTTP** or **HTTPS** for the connection to the proxy itself. An HTTP proxy can also forward HTTPS downloads using CONNECT.
+3. Enter the proxy server hostname/IP and port. Do not include a URL scheme or port in the server field.
+4. Enter an optional username and password if the proxy requires authentication.
+5. Review **Bypass Proxy For**, a comma-separated list for `NO_PROXY`-aware clients. Keep local VIS addresses in the list.
+6. Click **Save Configuration**.
+
+Software Depot uses these settings for Activation Code validation, Install/Upgrade downloads, and ESX patches. Online updates use them for Git and Python dependency downloads. Existing downloads retain the settings captured when they started. To return to direct connections, uncheck **Use outbound proxy** and save.
+
+The effective configuration and VCFDT command previews mask the password. Proxy settings persist across updates and are included in configuration export/import; keep exported profiles secure. This setting does not configure APT or Docker/Harbor image pulls. See [Outbound Proxy capabilities and limitations](services.html#outbound-proxy).
+
 ### System Health
 
 You can view the compute and storage resource utilization for VIS.
@@ -90,6 +105,8 @@ If you have outbound connectivity to Broadcom.com to download the VCF Install/Up
 ![](images/vis-software-depot-vcfdt-install.png)
 
 If you choose to have VIS download the binaries, you will need to register your VCFDT System ID with Broadcom Support Portal and generate Broadcom Activation Code
+
+If outbound access requires a proxy, save [Outbound Proxy](#outbound-proxy) settings before validating the Activation Code or starting a download.
 
 ![](images/vis-software-depot-automatic-download.png)
 
