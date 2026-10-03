@@ -34,6 +34,7 @@ sudo /opt/vis/app/venv/bin/pip install --upgrade pip
 sudo /opt/vis/app/venv/bin/pip install -r /opt/vis/app/vis/requirements.txt
 
 echo '> Installing VIS web systemd service...'
+sudo install -d -m 0700 /opt/vis/config/proxy
 sudo tee /etc/systemd/system/vis-web.service >/dev/null <<EOF
 [Unit]
 Description=VIS management web UI

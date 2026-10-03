@@ -25,6 +25,7 @@ class ServiceStore:
         if parent:
             os.makedirs(parent, exist_ok=True)
         with self._connect() as conn:
+            conn.execute("CREATE TABLE IF NOT EXISTS appliance_settings (key TEXT PRIMARY KEY, value_json TEXT NOT NULL)")
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS services (
@@ -64,6 +65,15 @@ class ServiceStore:
                 )
                 """
             )
+
+    def get_appliance_setting(self, key, default=None):
+        with self._connect() as conn:
+            row = conn.execute("SELECT value_json FROM appliance_settings WHERE key = ?", (key,)).fetchone()
+        return json.loads(row[0]) if row else default
+
+    def save_appliance_setting(self, key, value):
+        with self._connect() as conn:
+            conn.execute("INSERT OR REPLACE INTO appliance_settings (key, value_json) VALUES (?, ?)", (key, json.dumps(value)))
 
     def ensure_initial_admin(self, username: str, password_hash: str) -> None:
         username = username.strip()

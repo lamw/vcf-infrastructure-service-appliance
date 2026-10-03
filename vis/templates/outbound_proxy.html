@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Outbound Proxy - VIS{% endblock %}
+{% block content %}
+<section class="page-heading"><div><h1>Outbound Proxy</h1><p class="subtle">HTTP and HTTPS proxy for Software Depot downloads and VIS online updates.</p></div></section>
+<section class="detail-grid outbound-proxy-page">
+  <div class="detail-box">
+    <h3>Proxy Configuration</h3>
+    {% if proxy_error %}<div class="notice prominent bad"><span>{{ proxy_error }}</span><a class="notice-dismiss" href="{{ url_for('outbound_proxy') }}" aria-label="Dismiss message">&times;</a></div>{% endif %}
+    {% if request.args.get('saved') %}<div class="notice prominent good"><span>Proxy configuration saved.</span><a class="notice-dismiss" href="{{ url_for('outbound_proxy') }}" aria-label="Dismiss message">&times;</a></div>{% endif %}
+    <form class="service-config-form" method="post">
+      <label class="field-label" for="proxyEnabled">Proxy</label><label class="toggle-row"><input id="proxyEnabled" name="enabled" type="checkbox" {% if proxy.enabled %}checked{% endif %}>Use outbound proxy</label>
+      <span class="field-label">Protocol</span><div class="segmented-choice"><label><input type="radio" name="protocol" value="http" {% if proxy.protocol == 'http' %}checked{% endif %}> HTTP</label><label><input type="radio" name="protocol" value="https" {% if proxy.protocol == 'https' %}checked{% endif %}> HTTPS</label></div>
+      <label class="field-label" for="proxyServer">Proxy Server</label><input class="text-input" id="proxyServer" name="server" value="{{ proxy.server }}" placeholder="proxy.example.com">
+      <label class="field-label" for="proxyPort">Proxy Port</label><input class="text-input" id="proxyPort" name="port" type="number" min="1" max="65535" value="{{ proxy.port }}">
+      <label class="field-label" for="proxyUsername">Username (Optional)</label><input class="text-input" id="proxyUsername" name="username" value="{{ proxy.username }}" autocomplete="off" placeholder="Optional">
+      <label class="field-label" for="proxyPassword">Password (Optional)</label><div class="secret-row"><input class="text-input secret-input" id="proxyPassword" name="password" type="password" value="{{ proxy.password }}" autocomplete="new-password" placeholder="Optional"><button class="btn icon-btn" id="proxyPasswordToggle" type="button" title="Show password" aria-label="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+      <label class="field-label" for="proxyBypass">Bypass Proxy For</label><textarea class="text-input" id="proxyBypass" name="no_proxy" rows="3">{{ proxy.no_proxy }}</textarea>
+      <span></span><button class="btn primary" type="submit">Save Configuration</button>
+    </form>
+  </div>
+  <div class="detail-box"><h3>Effective Proxy Configuration</h3><pre class="config-preview">{{ proxy_environment }}</pre><h3>VCF Download Tool Command</h3><pre class="config-preview">{{ proxy_command }}</pre></div>
+</section>
+<script>
+const toggle = document.getElementById('proxyPasswordToggle');
+const password = document.getElementById('proxyPassword');
+toggle.addEventListener('click', () => {
+  password.type = password.type === 'password' ? 'text' : 'password';
+  toggle.title = password.type === 'password' ? 'Show password' : 'Hide password';
+  toggle.setAttribute('aria-label', toggle.title);
+});
+</script>
+{% endblock %}

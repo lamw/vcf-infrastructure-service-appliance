@@ -2465,7 +2465,7 @@ class WebAppTest(unittest.TestCase):
         self.assertEqual(302, response.status_code)
         self.assertIn("Software+depot+download+started", response.headers["Location"])
         self.assertIn("#binary-download", response.headers["Location"])
-        command_payload = json.loads(popen.call_args[0][0][3])
+        command_payload = json.loads(Path(popen.call_args[0][0][3]).read_text())
         command = command_payload["commands"][0]
         self.assertNotIn("--ceip=ENABLE", command)
         self.assertLess(command.index("--depot-store=/opt/vis/data/depot"), command.index("--depot-download-activation-code-file={}".format(credential_path)))
@@ -2500,7 +2500,7 @@ class WebAppTest(unittest.TestCase):
             )
 
         self.assertEqual(302, response.status_code)
-        command_payload = json.loads(popen.call_args[0][0][3])
+        command_payload = json.loads(Path(popen.call_args[0][0][3]).read_text())
         commands = command_payload["commands"]
         self.assertEqual(2, len(commands))
         self.assertIn("--type=INSTALL", commands[0])
@@ -2529,7 +2529,7 @@ class WebAppTest(unittest.TestCase):
 
         self.assertEqual(302, response.status_code)
         write_esx.assert_called_once_with("9.1.0")
-        command_payload = json.loads(popen.call_args[0][0][3])
+        command_payload = json.loads(Path(popen.call_args[0][0][3]).read_text())
         commands = command_payload["commands"]
         self.assertEqual(3, len(commands))
         self.assertIn("--type=INSTALL", commands[0])

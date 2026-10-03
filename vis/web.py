@@ -22,6 +22,7 @@ from .file_manager import RepositoryFileManager
 from .manager import ServiceManager
 from .models import ValidationResult, utc_now
 from .store import ServiceStore
+from . import proxy
 
 
 def create_app(config=None):
@@ -189,6 +190,31 @@ def create_app(config=None):
     def config_profiles():
         return render_template("config_profiles.html")
 
+    @app.route("/outbound-proxy", methods=["GET", "POST"])
+    def outbound_proxy():
+        settings = _proxy_settings(app)
+        error = ""
+        if request.method == "POST":
+            try:
+                settings = proxy.validate({
+                    "enabled": request.form.get("enabled") == "on",
+                    "protocol": request.form.get("protocol", "http"),
+                    "server": request.form.get("server", ""),
+                    "port": request.form.get("port", "8080"),
+                    "username": request.form.get("username", ""),
+                    "password": request.form.get("password", ""),
+                    "no_proxy": request.form.get("no_proxy", ""),
+                })
+                proxy.write_environment(_proxy_environment_path(app), settings)
+                store.save_appliance_setting("outbound_proxy", settings)
+                return redirect(url_for("outbound_proxy", saved="1"))
+            except (ValueError, OSError) as err:
+                error = str(err)
+        env = proxy.environment(settings, {}, masked=True)
+        return render_template("outbound_proxy.html", proxy=settings, proxy_error=error,
+                               proxy_environment="\n".join("{}={}".format(key, env[key]) for key in ("HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY") if key in env) or "Proxy disabled. Direct outbound connections.",
+                               proxy_command="vcf-download-tool metadata download --depot-store=/opt/vis/data/depot " + " ".join(proxy.cli_args(settings)))
+
     @app.route("/updates")
     def updates():
         return render_template(
@@ -261,7 +287,9 @@ def create_app(config=None):
         try:
             profile = json.loads(raw_profile)
             imported = _import_config_profile(store, manager, profile, app.config["VIS_APPLIANCE_FQDN"])
-        except (TypeError, ValueError, KeyError) as err:
+            if "outbound_proxy" in profile.get("appliance", {}):
+                proxy.write_environment(_proxy_environment_path(app), _proxy_settings(app))
+        except (TypeError, ValueError, KeyError, OSError) as err:
             return redirect(url_for("config_profiles", config_error=str(err)))
         if request.form.get("apply_backends") == "on":
             for service_id in imported:
@@ -430,6 +458,7 @@ def create_app(config=None):
             vcfdt_available=vcfdt_available,
             vcfdt_system_id=vcfdt_system_id,
             depot_download_job=_depot_download_job(app) if service_id == "web-depot" else {},
+            proxy_arguments=proxy.cli_args(_proxy_settings(app)),
         )
 
     @app.route("/services/<service_id>/health", methods=["POST"])
@@ -512,7 +541,7 @@ def create_app(config=None):
                     return redirect(url_for("service_detail", service_id="web-depot", download_config_error="Activation Code is required", _anchor="download-config"))
                 try:
                     credential_path = _write_depot_download_credential(app, download_mode, download_secret)
-                    verification = _verify_depot_download_credential(download_mode, credential_path, service.filesystem_root)
+                    verification = _verify_depot_download_credential(download_mode, credential_path, service.filesystem_root, app)
                 except OSError as err:
                     return redirect(url_for("service_detail", service_id="web-depot", download_config_error=str(err), _anchor="download-config"))
                 service.settings["download_mode"] = download_mode
@@ -1933,6 +1962,7 @@ def _export_config_profile(manager, fqdn, appliance_ip):
         "appliance": {
             "fqdn": fqdn,
             "ip": appliance_ip,
+            "outbound_proxy": manager.store.get_appliance_setting("outbound_proxy", proxy.defaults(fqdn, appliance_ip)),
         },
         "warning": "This profile includes service credentials and tokens. Store it securely before sharing.",
         "services": [_service_export_payload(service) for service in manager.list_services()],
@@ -1960,6 +1990,9 @@ def _import_config_profile(store, manager, profile, fqdn):
     if not isinstance(services, list) or not services:
         raise ValueError("Profile must include a non-empty services list.")
     known = {service.id for service in manager.list_services()}
+    proxy_settings = None
+    if "outbound_proxy" in profile.get("appliance", {}):
+        proxy_settings = proxy.validate(profile["appliance"]["outbound_proxy"])
     imported = []
     for service_payload in services:
         if not isinstance(service_payload, dict):
@@ -1985,6 +2018,8 @@ def _import_config_profile(store, manager, profile, fqdn):
         _ensure_service_endpoint(service, store, fqdn)
         store.save_service(service)
         imported.append(service.id)
+    if proxy_settings is not None:
+        store.save_appliance_setting("outbound_proxy", proxy_settings)
     return imported
 
 
@@ -2150,7 +2185,18 @@ def _write_depot_download_credential(app, download_mode, secret):
     return str(credential_path)
 
 
-def _verify_depot_download_credential(download_mode, credential_path, depot_store):
+def _proxy_settings(app):
+    return app.config["service_manager"].store.get_appliance_setting(
+        "outbound_proxy", proxy.defaults(app.config["VIS_APPLIANCE_FQDN"], app.config["VIS_APPLIANCE_IP"]))
+
+
+def _proxy_environment_path(app):
+    default = str(Path(app.config["VIS_STATE_DIR"]) / "proxy.env") if app.config.get("TESTING") else "/opt/vis/config/proxy/proxy.env"
+    return app.config.get("VIS_PROXY_ENV_FILE", default)
+
+
+def _verify_depot_download_credential(download_mode, credential_path, depot_store, app=None):
+    app = app or current_app
     command = [
         "vcf-download-tool",
         "metadata",
@@ -2158,21 +2204,24 @@ def _verify_depot_download_credential(download_mode, credential_path, depot_stor
         "--depot-store={}".format(depot_store),
         "--depot-download-activation-code-file={}".format(credential_path),
     ]
+    settings = _proxy_settings(app)
     try:
-        result = subprocess.run(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            check=False,
-            timeout=900,
-        )
+        with tempfile.TemporaryDirectory(prefix="vis-proxy-") as directory:
+            password_path = Path(directory) / "password"
+            if settings["enabled"] and settings["username"]:
+                proxy.write_private(password_path, settings["password"] + "\n")
+            command.extend(proxy.cli_args(settings, password_path))
+            result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                    text=True, check=False, timeout=900, env=proxy.environment(settings))
     except FileNotFoundError:
         raise OSError("vcf-download-tool is not installed on this appliance.")
     except subprocess.TimeoutExpired:
         raise OSError("VCF Download Tool metadata validation timed out.")
     if result.returncode != 0:
         message = result.stderr.strip() or result.stdout.strip() or "VCF Download Tool metadata validation failed."
+        if settings["password"]:
+            from urllib.parse import quote
+            message = message.replace(settings["password"], "********").replace(quote(settings["password"], safe=""), "********")
         raise OSError(_friendly_vcfdt_error(message))
     prod_dir = Path(depot_store) / "PROD"
     if not prod_dir.exists():
@@ -2282,6 +2331,13 @@ def _start_depot_binary_download(app, service, form):
 
     paths = _depot_download_paths(app)
     paths["dir"].mkdir(mode=0o750, parents=True, exist_ok=True)
+    settings = _proxy_settings(app)
+    job_dir = Path(tempfile.mkdtemp(prefix="download-", dir=str(paths["dir"])))
+    password_path = job_dir / "proxy-password"
+    if settings["enabled"] and settings["username"]:
+        proxy.write_private(password_path, settings["password"] + "\n")
+    for command in commands:
+        command.extend(proxy.cli_args(settings, password_path))
     state = {
         "id": str(uuid.uuid4()),
         "status": "running",
@@ -2304,13 +2360,24 @@ def _start_depot_binary_download(app, service, form):
         "log_path": str(paths["log"]),
         "state": state,
         "commands": commands,
+        "environment": proxy.environment(settings),
+        "redact": [settings["password"]] if settings["password"] else [],
+        "job_dir": str(job_dir),
     }
-    process = subprocess.Popen(
-        [sys.executable, "-c", _depot_download_worker_code(), json.dumps(worker_payload)],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        start_new_session=True,
-    )
+    payload_path = job_dir / "payload.json"
+    proxy.write_private(payload_path, json.dumps(worker_payload))
+    try:
+        process = subprocess.Popen(
+            [sys.executable, "-c", _depot_download_worker_code(), str(payload_path)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+    except OSError:
+        shutil.rmtree(job_dir, ignore_errors=True)
+        state.update(status="failed", message="Unable to start Software Depot download process.")
+        _write_depot_download_state(paths["state"], state)
+        raise
     state["pid"] = process.pid
     state["message"] = "Software Depot binary download is running."
     _write_depot_download_state(paths["state"], state)
@@ -2396,8 +2463,16 @@ import json
 import os
 import subprocess
 import sys
+import atexit
+import shutil
+import signal
+from urllib.parse import quote
 
-payload = json.loads(sys.argv[1])
+with open(sys.argv[1], encoding="utf-8") as handle:
+    payload = json.load(handle)
+os.unlink(sys.argv[1])
+atexit.register(shutil.rmtree, payload["job_dir"], ignore_errors=True)
+signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))
 state_path = payload["state_path"]
 log_path = payload["log_path"]
 state = payload["state"]
@@ -2448,8 +2523,18 @@ for command in payload["commands"]:
     with open(log_path, "ab") as log:
         log.write(("\n\n[{}] Running: {}\n".format(now(), " ".join(command))).encode("utf-8"))
         log.flush()
-        result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT)
-    return_code = result.returncode
+        try:
+            with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                  env=payload["environment"]) as process:
+                for line in iter(process.stdout.readline, b""):
+                    for secret in payload["redact"]:
+                        line = line.replace(secret.encode(), b"********").replace(quote(secret, safe="").encode(), b"********")
+                    log.write(line)
+                    log.flush()
+                return_code = process.wait()
+        except OSError:
+            log.write(b"Unable to start VCF Download Tool. Verify that it is installed.\n")
+            return_code = 1
     if return_code != 0:
         detail = extract_failure_message(log_path, "Review the log for details.")
         write_state({
@@ -3369,7 +3454,7 @@ def _start_update(app, repo_url, branch):
         raise OSError("VIS update script is not installed at {}.".format(paths["script"]))
     paths["state_dir"].mkdir(parents=True, exist_ok=True)
     command = [str(paths["script"]), "--repo-url", repo_url, "--branch", branch]
-    env = os.environ.copy()
+    env = proxy.environment(_proxy_settings(app))
     env.update(
         {
             "VIS_UPDATE_REPO_URL": repo_url,
@@ -3377,6 +3462,7 @@ def _start_update(app, repo_url, branch):
             "VIS_UPDATE_STATE_DIR": str(paths["state_dir"]),
             "VIS_UPDATE_LOG_FILE": str(paths["log"]),
             "VIS_UPDATE_STATUS_FILE": str(paths["status"]),
+            "VIS_PROXY_ENV_FILE": str(_proxy_environment_path(app)),
         }
     )
     _launch_update_command(app, "vis-update", command, env)
@@ -3423,6 +3509,7 @@ def _launch_update_command(app, unit_prefix, command, env):
                 "VIS_UPDATE_LOG_FILE",
                 "VIS_UPDATE_STATUS_FILE",
                 "VIS_UPDATE_PUBLIC_KEY",
+                "VIS_PROXY_ENV_FILE",
             )
             if key in env
         }

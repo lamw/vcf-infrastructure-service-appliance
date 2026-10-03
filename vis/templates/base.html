@@ -7,7 +7,7 @@
   <title>{% block title %}VIS Appliance{% endblock %}</title>
   <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" sizes="any" />
   <link rel="stylesheet" href="https://unpkg.com/@clr/ui/clr-ui.min.css" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='vis.css') }}?v=20260619-ui" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vis.css') }}?v=20261003-proxy" />
 </head>
 <body>
   <div class="vis-shell">
@@ -48,6 +48,7 @@
         <a class="nav-item {% if request.path == '/system-health' %}active{% endif %}" href="{{ url_for('system_health') }}"><span class="nav-icon">◉</span>System Health</a>
         <a class="nav-item {% if request.path == '/certificates' %}active{% endif %}" href="{{ url_for('certificates') }}"><span class="nav-icon">▣</span>Certificate Authority</a>
         <a class="nav-item {% if request.path.startswith('/config') %}active{% endif %}" href="{{ url_for('config_profiles') }}"><span class="nav-icon">⇅</span>Config Export/Import</a>
+        <a class="nav-item {% if request.path == '/outbound-proxy' %}active{% endif %}" href="{{ url_for('outbound_proxy') }}"><span class="nav-icon">⇄</span>Outbound Proxy</a>
         <a class="nav-item {% if request.path.startswith('/updates') %}active{% endif %}" href="{{ url_for('updates') }}"><span class="nav-icon">↻</span>Updates</a>
         <a class="nav-item {% if request.path == '/logs' %}active{% endif %}" href="{{ url_for('logs') }}"><span class="nav-icon">≡</span>Logs</a>
       </div>

@@ -2176,6 +2176,7 @@
     const versionInput = document.getElementById("depotDownloadVersion");
     const credentialPath = {{ (service.settings.download_credential_path or '/opt/vis/config/depot/activation-code')|tojson }};
     const depotStore = "/opt/vis/data/depot";
+    const proxyArguments = {{ proxy_arguments|tojson }};
 
     const buildBinaryCommand = (type, includeDayN) => {
       const command = [
@@ -2189,7 +2190,7 @@
       if (!includeDayN) {
         command.push("--automated-install");
       }
-      return command.join(" ");
+      return command.concat(proxyArguments).join(" ");
     };
 
     const refreshBinaryCommandPreview = () => {
@@ -2220,7 +2221,7 @@
       }
       if (esxPatchesCheckbox && esxPatchesCheckbox.checked) {
         lines.push("# ESX Patches");
-        lines.push(`vcf-download-tool esx download --depot-store=${depotStore}/ --depot-download-activation-code-file=${credentialPath}`);
+        lines.push(`vcf-download-tool esx download --depot-store=${depotStore}/ --depot-download-activation-code-file=${credentialPath} ${proxyArguments.join(" ")}`.trim());
       }
       binaryCommandPreview.textContent = lines.length ? lines.join("\n") : "Select at least one download type.";
     };

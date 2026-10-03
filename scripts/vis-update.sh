@@ -1,6 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
+PROXY_ENV_FILE="${VIS_PROXY_ENV_FILE:-/opt/vis/config/proxy/proxy.env}"
+if [ -f "${PROXY_ENV_FILE}" ]; then
+  source "${PROXY_ENV_FILE}"
+fi
+
 REPO_URL="${VIS_UPDATE_REPO_URL:-https://github.com/lamw/vcf-infrastructure-service-appliance.git}"
 BRANCH="${VIS_UPDATE_BRANCH:-main}"
 WORK_DIR="${VIS_UPDATE_WORK_DIR:-/opt/vis/update}"

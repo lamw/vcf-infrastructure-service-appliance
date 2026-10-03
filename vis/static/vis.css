@@ -109,6 +109,7 @@ html[data-theme="light"][data-visual="grid"] body::before {
 }
 
 .vis-header {
+  height: auto;
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
@@ -736,6 +737,34 @@ pre.config-preview {
   gap: 12px;
   align-items: center;
   margin-top: 10px;
+}
+
+.outbound-proxy-page .detail-box h3 {
+  font-size: 14px;
+  margin: 0 0 14px;
+}
+
+.outbound-proxy-page .config-preview {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.outbound-proxy-page .secret-row {
+  grid-template-columns: minmax(0, 1fr) 38px;
+  max-width: 460px;
+}
+
+.outbound-proxy-page .secret-row .icon-btn:last-child {
+  grid-column: 2;
+}
+
+@media (max-width: 780px) {
+  .outbound-proxy-page .service-config-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .outbound-proxy-page .service-config-form > span:empty {
+    display: none;
+  }
 }
 
 .service-config-form > .text-input,

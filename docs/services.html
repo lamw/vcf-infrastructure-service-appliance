@@ -45,6 +45,7 @@
 <li><a href="#config-export-import">🔄 Config Export/Import</a></li>
 <li><a href="#system-health">📊 System Health</a></li>
 <li><a href="#updates">↻ Updates</a></li>
+<li><a href="#outbound-proxy">Outbound Proxy</a></li>
 <li><a href="#logs">📋 Logs</a></li>
 </ul>
 <h2 id="software-depot">📦 Software Depot</h2>
@@ -58,7 +59,14 @@
 <li>Validates credentials by downloading depot metadata into <code>/opt/vis/data/depot</code>.</li>
 <li>Runs long VCF/VVF binary downloads asynchronously with single-job enforcement, status, cancellation, and log visibility.</li>
 <li>Supports Install, Upgrade, and ESX Patch downloads with a validated Activation Code.</li>
+<li>Uses the appliance Outbound Proxy settings for metadata validation and all download types.</li>
 </ul>
+<h2 id="outbound-proxy">Outbound Proxy</h2>
+<p>Configure <strong>Appliance &gt; Outbound Proxy</strong> when VIS reaches the Internet through an existing proxy. Enable <strong>Use outbound proxy</strong>, select the proxy connection protocol (HTTP or HTTPS), and enter the server hostname/IP and port. Username and password are optional; leave both blank for an unauthenticated proxy. HTTPS destinations can use an HTTP proxy through CONNECT; select HTTPS only when the connection to the proxy itself uses TLS.</p>
+<p>Settings apply to VCFDT metadata validation, Install/Upgrade binaries, ESX patches, and VIS online updates, including Git and Python dependency downloads. A download captures the proxy settings when it starts. Saving new settings affects subsequent operations. Disable the proxy and save to return to direct connections.</p>
+<p><strong>Bypass Proxy For</strong> is a comma-separated <code>NO_PROXY</code> list for environment-aware clients. VCFDT receives explicit proxy options for its external depot operations; its own handling of bypass rules may differ. Proxy passwords are passed to VCFDT through a private password file and masked in VIS logs and previews. Settings persist across updates and are included in configuration export/import, so exported profiles must be stored securely.</p>
+<p>This configuration does not change APT, Docker/Harbor image pulls, service containers, or interactive SSH sessions. It does not configure a proxy server hosted by VIS. Enterprise NTLM/Kerberos authentication and custom proxy CA installation are outside this feature; TLS verification remains enabled.</p>
+<p>Older VCFDT versions may have proxy bugs; use a current supported download tool. Broadcom documents an ESX token request issue in VCFDT 9.1.0.0.25371089: <a href="https://knowledge.broadcom.com/external/article/442226/vcf-download-tool-vcfdt-esx-metadata-or.html">VCFDT ESX downloads with a proxy</a>.</p>
 <h2 id="sftp-backup">💾 SFTP Backup</h2>
 <ul>
 <li>Creates an SFTP-only local account with configurable username and password.</li>
