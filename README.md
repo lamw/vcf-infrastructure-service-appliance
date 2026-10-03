@@ -19,3 +19,4 @@ VIS includes the following capabilities:
 - Basic appliance health and storage visibility
 - Configuration export/import for repeatable VIS deployments
 - Appliance updates from the VIS UI or `vis-update` command
+- Optional outbound HTTP/HTTPS proxy with authentication for VCFDT downloads and online updates

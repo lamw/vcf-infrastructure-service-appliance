@@ -1,6 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
+PROXY_ENV_FILE="${VIS_PROXY_ENV_FILE:-/opt/vis/config/proxy/proxy.env}"
+if [ -f "${PROXY_ENV_FILE}" ]; then
+  source "${PROXY_ENV_FILE}"
+fi
+
 SOURCE_DIR="${VIS_UPDATE_SOURCE_DIR:-}"
 APP_ROOT="${VIS_APP_ROOT:-/opt/vis/app}"
 STATE_DIR="${VIS_STATE_DIR:-/opt/vis/state}"
@@ -18,6 +23,7 @@ fi
 
 echo "> Applying VIS files from ${SOURCE_DIR}"
 mkdir -p "${APP_ROOT}" "${BACKUP_ROOT}"
+install -d -m 0700 /opt/vis/config/proxy
 
 STAMP="$(date -u +"%Y%m%d%H%M%S")"
 STAGED_APP="${APP_ROOT}/vis.update-${STAMP}"

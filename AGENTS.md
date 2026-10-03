@@ -100,6 +100,7 @@ New services must be added to:
 ## Security And Secrets
 
 - Do not introduce default service passwords.
+- Outbound proxy configuration is an appliance setting, not a managed service. Reuse `vis/proxy.py` for validation, VCFDT arguments, and subprocess environments. Do not put proxy passwords in command arguments, job status, previews, or logs. Background downloads must snapshot settings in private files, and updates must preserve `/opt/vis/config/proxy/`.
 - Service credentials should be configured by the user before enablement.
 - Sensitive values should be masked in the UI with an eye toggle and copy button where useful.
 - Config export/import may include secrets; warning text must remain clear.
@@ -120,6 +121,7 @@ Run focused tests while developing, then run:
 
 ```bash
 python3 -m unittest tests.test_services tests.test_packer_config
+python3 -m unittest tests.test_proxy
 ```
 
 ## Documentation
