@@ -2,6 +2,8 @@
 
 VIS currently uses Packer's `vmware-iso` workflow against a standalone ESX host. The build exports an OVA into `output-vmware-iso/`.
 
+The v1.0.5 appliance includes Outbound Proxy configuration for VCFDT downloads and online updates. New builds start with the proxy disabled; users configure it after deployment. Packer creates the protected proxy configuration directory, while updates preserve saved settings.
+
 ## Table of Contents
 
 - [Repository Layout](#repository-layout)
