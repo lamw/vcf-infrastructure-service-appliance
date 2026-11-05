@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import subprocess
 import sys
 import xml.parsers.expat
@@ -33,19 +34,19 @@ def get_ovf_properties():
 
 
 def main(argv):
-    if len(argv) != 1:
-        debug('usage: getOvfProperty.py <property_name')
-        sys.exit(1)
-           
+    parser = argparse.ArgumentParser()
+    parser.add_argument("property_name")
+    parser.add_argument("--optional", action="store_true",
+                        help="Return an empty value if the property is absent")
+    args = parser.parse_args(argv)
+
     ovf = get_ovf_properties()
-    
-    try:
-        res = ovf[argv[0]]
-    except KeyError as err:
-        debug(f'ovfProperty not found: {err}')
+
+    if not args.optional and args.property_name not in ovf:
+        debug(f"ovfProperty not found: {args.property_name!r}")
         sys.exit(1)
-    
-    print(res, end="")
+
+    print(ovf.get(args.property_name, ""), end="")
     sys.exit(0)
 
 

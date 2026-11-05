@@ -2,6 +2,8 @@
 
 Deploy the VIS OVA to either a vCenter Server or a standalone ESX host. OVF properties are used to set up the initial appliance, including basic networking information, OS credentials, VIS application credentials, an optional SSH public key, and the Docker pod CIDR.
 
+Leave **SSH Public Key** blank unless you want to install a key for root SSH access. It is not needed to sign in to the VIS web UI.
+
 ## Table of Contents
 
 - [Resource Requirements](#resource-requirements)
