@@ -6,6 +6,7 @@ The **VCF Infrastructure Services (VIS) Appliance** is an Ubuntu-based virtual a
 
 VIS includes the following capabilities:
 
+- Locally bundled UI assets for air-gapped management without external CDN requests
 - Software Depot for hosting VCF software binaries
 - SFTP Backup server for configuring VCF backups
 - Container Registry for vSphere Supervisor and vSphere Kubernetes Service (VKS) workflows

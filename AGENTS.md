@@ -46,6 +46,7 @@ New services must be added to:
 
 ## UI Conventions
 
+- Serve all automatically loaded UI assets locally. Bundle pinned third-party CSS, fonts, scripts, and required licenses under `vis/static/vendor/`; do not add CDN dependencies or remote font imports.
 - Follow the UI conventions in [docs/develop.md](docs/develop.md).
 - Keep required setup notices local to the panel that blocks enablement.
 - Keep success and error messages local, dismissible, and visibly colored.

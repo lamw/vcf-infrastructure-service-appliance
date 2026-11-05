@@ -124,6 +124,7 @@ python3 -m http.server 8094</code></pre>
 </ol>
 <h2 id="ui-conventions">UI Conventions</h2>
 <p>These conventions keep new VIS services visually consistent with the original service pages.</p>
+<p>VIS serves its UI assets locally, including the pinned Clarity stylesheet and embedded fonts under <code>vis/static/vendor/clarity-18.5.0/</code>. Do not add CDN stylesheets, scripts, remote font imports, or other automatically loaded external assets. Include upstream licenses when vendoring dependencies. Packer and appliance updates copy these assets with the application; no runtime download is needed. External resource links remain available when explicitly opened by a user.</p>
 <h3 id="detail-page-structure">Detail Page Structure</h3>
 <ul>
 <li>Use the shared service detail shell: heading, action buttons, status metrics, then a <code>Configuration</code> panel.</li>
