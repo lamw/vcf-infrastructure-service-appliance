@@ -1,9 +1,52 @@
+import io
 import json
 import unittest
 from pathlib import Path
+from unittest.mock import patch
+
+from files import getOvfProperty
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class OVFPropertyTest(unittest.TestCase):
+    def read_property(self, xml, *args):
+        with patch.object(getOvfProperty.subprocess, "Popen") as popen:
+            popen.return_value.stdout = io.BytesIO(xml)
+            with patch("sys.stdout", new_callable=io.StringIO) as stdout:
+                with patch("sys.stderr", new_callable=io.StringIO) as stderr:
+                    with self.assertRaises(SystemExit) as result:
+                        getOvfProperty.main(args)
+            return result.exception.code, stdout.getvalue(), stderr.getvalue()
+
+    def test_optional_ssh_key_accepts_omitted_blank_and_populated_values(self):
+        for value in (None, "", "ssh-ed25519 example test-key"):
+            with self.subTest(value=value):
+                property_xml = (
+                    '' if value is None else
+                    '<Property oe:key="guestinfo.ssh_public_key" oe:value="{}"/>'.format(value)
+                )
+                xml = ('<Environment xmlns:oe="urn:ovf"><PropertySection>{}</PropertySection>'
+                       '</Environment>').format(property_xml).encode()
+                self.assertEqual(
+                    (0, value or "", ""),
+                    self.read_property(xml, "--optional", "guestinfo.ssh_public_key"),
+                )
+
+    def test_missing_required_property_fails(self):
+        code, _, error = self.read_property(b"<Environment/>", "guestinfo.vis_admin_password")
+        self.assertEqual(1, code)
+        self.assertIn("ovfProperty not found: 'guestinfo.vis_admin_password'", error)
+
+    def test_malformed_environment_fails_even_for_optional_property(self):
+        code, _, error = self.read_property(b"<Environment>", "--optional", "guestinfo.ssh_public_key")
+        self.assertEqual(1, code)
+        self.assertTrue(error)
+
+    def test_firstboot_requests_ssh_key_as_optional(self):
+        script = (ROOT / "files" / "setup.sh").read_text(encoding="utf-8")
+        self.assertIn('getOvfProperty.py --optional "guestinfo.ssh_public_key"', script)
 
 
 class PackerOptionalArtifactTest(unittest.TestCase):

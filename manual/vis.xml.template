@@ -41,7 +41,7 @@
         </Property>
         <Property ovf:key="guestinfo.ssh_public_key" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
             <Label>SSH Public Key</Label>
-            <Description>Public SSH key installed into root authorized_keys during first boot customization</Description>
+            <Description>Optional public SSH key installed into root authorized_keys during first boot customization. Leave blank to skip.</Description>
         </Property>
         <Property ovf:key="guestinfo.vis_admin_username" ovf:type="string" ovf:userConfigurable="true" ovf:value="admin">
             <Label>VIS Admin Username</Label>
