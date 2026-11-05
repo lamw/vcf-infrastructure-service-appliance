@@ -153,6 +153,8 @@ Generated service configuration normally lives under `/opt/vis/config`, and serv
 
 These conventions keep new VIS services visually consistent with the original service pages.
 
+VIS serves its UI assets locally, including the pinned Clarity stylesheet and embedded fonts under `vis/static/vendor/clarity-18.5.0/`. Do not add CDN stylesheets, scripts, remote font imports, or other automatically loaded external assets. Include upstream licenses when vendoring dependencies. Packer and appliance updates copy these assets with the application; no runtime download is needed. External resource links remain available when explicitly opened by a user.
+
 ### Detail Page Structure
 
 - Use the shared service detail shell: heading, action buttons, status metrics, then a `Configuration` panel.

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{% block title %}VIS Appliance{% endblock %}</title>
   <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" sizes="any" />
-  <link rel="stylesheet" href="https://unpkg.com/@clr/ui/clr-ui.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/clarity-18.5.0/clr-ui.min.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='vis.css') }}?v=20261003-proxy" />
 </head>
 <body>

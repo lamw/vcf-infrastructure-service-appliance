@@ -1,6 +1,7 @@
 import io
 import os
 import json
+import re
 import subprocess
 import stat
 import tarfile
@@ -10,6 +11,7 @@ import unittest
 import signal
 from collections import namedtuple
 from pathlib import Path
+from html.parser import HTMLParser
 from unittest.mock import PropertyMock, patch
 
 from vis.file_manager import RepositoryFileManager
@@ -906,6 +908,46 @@ class WebAppTest(unittest.TestCase):
 
     def tearDown(self):
         self.tmpdir.cleanup()
+
+    def test_ui_assets_are_local_and_available_offline(self):
+        class AssetParser(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.assets = []
+
+            def handle_starttag(self, tag, attrs):
+                attrs = dict(attrs)
+                if tag == "link" and attrs.get("rel") in ("stylesheet", "icon", "preload"):
+                    self.assets.append(attrs.get("href", ""))
+                elif tag in ("script", "img", "iframe", "source") and attrs.get("src"):
+                    self.assets.append(attrs["src"])
+
+        for page in ("/", "/login", "/services/web-depot", "/outbound-proxy"):
+            self.app.config["VIS_AUTH_REQUIRED"] = page == "/login"
+            response = self.client.get(page)
+            self.assertEqual(200, response.status_code, page)
+            parser = AssetParser()
+            parser.feed(response.get_data(as_text=True))
+            self.assertTrue(parser.assets, page)
+            for asset in parser.assets:
+                self.assertTrue(asset.startswith("/static/"), asset)
+                asset_response = self.client.get(asset)
+                self.assertEqual(200, asset_response.status_code, asset)
+                asset_response.close()
+
+        stylesheet = "/static/vendor/clarity-18.5.0/clr-ui.min.css"
+        self.assertIn(stylesheet, self.client.get("/").get_data(as_text=True))
+        vendor = Path(self.app.static_folder) / "vendor" / "clarity-18.5.0"
+        for filename in ("LICENSE", "FONT-LICENSE", "clr-ui.min.css.map"):
+            self.assertTrue((vendor / filename).is_file(), filename)
+        for css_path in Path(self.app.static_folder).rglob("*.css"):
+            css = css_path.read_text()
+            self.assertNotRegex(css, r"@import\b")
+            for reference in re.findall(r"url\(\s*['\"]?([^)'\"\s]+)", css):
+                if reference.startswith(("data:", "#")):
+                    continue
+                self.assertNotRegex(reference, r"^(?:[a-zA-Z][\w+.-]*:|//)")
+                self.assertTrue((css_path.parent / reference.split("?", 1)[0]).is_file(), reference)
 
     def test_services_api_lists_initial_services(self):
         response = self.client.get("/api/services")
