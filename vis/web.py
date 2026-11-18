@@ -688,7 +688,7 @@ def create_app(config=None):
         service.settings["realm"] = request.form.get("realm", "VCF").strip() or "VCF"
         service.settings["default_group"] = request.form.get("default_group", "vcf-admins").strip() or "vcf-admins"
         service.settings["admin_user"] = request.form.get("admin_user", "").strip()
-        service.settings["image"] = request.form.get("image", "").strip() or service.settings.get("image") or "quay.io/keycloak/keycloak:26.3"
+        service.settings["image"] = request.form.get("image", "").strip() or service.settings.get("image") or "quay.io/keycloak/keycloak:26.8.2"
         if not service.settings["admin_user"]:
             return redirect(url_for("service_detail", service_id=service.id, oidc_config_error="Admin user is required", _anchor="oidc-config"))
         password = request.form.get("admin_password", "")

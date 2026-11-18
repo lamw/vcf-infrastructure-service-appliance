@@ -38,6 +38,7 @@
 <li><a href="#build-artifacts">Build Artifacts</a></li>
 <li><a href="#signed-offline-update-releases">Signed Offline Update Releases</a></li>
 <li><a href="#configure-builder-settings">Configure Builder Settings</a></li>
+<li><a href="#security-updates">Security Updates</a></li>
 </ul>
 <h2 id="repository-layout">Repository Layout</h2>
 <table>
@@ -57,7 +58,7 @@
 <h2 id="requirements">Requirements</h2>
 <h3 id="build-workstation">Build Workstation</h3>
 <ul>
-<li>Packer with the VMware builder plugin.</li>
+<li>Packer with VMware builder plugin 1.2.0 for standalone ESX.</li>
 <li><code>ovftool</code>.</li>
 <li>Network access to the ESX build host.</li>
 <li>SSH access to the ESX build host.</li>
@@ -70,10 +71,11 @@
 <li>Enable SSH.</li>
 <li>Ensure the build workstation can reach the ESX management IP.</li>
 <li>Ensure the target datastore has enough free space.</li>
-<li>Ensure the target port group has network access for the temporary build VM.</li>
+<li>Ensure the target port group provides IPv4 DHCP for the temporary build VM and can reach the Packer workstation&#x27;s autoinstall HTTP server.</li>
 <li>Enable the Packer ESX guest IP helper:</li>
 </ol>
 <pre><code>esxcli system settings advanced set -o /Net/GuestIPHack -i 1</code></pre>
+<p>The live Ubuntu installer keeps SSH closed so Packer waits for the installed system&#x27;s SSH endpoint after reboot. The installer and the installed system can receive different DHCP addresses.</p>
 <h2 id="build-artifacts">Build Artifacts</h2>
 <p>Place user-supplied build artifacts in <code>artifacts/</code>.</p>
 <p>Required:</p>
@@ -114,6 +116,12 @@ vis-update-&lt;version&gt;.zip.sha256.sig</code></pre>
 <p>Build the appliance:</p>
 <pre><code>./build.sh</code></pre>
 <p>The OVA is packaged with uncompressed stream-optimized VMDKs for broad vSphere UI import compatibility; release files can be split afterward for GitHub distribution.</p>
+<h2 id="security-updates">Security Updates</h2>
+<p>Packer refreshes the Ubuntu package indexes and applies available package updates, including kernel upgrades that need newly named image and modules packages. Boot the resulting appliance and check <code>uname -r</code> against the installed Ubuntu kernel packages.</p>
+<p>For an existing appliance, run <code>sudo apt-get update</code> and <code>sudo apt-get --with-new-pkgs upgrade</code> during a maintenance window. If the kernel is updated, reboot and verify the running kernel with <code>uname -r</code>.</p>
+<p>After updating the VIS application on an existing appliance, set the OIDC Provider image to <code>quay.io/keycloak/keycloak:26.8.2</code> and restart the provider through VIS to apply the generated JVM options. The adapter disables Base64 intrinsics as an interim mitigation for CVE-2026-114938. Verify the running JVM reports <code>UseBASE64Intrinsics = false</code>. <a href="https://www.keycloak.org/2026/11/java4shell-vulnerability-cve-2026-114938">Keycloak advisory</a></p>
+<p>New builds stage Harbor v2.15.5 with private network webhook targets blocked. For an existing registry, back up its configuration and data and follow the Harbor upgrade procedure. Set <code>network.allow_private_network_access</code> to <code>false</code> in <code>harbor.yml</code> before regenerating the deployment configuration. <a href="https://goharbor.io/docs/2.15.0/administration/upgrade/">Harbor upgrade guide</a> <a href="https://github.com/goharbor/harbor/security/advisories/GHSA-2phj-cp9f-qq6w">Harbor webhook advisory</a></p>
+<p>Track rollout and verification in <a href="https://github.com/lamw/vcf-infrastructure-service-appliance/issues/36">issue #36</a>.</p>
   </main>
   <footer class="doc-footer">VCF Infrastructure Services Appliance documentation.</footer>
   <script>

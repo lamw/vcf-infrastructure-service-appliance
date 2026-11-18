@@ -19,11 +19,11 @@
     "vis_sftp_password": "",
     "vis_pod_cidr_network": "10.10.0.0/16",
     "install_vcf_download_tool": "false",
-    "harbor_version": "v2.15.1",
+    "harbor_version": "v2.15.5",
     "harbor_port": "9443",
     "harbor_http_port": "9080",
     "harbor_admin_password": "",
-    "keycloak_image": "quay.io/keycloak/keycloak:26.3"
+    "keycloak_image": "quay.io/keycloak/keycloak:26.8.2"
   },
   "builders": [
     {
@@ -43,7 +43,7 @@
       "boot_command": [
         "<esc><wait>",
         "c<wait>",
-        "linux /casper/vmlinuz autoinstall ds=nocloud-net\\;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ---<enter><wait>",
+        "linux /casper/vmlinuz autoinstall ds=nocloud-net\\;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ systemd.mask=ssh.service systemd.mask=ssh.socket ---<enter><wait>",
         "initrd /casper/initrd<enter><wait>",
         "boot<enter>"
       ],

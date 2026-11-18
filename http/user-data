@@ -222,7 +222,8 @@ autoinstall:
         device: fmt-vis-identity
         path: /opt/vis/data/identity
   late-commands:
-    - curtin in-target --target=/target -- systemctl enable ssh
+    # Enable SSH on the installed disk without the live installer's runtime masks.
+    - systemctl --root=/target enable ssh.service
     - curtin in-target --target=/target -- usermod -aG sudo visadmin
   user-data:
     disable_root: false

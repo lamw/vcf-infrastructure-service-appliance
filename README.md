@@ -21,3 +21,8 @@ VIS includes the following capabilities:
 - Configuration export/import for repeatable VIS deployments
 - Appliance updates from the VIS UI or `vis-update` command
 - Optional outbound HTTP/HTTPS proxy with authentication for VCFDT downloads and online updates
+
+New appliance builds stage Keycloak 26.8.2 and Harbor v2.15.5 and apply Ubuntu
+package updates, including kernel updates that require new packages. See the
+[security update tracking issue](https://github.com/lamw/vcf-infrastructure-service-appliance/issues/36)
+and [build and maintenance notes](docs/build.md).

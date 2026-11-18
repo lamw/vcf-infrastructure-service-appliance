@@ -11,6 +11,7 @@ The v1.0.5 appliance includes Outbound Proxy configuration for VCFDT downloads a
 - [Build Artifacts](#build-artifacts)
 - [Signed Offline Update Releases](#signed-offline-update-releases)
 - [Configure Builder Settings](#configure-builder-settings)
+- [Security Updates](#security-updates)
 
 ## Repository Layout
 
@@ -31,7 +32,7 @@ The v1.0.5 appliance includes Outbound Proxy configuration for VCFDT downloads a
 
 ### Build Workstation
 
-- Packer with the VMware builder plugin.
+- Packer with VMware builder plugin 1.2.0 for standalone ESX.
 - `ovftool`.
 - Network access to the ESX build host.
 - SSH access to the ESX build host.
@@ -46,12 +47,16 @@ On the standalone ESX host:
 1. Enable SSH.
 2. Ensure the build workstation can reach the ESX management IP.
 3. Ensure the target datastore has enough free space.
-4. Ensure the target port group has network access for the temporary build VM.
+4. Ensure the target port group provides IPv4 DHCP for the temporary build VM and can reach the Packer workstation's autoinstall HTTP server.
 5. Enable the Packer ESX guest IP helper:
 
 ```shell
 esxcli system settings advanced set -o /Net/GuestIPHack -i 1
 ```
+
+The live Ubuntu installer keeps SSH closed so Packer waits for the installed
+system's SSH endpoint after reboot. The installer and the installed system can
+receive different DHCP addresses.
 
 ## Build Artifacts
 
@@ -135,3 +140,31 @@ Build the appliance:
 ```
 
 The OVA is packaged with uncompressed stream-optimized VMDKs for broad vSphere UI import compatibility; release files can be split afterward for GitHub distribution.
+
+## Security Updates
+
+Packer refreshes the Ubuntu package indexes and applies available package
+updates, including kernel upgrades that need newly named image and modules
+packages. Boot the resulting appliance and check `uname -r` against the
+installed Ubuntu kernel packages.
+
+For an existing appliance, run `sudo apt-get update` and
+`sudo apt-get --with-new-pkgs upgrade` during a maintenance window. If the
+kernel is updated, reboot and verify the running kernel with `uname -r`.
+
+After updating the VIS application on an existing appliance, set the OIDC
+Provider image to `quay.io/keycloak/keycloak:26.8.2` and restart the provider
+through VIS to apply the generated JVM options. The adapter disables Base64
+intrinsics as an interim mitigation for CVE-2026-114938. Verify the running
+JVM reports `UseBASE64Intrinsics = false`.
+[Keycloak advisory](https://www.keycloak.org/2026/11/java4shell-vulnerability-cve-2026-114938)
+
+New builds stage Harbor v2.15.5 with private network webhook targets blocked.
+For an existing registry, back up its configuration and data and follow the
+Harbor upgrade procedure. Set `network.allow_private_network_access` to
+`false` in `harbor.yml` before regenerating the deployment configuration.
+[Harbor upgrade guide](https://goharbor.io/docs/2.15.0/administration/upgrade/)
+[Harbor webhook advisory](https://github.com/goharbor/harbor/security/advisories/GHSA-2phj-cp9f-qq6w)
+
+Track rollout and verification in
+[issue #36](https://github.com/lamw/vcf-infrastructure-service-appliance/issues/36).

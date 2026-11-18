@@ -135,8 +135,30 @@ class PackerOptionalArtifactTest(unittest.TestCase):
         self.assertIn("|0AVersion:", annotation)
         self.assertNotIn("\n", annotation)
 
+    def test_packer_waits_for_ssh_on_the_installed_system(self):
+        boot_commands = self.config["builders"][0]["boot_command"]
+        linux_command = next(command for command in boot_commands if command.startswith("linux "))
+        installer_args, installed_args = linux_command.split(" ---", 1)
+        self.assertIn("systemd.mask=ssh.service", installer_args)
+        self.assertIn("systemd.mask=ssh.socket", installer_args)
+        self.assertNotIn("systemd.mask=", installed_args)
+        user_data = (ROOT / "http" / "user-data").read_text(encoding="utf-8")
+        self.assertIn("- systemctl --root=/target enable ssh.service", user_data)
+
+    def test_packer_security_updates_cover_harbor_and_ubuntu(self):
+        bom = json.loads((ROOT / "bom" / "vis-bom.json").read_text(encoding="utf-8"))
+        self.assertEqual("v2.15.5", bom["harbor_version"])
+        self.assertEqual(bom["harbor_version"], self.config["variables"]["harbor_version"])
+        harbor = (ROOT / "scripts" / "vis-harbor.sh").read_text(encoding="utf-8")
+        self.assertIn("allow_private_network_access:", harbor)
+        settings = (ROOT / "scripts" / "vis-settings.sh").read_text(encoding="utf-8")
+        self.assertIn("apt-get -o APT::Update::Error-Mode=any update", settings)
+        self.assertIn("apt-get -y --with-new-pkgs upgrade", settings)
+
     def test_packer_exposes_keycloak_image_bom_variable(self):
-        self.assertEqual("quay.io/keycloak/keycloak:26.3", self.config["variables"]["keycloak_image"])
+        self.assertEqual("quay.io/keycloak/keycloak:26.8.2", self.config["variables"]["keycloak_image"])
+        bom = json.loads((ROOT / "bom" / "vis-bom.json").read_text(encoding="utf-8"))
+        self.assertEqual(self.config["variables"]["keycloak_image"], bom["keycloak_image"])
         harbor_provisioner = next(
             provisioner
             for provisioner in self.config["provisioners"]

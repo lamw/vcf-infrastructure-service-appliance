@@ -18,13 +18,13 @@ wait_for_apt_locks() {
 
 echo '> Installing Docker and Harbor...'
 
-HARBOR_VERSION="${HARBOR_VERSION:-v2.15.1}"
+HARBOR_VERSION="${HARBOR_VERSION:-v2.15.5}"
 VIS_FQDN="${VIS_APPLIANCE_FQDN:-vis.williamlam.local}"
 VIS_IP="${VIS_APPLIANCE_IP:-192.168.30.99}"
 HARBOR_PORT="${VIS_HARBOR_PORT:-9443}"
 HARBOR_HTTP_PORT="${VIS_HARBOR_HTTP_PORT:-9080}"
 HARBOR_ADMIN_PASSWORD="${VIS_HARBOR_ADMIN_PASSWORD:-}"
-KEYCLOAK_IMAGE="${VIS_KEYCLOAK_IMAGE:-quay.io/keycloak/keycloak:26.3}"
+KEYCLOAK_IMAGE="${VIS_KEYCLOAK_IMAGE:-quay.io/keycloak/keycloak:26.8.2}"
 VIS_POD_CIDR_NETWORK="${VIS_POD_CIDR_NETWORK:-10.10.0.0/16}"
 REGISTRY_ROOT="/opt/vis/data/registry"
 HARBOR_HOME="/opt/vis/harbor"
@@ -127,6 +127,8 @@ fi
 sudo rm -rf "${HARBOR_HOME:?}/"*
 sudo tar -xzf "harbor-online-installer-${HARBOR_VERSION}.tgz" -C "${HARBOR_HOME}" --strip-components=1
 sudo cp "${HARBOR_HOME}/harbor.yml.tmpl" "${HARBOR_HOME}/harbor.yml"
+# Prevent untrusted project webhooks from reaching private network services.
+sudo sed -i -E 's/^([[:space:]]+allow_private_network_access:)[[:space:]]+true([[:space:]]|$)/\1 false\2/' "${HARBOR_HOME}/harbor.yml"
 
 if [ -z "${HARBOR_ADMIN_PASSWORD}" ]; then
   echo '> Harbor admin password was not provided; staging installer and pre-pulling images for VIS UI configuration.'
