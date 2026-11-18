@@ -293,11 +293,14 @@ class ServiceManagerTest(unittest.TestCase):
                 patch("vis.manager.subprocess.run") as run:
                 adapter._write_unit()
 
+            env_path = Path(adapter.config_dir, "keycloak.env")
+            self.assertIn("JAVA_OPTS_APPEND=-XX:-UseBASE64Intrinsics", env_path.read_text(encoding="utf-8").splitlines())
             tls_paths = local_tls_paths()
             self.assertEqual("server.key", Path(tls_paths["key"]).read_text(encoding="utf-8"))
             self.assertEqual(0o640, Path(tls_paths["key"]).stat().st_mode & 0o777)
             with open(adapter.unit_path, "r", encoding="utf-8") as handle:
                 unit = handle.read()
+            self.assertIn("--env-file {}".format(env_path), unit)
             self.assertIn("-v {}:/opt/keycloak/vis-tls:ro".format(str(Path(tls_paths["cert"]).parent)), unit)
             self.assertIn("-v {}:/opt/keycloak/themes/vis:ro".format(str(Path(adapter.config_dir, "themes", "vis"))), unit)
             self.assertEqual("parent=keycloak\n", Path(adapter.config_dir, "themes", "vis", "login", "theme.properties").read_text(encoding="utf-8"))

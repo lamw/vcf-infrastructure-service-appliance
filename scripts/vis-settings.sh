@@ -18,9 +18,10 @@ wait_for_apt_locks() {
 
 echo '> Applying Ubuntu package updates...'
 wait_for_apt_locks
-sudo apt-get update
+sudo apt-get -o APT::Update::Error-Mode=any update
 wait_for_apt_locks
-sudo apt-get -y upgrade
+# Kernel metapackage upgrades can depend on newly named image and modules packages.
+sudo apt-get -y --with-new-pkgs upgrade
 
 echo '> Installing VIS base packages...'
 wait_for_apt_locks

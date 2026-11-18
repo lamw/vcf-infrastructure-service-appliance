@@ -10,7 +10,8 @@ packer build -var-file=bom/vis-bom.json -var-file=local.pkrvars.json vis.json
 
 Current BOM-controlled values:
 
-- `harbor_version`: Harbor release tag used for the online installer, for example `v2.15.1`
+- `keycloak_image`: Keycloak image pre-pulled for the OIDC Provider
+- `harbor_version`: Harbor release tag used for the online installer, for example `v2.15.5`
 - `harbor_port`: HTTPS port exposed by Harbor, default `9443`
 - `harbor_http_port`: internal/non-TLS Harbor port, default `9080`
 - `harbor_admin_password`: optional initial Harbor admin password; leave blank to configure Container Registry from the VIS UI

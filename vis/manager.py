@@ -1779,6 +1779,8 @@ class OIDCProviderAdapter(ServiceAdapter):
         theme_dir = self._stage_theme()
         env_path = os.path.join(self.config_dir, "keycloak.env")
         with open(env_path, "w", encoding="utf-8") as handle:
+            # CVE-2026-114938 mitigation until the container ships a fixed OpenJDK.
+            handle.write("JAVA_OPTS_APPEND=-XX:-UseBASE64Intrinsics\n")
             handle.write("KC_BOOTSTRAP_ADMIN_USERNAME={}\n".format(self._env_value(str(self.service.settings.get("admin_user", "")))))
             handle.write("KC_BOOTSTRAP_ADMIN_PASSWORD={}\n".format(self._env_value(str(self.service.settings.get("admin_password", "")))))
         os.chmod(env_path, 0o600)
@@ -2097,7 +2099,7 @@ WantedBy=multi-user.target
         return str(self.service.settings.get("default_group", "vcf-admins")).strip() or "vcf-admins"
 
     def _image(self) -> str:
-        return str(self.service.settings.get("image", "quay.io/keycloak/keycloak:26.3")).strip()
+        return str(self.service.settings.get("image", "quay.io/keycloak/keycloak:26.8.2")).strip()
 
     def _login_theme(self) -> str:
         return str(self.service.settings.get("login_theme", "vis")).strip() or "vis"

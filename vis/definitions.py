@@ -136,7 +136,7 @@ INITIAL_SERVICES = [
             "path": "/",
             "mode": "port",
             "provider": "keycloak",
-            "image": "quay.io/keycloak/keycloak:26.3",
+            "image": "quay.io/keycloak/keycloak:26.8.2",
             "login_theme": "vis",
             "realm": "VCF",
             "default_group": "vcf-admins",
